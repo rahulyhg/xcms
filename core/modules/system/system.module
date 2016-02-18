@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ */
+function test_page() {
+  return 'hello world';
+}
+
+// TODO move to somefile.inc
+function system_welcome_page() {
+  return 'No front page content has been created yet.';
+}
+
+function system_menu() {
+
+  $items['welcome'] = array(
+    'title' => 'Welcome',
+    'callback' => 'system_welcome_page',
+  );
+
+  $items['test'] = array(
+    'title' => 'Test menu hook',
+    'callback' => 'test_page',
+  );
+
+  return $items;
+}
+

@@ -1,0 +1,723 @@
+/**
+ * @file base css
+ */
+
+html {
+  font-size: 100%;
+}
+
+/**
+ * CKEditor fix for content width
+ */
+html[dir=ltr] {
+  font-size: 100% !important;
+  background: #fff;
+}
+
+body.front,
+body.not-front {
+  background: #222;
+}
+
+a {
+  color: #3879d9;
+  text-decoration: none;
+}
+
+a:hover, a:focus, a:active {
+  color: #3879d9;
+  text-decoration: underline;
+  outline: 0;
+}
+
+/**
+ * Typography
+ */
+p, ul, ol, dl, hr, table, form, pre, h1, h2, h3 {
+  margin: 10px 0;
+  margin: 0.625rem 0;
+}
+
+h1 {
+  font-size: 40px;
+  font-size: 2.5rem;
+  line-height: 40px;
+  line-height: 2.5rem;
+}
+
+h2 {
+  font-size: 28px;
+  font-size: 1.75rem;
+  line-height: 28px;
+  line-height: 1.75rem;
+}
+
+h3 {
+  font-size: 22px;
+  font-size: 1.375rem;
+  line-height: 22px;
+  line-height: 1.375rem;
+}
+
+p+h2, ul+h2, ol+h2, table+h2,
+p+h3, ul+h3, ol+h3, table+h3 {
+  margin-top: 20px;
+  margin-top: 1.25rem;
+}
+
+/**
+ * Layout
+ */
+
+.container {
+  width: 940px;
+  margin: 0 auto;
+  padding: 20px 10px;
+}
+
+#header {
+  padding: 10px;
+}
+
+#mobile-nav {
+  display: none;
+}
+
+#main-wrapper {
+  background: #fff;
+}
+
+#footer-wrapper {
+  background: #ddd;
+  border-top: 1px solid #ccc;
+  padding: 30px 0;
+  padding: 1.875rem 0;
+}
+
+#copyright-wrapper {
+  border-top: 1px solid #000;
+  color: #fff;
+  font-size: 14px;
+  font-size: 0.875rem;
+}
+
+#copyright-wrapper a {
+  color: #fff;
+}
+
+/**
+ * Navigation menu
+ */
+
+#nav {
+  padding: 15px 10px;
+  z-index: 999;
+}
+
+#nav ul,
+#nav li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#nav li {
+  display: inline;
+}
+
+#nav li a {
+  margin-right: 30px;
+  text-transform: uppercase;
+  color: #fff;
+  display: inline-block;
+}
+
+#nav li a:hover {
+  color: #c7dd2f;
+  text-decoration: none;
+}
+
+#banner {
+  height: 380px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+/**
+ * Forms
+ */
+fieldset {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.vertical-tabs fieldset.vertical-tabs-pane {
+  padding: 0 10px 10px;
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+input.form-text:focus,
+textarea:focus {
+  outline: -webkit-focus-ring-color auto 0;
+}
+
+.form-item,
+.form-checkboxes .form-item,
+.form-radios .form-item {
+  margin: 10px 0;
+}
+
+.btn,
+.form-submit {
+  font-family: 'museo-sans';
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.4;
+  display: inline-block;
+  padding: 4px 10px;
+  margin-bottom: 0;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #333;
+  background-color: #333;
+  font-weight: bold;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.form-submit:hover,
+.form-submit:focus,
+.form-submit:active {
+  color: #fff;
+  background-color: #444;
+  background-image: none;
+  text-decoration: none;
+  outline: 0;
+}
+
+.btn-large {
+  padding: 14px 22px;
+}
+
+.container-inline .form-submit,
+.form-actions .form-submit {
+  margin-right: 10px;
+}
+
+.fullspan {
+  width: 100%;
+}
+
+/**
+ * Forms
+ */
+.form-control,
+.form-text,
+.form-password,
+.form-textarea,
+.form-select {
+  display: block;
+  width: 100%;
+  height: 32px;
+  height: 2rem;
+  padding: 6px 8px;
+  padding: 0.375rem 0.5rem;
+  font-family: 'museo-sans';
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #333;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  -webkit-transition: border-color ease-in-out 0.3s, box-shadow ease-in-out 0.3s;
+  transition: border-color ease-in-out 0.3s, box-shadow ease-in-out 0.3s;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.draggable .form-text {
+  width: 90%;
+}
+
+.form-control:focus,
+.form-text:focus,
+.form-password:focus,
+.form-textarea:focus,
+.form-select :focus {
+  border: 1px solid #555;
+}
+
+.form-select[multiple="multiple"] {
+  height: auto;
+}
+
+.form-text.error,
+.form-password.error,
+.form-textarea.error,
+.form-select.error {
+  border: 1px solid #b94a48 !important;
+}
+
+/* TODO clean this up (labels) - label.has-success should be toolip from bootstrap */
+
+.form-item .description {
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.form-container-inline {
+  margin-bottom: 10px;
+}
+
+.form-container-inline > .form-item {
+  display: block;
+  float: left;
+  margin: 0 20px 0 0;
+}
+
+.form-container-inline > .form-type-item {
+  margin-bottom: 0;
+  float: none;
+}
+
+.form-textarea {
+  height: auto;
+}
+
+.form-select,
+.vertical-tabs ul.vertical-tabs-list li {
+  outline: -webkit-focus-ring-color auto 0;
+  width: auto;
+}
+
+.vertical-tabs ul.vertical-tabs-list li a:hover {
+  outline: none;
+}
+
+.vertical-tabs ul.vertical-tabs-list li.selected {
+  background: #fff;
+}
+
+.vertical-tabs ul.vertical-tabs-list li a:hover strong {
+  text-decoration: none;
+}
+
+.resizable-textarea .grippie {
+  width: 33px;
+  margin: 0 auto;
+}
+
+div.messages {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+div.status {
+  color: #468847;
+  background: #dff0d8;
+  border-color: #d6e9c6;
+}
+
+div.warning {
+  color: #c09853;
+  background: #fcf8e3;
+  border-color: #fbeed5;
+}
+
+div.error {
+  color: #b94a48;
+  background: #f2dede;
+  border-color: #eed3d7;
+}
+
+/**
+ * Drupal tabs
+ */
+ul.primary {
+  line-height: 20px;
+  height: 31px;
+  border-bottom: 1px solid #ddd;
+}
+
+ul.primary li a {
+  background: none;
+  margin-right: 0;
+  padding: 5px 10px;
+  border: 1px solid #fff;
+  border-bottom-color: #ddd;
+  display: inline-block;
+}
+
+ul.primary li a:hover {
+  background-color: #eee;
+  border: 1px solid #eee;
+  border-bottom-color: #ddd;
+}
+
+ul.primary li.active a {
+  border: 1px solid #ddd;
+  border-bottom: 1px solid #fff;
+}
+
+ul.primary li.active a:hover {
+  background: #fff;
+}
+
+ul.secondary {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 5px;
+}
+
+ul.secondary a.active {
+  border: none;
+}
+
+ul.secondary li:last-child {
+  border: none;
+}
+
+/**
+ * Tables
+ */
+table {
+  width: 100%;
+  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
+}
+
+th {
+  text-align: left;
+}
+
+table tbody {
+  border: none;
+}
+
+table thead > tr > th,
+table tbody > tr > th,
+table thead > tr > td,
+table tbody > tr > td {
+  padding: 8px;
+  line-height: 1.428571429;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+  border-bottom: none;
+}
+
+table.layout tbody > tr > td {
+  padding: 0 20px 5px 0;
+  border: none;
+}
+
+table thead > tr > th {
+  vertical-align: bottom;
+}
+
+tr.even, tr.odd {
+  background-color: #fff;
+  border: none;
+  padding: 0;
+}
+
+table tbody > tr > td.active {
+  background-color: #fff;
+}
+
+html.js input.form-autocomplete {
+  background-position: 99% 10px;
+}
+
+html.js input.throbbing {
+  background-position: 99% -10px;
+}
+
+/**
+ * CKEditor / Media / Images
+ */
+img[style*=left] {
+  margin: 0 20px 20px 0;
+}
+
+img[style*=right] {
+  margin: 0 0 20px 20px;
+}
+
+/**
+ * IMCE
+ */
+body.imce, .imce-frame {
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+}
+
+#imce-content, #imce-content *, #ops-list a span {
+  color: #444;
+}
+
+#ops-wrapper {
+  margin: 0;
+  background: #eee;
+  border: none;
+}
+
+/* CSS3 Animations for modern browsers */
+.btn,
+.form-submit,
+#nav,
+#nav li a,
+#footer-wrapper a,
+#copyright-wrapper a,
+.node a.edit {
+  -webkit-transition: all 200ms ease-in-out;
+  -moz-transition: all 200ms ease-in-out;
+  -ms-transition: all 200ms ease-in-out;
+  -o-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+
+/**
+ * Admin / Drupal 7 Toolbar
+ */
+div.krumo-root, ul.krumo-first {
+  border: none !important;
+  color: #444;
+  margin: 0 !important;
+}
+
+#toolbar {
+  box-shadow: none;
+  z-index: 9999;
+}
+
+#toolbar div.toolbar-menu {
+  padding: 0 50px 0 10px;
+}
+
+#toolbar div.toolbar-menu ul li a {
+  border-radius: 0;
+  font: 11px/20px Tahoma, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif;
+}
+
+#toolbar div.toolbar-menu ul li a.active:hover,
+#toolbar div.toolbar-menu ul li a.active:active,
+#toolbar div.toolbar-menu ul li a.active,
+#toolbar div.toolbar-menu ul li.active-trail a {
+  background: #444;
+}
+
+.node {
+  position: relative;
+}
+
+.node > a.edit {
+  position: absolute;
+  overflow: hidden;
+  height: 0;
+  top: 0;
+  right: 0;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 0 5px;
+}
+
+.node:hover > a.edit {
+  display: block;
+  text-decoration: none;
+  height: 16px;
+  z-index: 9999;
+}
+
+/**
+ * Contact form
+ */
+.node-webform .field-name-body {
+  width: 45%;
+  float: left;
+}
+
+.node-webform .webform-client-form {
+  width: 45%;
+  float: right;
+  margin: 0;
+}
+
+.node-webform .form-item label {
+  margin-top: 16px;
+  margin-top: 1rem;
+}
+
+.node-webform .form-item label.error {
+  font-weight: normal;
+  text-align: right;
+  color: #cf563b;
+  margin: 0;
+}
+
+.marker, .form-required {
+  color: #cf563b;
+}
+
+/* 1200px */
+@media (max-width: 75em) {
+  html {
+    font-size: 90%;
+  };
+}
+
+/* 1100px */
+@media (max-width: 68.75em) {
+  html {
+    font-size: 85%;
+  };
+}
+
+/* 960px */
+@media (max-width: 60em) {
+  html {
+    font-size: 80%;
+  }
+
+  .container {
+    width: auto;
+    float: none;
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: none;
+  };
+}
+
+/* 760px */
+@media (max-width: 47.5em) {
+  html {
+    font-size: 75%;
+    overflow-y: auto;
+  }
+
+  .container {
+    width: auto;
+    float: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 5px;
+  }
+
+  #header-wrapper {
+    border: none;
+  }
+
+  #header {
+    padding: 3px 10px;
+  }
+
+  #logo img {
+    height: 40px;
+    margin: 0 auto;
+    float: left;
+  }
+
+  #mobile-nav {
+    float: right;
+    display: block;
+    height: 42px;
+    line-height: 42px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    background: url(images/mobile-nav.png) 100% 50% no-repeat;
+    cursor: pointer;
+    padding-right: 28px;
+  }
+
+  #mobile-nav:hover {
+    text-decoration: none;
+  }
+
+  #nav.open {
+    max-height: 300px;
+  }
+
+  #nav {
+    max-height: 0;
+    overflow: hidden;
+    position: absolute;
+    padding: 0;
+    z-index: 9999;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .85);
+  }
+
+  #nav li {
+    display: block;
+  }
+
+  #nav li a {
+    margin: 0;
+    padding: 10px 5px;
+    background: none;
+    display: block;
+    border-top: 1px solid #888;
+    font-weight: bold;
+    font-size: 120%;
+  }
+
+  #nav-wrapper {
+    border: none;
+  }
+
+  #banner {
+    height: 160px;
+  }
+
+  #copyright {
+    text-align: center;
+  }
+
+  #copyright span {
+    display: block;
+  }
+
+  #main .node > .content img {
+    width: 100% !important;
+    height: auto !important;
+    float: none !important;
+    margin: 0 0 10px 0 !important;
+  }
+
+  .node-webform .field-name-body,
+  .node-webform .webform-client-form {
+    width: auto;
+    float: none;
+  };
+}
+
+
