@@ -3,16 +3,23 @@
 /**
  * @file
  */
+
+/**
+ * xcms_init()
+ */
 function xcms_init() {
   global $conf, $_menu;
-  $conf = xcms_conf_get();
+  $conf = xcms_conf_read();
   session_start();
   xcms_modules_load();
-  xcms_get_menu();
+  xcms_menu_get();
   xcms_page_handler();
 }
 
-function xcms_conf_get() {
+/**
+ * xcms_conf_get()
+ */
+function xcms_conf_read() {
   $conf = NULL;
 
   // get site conf file and parse to array
@@ -26,27 +33,20 @@ function xcms_conf_get() {
   // TODO, this should go befor ini file, so it can be overridden in the ini
   $conf['base_path'] = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
 
-  // file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
-
   return $conf;
 }
 
-function xcms_conf_put() {
-  $conf = NULL;
-
-  // TODO also check if these are set and exits (files)
-  // base_path, site_name, current_theme
-
-  // TODO merge ini file here (not blast it)
-  $conf = parse_ini_file(ROOT_DIR . '/conf.ini');
-  // TODO, this should go befor ini file, so it can be overridden in the ini
-  $conf['base_path'] = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
-
+/**
+ * xcms_conf_write()
+ */
+function xcms_conf_write() {
+  global $conf;
   file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
-
-  return $conf;
 }
 
+/**
+ * xcms_page_handler()
+ */
 function xcms_page_handler() {
   $return = NULL;
   $vars = array();
@@ -59,7 +59,7 @@ function xcms_page_handler() {
     $path = $_GET['q'];
   }
 
-  if ($menu_item = xcms_get_item($path)) {
+  if ($menu_item = xcms_path_get($path)) {
 
     /* TODO access broken
       if (function_exists($menu_item['access']) && !$menu_item['access']()) {
@@ -97,9 +97,9 @@ function xcms_page_handler() {
 }
 
 /**
- * xcms_get_item()
+ * xcms_path_get()
  */
-function xcms_get_item($path) {
+function xcms_path_get($path) {
   global $_menu;
 
   // should never be empty in reality
@@ -125,9 +125,9 @@ function xcms_get_item($path) {
 }
 
 /**
- * xcms_get_menu()
+ * xcms_menu_get()
  */
-function xcms_get_menu() {
+function xcms_menu_get() {
   global $_menu;
 
   // TODO menu list cache - if necessary
