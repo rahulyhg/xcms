@@ -33,11 +33,12 @@ function xcms_page_handler() {
   $return = NULL;
   $vars = array();
 
-  if (!empty($_GET['q'])) {
-    $path = $_GET['q'];
+  // front page
+  if (empty($_GET['q'])) {
+    $path = variable_get('site_front', 'welcome');
   }
   else {
-    $path = variable_get('site_front', 'welcome');
+    $path = $_GET['q'];
   }
 
   if ($menu_item = xcms_get_item($path)) {
@@ -48,6 +49,7 @@ function xcms_page_handler() {
       }
       */
 
+    // load file inc
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
