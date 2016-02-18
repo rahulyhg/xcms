@@ -85,19 +85,12 @@ function xcms_get_item($path) {
   global $_menu;
 
   // should never be empty in reality
-  // TODO remove this when system.menu is working
+  /*
   if (empty($_menu)) {
     $_menu = array();
   }
+  */
 
-  // dsm($path);
-
-  if (empty($path)) {
-    // $path = variable_get('site_frontpage', 'node');
-    $path = 'welcome';
-  }
-  //  dsm($path);
-  // dsm($_menu);
   if (isset($_menu[$path])) {
     $_menu = xcms_translate_menu($_menu);
   }
@@ -105,20 +98,22 @@ function xcms_get_item($path) {
   while ($path && !array_key_exists($path, $_menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
+
   if (!array_key_exists($path, $_menu)) {
     return;
   }
 
-  // dsm($_menu[$path]);
   return $_menu[$path];
 }
 
-/*//
-// xcms_get_menu()
+/**
+ * xcms_get_menu()
  */
 function xcms_get_menu() {
   global $_menu;
 
+
+  // TODO menu list cache - if necessary
   $menu_item_list = xcms_modules_invoke('menu');
 
   foreach ($menu_item_list as $path => $menu_item) {
@@ -145,10 +140,10 @@ function xcms_get_menu() {
 }
 
 /**
- * translate_menu()
+ * xcms_translate_menu()
+ * TODO can this go into xcms_get_item()?
  */
 function xcms_translate_menu($menu) {
-  //dsm($menu);
   foreach ($menu as $link => $value) {
     if (strpos($link, '%')) {
       $parts = explode('/', $link);
