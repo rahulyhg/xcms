@@ -5,26 +5,44 @@
  */
 function xcms_init() {
   global $conf, $_menu;
-  $conf = xcms_conf();
+  $conf = xcms_conf_get();
   session_start();
   xcms_modules_load();
   xcms_get_menu();
   xcms_page_handler();
 }
 
-function xcms_conf() {
+function xcms_conf_get() {
   $conf = NULL;
 
-  // TODO Check for missing conf.ini, create sensible defaults.
+  // get site conf file and parse to array
+  $conf = json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
+
+  // TODO also check if these are set and exits (files)
+  // base_path, site_name, current_theme
+
+  // TODO merge ini file here (not blast it)
+  // $conf = parse_ini_file(ROOT_DIR . '/conf.ini');
+  // TODO, this should go befor ini file, so it can be overridden in the ini
+  $conf['base_path'] = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
+
+  // file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
+
+  return $conf;
+}
+
+function xcms_conf_put() {
+  $conf = NULL;
 
   // TODO also check if these are set and exits (files)
   // base_path, site_name, current_theme
 
   // TODO merge ini file here (not blast it)
   $conf = parse_ini_file(ROOT_DIR . '/conf.ini');
-
   // TODO, this should go befor ini file, so it can be overridden in the ini
   $conf['base_path'] = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
+
+  file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
 
   return $conf;
 }
@@ -111,7 +129,6 @@ function xcms_get_item($path) {
  */
 function xcms_get_menu() {
   global $_menu;
-
 
   // TODO menu list cache - if necessary
   $menu_item_list = xcms_modules_invoke('menu');
