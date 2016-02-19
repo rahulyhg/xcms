@@ -22,6 +22,7 @@ function xcms_init() {
   xcms_modules_load();
   xcms_menu_get();
   if ($return = xcms_page_handler()) {
+    // TODO: theme page should be a template function - see d7
     print theme_page($return);
   }
 }
@@ -58,14 +59,14 @@ function xcms_page_handler() {
   $path = empty($_GET['q']) ? variable_get('site_front', 'welcome') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
+
     // inc file arg requires full path, eg: 'modules/system/system.pages.inc'
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
 
-    if (!empty($menu_item['access'])) {
-      // callback function for page
-      // TODO - check if access is a function
+    // check access and page callback
+    if (xcms_check_access($menu_item['access'])) {
       return call_user_func($menu_item['callback']);
     }
     else {
@@ -78,6 +79,16 @@ function xcms_page_handler() {
   header('HTTP/1.1 404 Not Found');
   xcms_set_title('404 Not Found');
   return 'The requested page could not be found.';
+}
+
+/**
+ * xcms_check_access()
+ */
+function xcms_check_access($callback) {
+  if (function_exists($callback)) {
+    return call_user_func($callback);
+  }
+  return $callback;
 }
 
 /**

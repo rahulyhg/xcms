@@ -25,14 +25,13 @@ function test_menu() {
   $items['test_access_bool'] = array(
     'title' => 'Test menu hook',
     'callback' => 'test_page',
-    'access' => FALSE,
+    'access' => TRUE,
   );
 
   $items['test_access_function'] = array(
     'title' => 'Test menu hook',
     'callback' => 'test_page',
-    'access' => 'is_admin_test',
-    'access' => TRUE,
+    'access' => 'test_access_callback',
   );
 
   $items['test_args/%/%'] = array(
@@ -48,6 +47,10 @@ function test_menu() {
   );
 
   return $items;
+}
+
+function test_access_callback() {
+  return FALSE;
 }
 
 /**
