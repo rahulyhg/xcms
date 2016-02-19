@@ -40,6 +40,7 @@ function xcms_conf_read() {
  * xcms_conf_write()
  */
 function xcms_conf_write() {
+  // TODO array merge conf and array as parameter - eg for adding variables, variable_set() and syste_settings_form
   global $conf;
   file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
 }
@@ -93,6 +94,7 @@ function xcms_page_handler() {
     $vars = array('title' => 'Page not found', 'content' => 'The requested page could not be found.');
   }
 
+  // TODO dont theme page always - eg. for errors, jason, or other where no page rendering is needed.
   print theme_page($vars);
 }
 
@@ -102,15 +104,25 @@ function xcms_page_handler() {
 function xcms_path_get($path) {
   global $_menu;
 
-  // should never be empty in reality
-  /*
-  if (empty($_menu)) {
-    $_menu = array();
-  }
-  */
-
   if (isset($_menu[$path])) {
-    $_menu = xcms_translate_menu($_menu);
+    // $_menu = xcms_translate_menu($_menu);
+    $menu = $_menu;
+    foreach ($menu as $link => $value) {
+
+      // path arg translation routine
+      if (strpos($link, '%')) {
+        $parts = explode('/', $link);
+        for ($i = 0; $i < count($parts); $i++) {
+          if ($parts[$i] == '%') {
+            $parts[$i] = arg($i);
+          }
+        }
+        $translated = implode('/', $parts);
+        $menu[$translated] = $menu[$link];
+        unset($menu[$link]);
+      }
+    }
+    $_menu = $menu;
   }
 
   while ($path && !array_key_exists($path, $_menu)) {
@@ -160,6 +172,7 @@ function xcms_menu_get() {
  * xcms_translate_menu()
  * TODO can this go into xcms_get_item()?
  */
+/*
 function xcms_translate_menu($menu) {
   foreach ($menu as $link => $value) {
     if (strpos($link, '%')) {
@@ -176,6 +189,7 @@ function xcms_translate_menu($menu) {
   }
   return $menu;
 }
+*/
 
 /**
  * xcms_modules_load()
@@ -271,18 +285,16 @@ function theme_page(&$vars) {
   $vars['front_page'] = $conf['base_path'];
   $vars['messages'] = xcms_set_message();
 
-  // $primary_links = menu_primary_links();
+  // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
 
+  // TODO $body_classes
   //if ( .. is front) body_classes [] = is_front
   // $body_classes = array();
   //if (is_admin()) {
   //  $body_classes[] = 'is_admin';
   //}
   //$body_classes = implode(' ', $body_classes);
-
-  // TODO $tabs
-  // TODO $body_classes
 
   // TODO hook_page for theme hooks.php
   // so variables can be modified from hook call
