@@ -36,7 +36,6 @@ function xcms_conf_read() {
   else {
     require_once ROOT_DIR . '/core/inc/install.inc';
     $conf = xcms_install($conf_file);
-    xcms_goto('install');
   }
 }
 
@@ -236,9 +235,7 @@ function theme_page(&$vars) {
   }
   $vars['directory'] = $conf['base_path'] . 'themes/' . $conf['current_theme'];
   $vars['head_title'] = $conf['site_name'] . ' | ' . $vars['title'];
-
-  // TODO, fix this front_page needs to be variable
-  $vars['front_page'] = $conf['base_path'];
+  $vars['front_url'] = url('<front>');
   $vars['messages'] = xcms_set_message();
 
   // TODO $tabs
@@ -260,32 +257,39 @@ function theme_page(&$vars) {
 }
 
 /**
- * url()
- */
-function url($path = NULL) {
-  global $conf;
-
-  return $conf['base_path'] . $path;
-
-  /*
-  if (strpos($path, ':') !== FALSE) {
-    return $path;
-  }
-  elseif (empty($path) || $path == '<front>') {
-    return $conf['base_path'];
-  }
-  else {
-    return $path;
-  }
-  */
-}
-
-/**
  * xcms_goto()
  */
 function xcms_goto($url) {
   header('Location: ' . url($url));
   exit();
+}
+
+/**
+ * l()
+ */
+function l($text, $path) {
+  // TODO options attributes
+  return '<a href="' . url($path) . '">' . $text . '</a>';
+}
+
+/**
+ * url()
+ */
+function url($path = NULL) {
+  global $conf;
+
+  if ($path == '<front>') {
+    $path = NULL;
+  }
+
+  if (strpos($path, ':') !== FALSE) {
+    // external url
+    return $path;
+  }
+  else {
+    // internal path
+    return $conf['base_path'] . trim($path, '/');
+  }
 }
 
 /**

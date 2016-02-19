@@ -9,6 +9,11 @@
  */
 function system_menu() {
 
+  $items['install'] = array(
+    'title' => 'install',
+    'callback' => 'system_welcome_page',
+  );
+
   $items['welcome'] = array(
     'title' => 'Welcome',
     'callback' => 'system_welcome_page',
@@ -53,14 +58,16 @@ function system_welcome_page() {
  * test page TODO remove me
  */
 function test_page($args = NULL) {
-  dsm('args:');
-  dsm($args);
-  dsm(arg(1));
-
+  // dsm('args:');
+  // dsm($args);
+  // dsm(arg(1));
+  dsm(url('<front>'));
+  // xcms_goto('welcome');
   return 'hello world';
 }
 
 function is_admin_test() {
+
   return FALSE;
 }
 

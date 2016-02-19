@@ -13,7 +13,7 @@
   <div id="header-wrapper">
     <div id="header" class="container clearfix">
       <div id="logo">
-        <a href="<?php print $front_page; ?>" title="Home" rel="home"><img src="<?php print $directory; ?>/logo.png" alt="Home" /></a>
+        <a href="<?php print $front_url; ?>" title="Home" rel="home"><img src="<?php print $directory; ?>/logo.png" alt="Home" /></a>
       </div>
       <a id="mobile-nav">Menu</a>
     </div>

@@ -8,7 +8,7 @@
  * xcms_install()
  * $options for automated installation
  */
-function xcms_install($conf_file, $options) {
+function xcms_install($conf_file, $options = array()) {
   // merge defaults
   // TODO, could possibly pull these defaults in from conf.json.example
   $options += array(
