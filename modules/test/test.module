@@ -12,12 +12,14 @@ function test_menu() {
   $items['test'] = array(
     'title' => 'Test menu hook',
     'callback' => 'test_page',
+    'access' => TRUE,
   );
 
   $items['test_inc'] = array(
     'title' => 'Test inc file param',
     'callback' => 'test_page',
     'file' => 'modules/test/test.pages.inc',
+    'access' => TRUE,
   );
 
   $items['test_access_bool'] = array(
@@ -30,16 +32,19 @@ function test_menu() {
     'title' => 'Test menu hook',
     'callback' => 'test_page',
     'access' => 'is_admin_test',
+    'access' => TRUE,
   );
 
   $items['test_args/%/%'] = array(
     'title' => 'Test 2 args',
     'callback' => 'test_page',
+    'access' => TRUE,
   );
 
   $items['test_args/%/test'] = array(
     'title' => 'Test 1 arg',
     'callback' => 'test_page',
+    'access' => TRUE,
   );
 
   return $items;

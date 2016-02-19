@@ -21,7 +21,9 @@ function xcms_init() {
   xcms_conf_read();
   xcms_modules_load();
   xcms_menu_get();
-  xcms_page_handler();
+  if ($return = xcms_page_handler()) {
+    print theme_page($return);
+  }
 }
 
 /**
@@ -51,42 +53,31 @@ function xcms_conf_write($conf) {
  */
 function xcms_page_handler() {
   $return = NULL;
-  $vars = array();
 
   // set front page
   $path = empty($_GET['q']) ? variable_get('site_front', 'welcome') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
-
     // inc file arg requires full path, eg: 'modules/system/system.pages.inc'
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
 
-    // callback function for page
-    $return = call_user_func($menu_item['callback']);
-  }
-  else {
-    // no access
-    $return = FALSE;
-  }
-
-  // TODO clean up this
-  if (!empty($return)) {
-    xcms_set_title($menu_item['title']);
-    $vars['content'] = $return;
-  }
-  elseif ($return === FALSE) {
-    header('HTTP/1.1 403 Forbidden');
-    $vars = array('title' => 'Access denied', 'content' => 'You are not allowed to access this page.');
-  }
-  else {
-    header('HTTP/1.1 404 Not Found');
-    $vars = array('title' => 'Page not found', 'content' => 'The requested page could not be found.');
+    if (!empty($menu_item['access'])) {
+      // callback function for page
+      // TODO - check if access is a function
+      return call_user_func($menu_item['callback']);
+    }
+    else {
+      header('HTTP/1.1 403 Forbidden');
+      xcms_set_title('403 Forbidden');
+      return 'You are not allowed to access this page.';
+    }
   }
 
-  // TODO dont theme page always - eg. for errors, json, or other where no page rendering is needed.
-  print theme_page($vars);
+  header('HTTP/1.1 404 Not Found');
+  xcms_set_title('404 Not Found');
+  return 'The requested page could not be found.';
 }
 
 /**
@@ -129,6 +120,7 @@ function xcms_path_get($path) {
     return;
   }
 
+  xcms_set_title($menu[$path]['title']);
   return array_merge($defaults, $menu[$path]);
 }
 
@@ -219,15 +211,17 @@ function xcms_set_message($message = NULL, $type = 'status') {
 /**
  * theme_page()
  */
-function theme_page(&$vars) {
+function theme_page($content) {
   global $conf;
-  if (empty($vars['title'])) {
-    $vars['title'] = strip_tags(xcms_set_title());
-  }
-  $vars['directory'] = $conf['base_path'] . 'themes/' . $conf['current_theme'];
-  $vars['head_title'] = $conf['site_name'] . ' | ' . $vars['title'];
-  $vars['front_url'] = url('<front>');
-  $vars['messages'] = xcms_set_message();
+
+  $title = strip_tags(xcms_set_title());
+  $vars = array(
+    'title' => $title,
+    'directory' => $conf['base_path'] . 'themes/' . $conf['current_theme'],
+    'head_title' => $conf['site_name'] . ' | ' . $title,
+    'front_url' => url('<front>'),
+    'messages' => xcms_set_message(),
+  );
 
   // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
