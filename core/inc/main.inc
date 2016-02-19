@@ -54,12 +54,7 @@ function xcms_page_handler() {
   $vars = array();
 
   // front page
-  if (empty($_GET['q'])) {
-    $path = variable_get('site_front', 'welcome');
-  }
-  else {
-    $path = $_GET['q'];
-  }
+  $path = empty($_GET['q']) ? variable_get('site_front', 'welcome') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
 
@@ -209,15 +204,10 @@ function xcms_set_message($message = NULL, $type = 'status') {
     $_SESSION['messages'][$type][] = $message;
   }
   else {
-    // TODO rewrite / tidy this code if it can be done - see aspirations code?
     $output = '';
     if (!empty($_SESSION['messages'])) {
       foreach ($_SESSION['messages'] as $class => $messages) {
-        $output .= '<div class="messages ' . $class . '">';
-        foreach ($messages as $text) {
-          $output .= $text . '<br />';
-        }
-        $output .= '</div>';
+        $output .= '<div class="messages ' . $class . '">' . implode('<br />', $messages) . '</div>';
       }
       $_SESSION['messages'] = array();
     }
@@ -267,9 +257,9 @@ function xcms_goto($url) {
 /**
  * l()
  */
-function l($text, $path) {
-  // TODO options attributes
-  return '<a href="' . url($path) . '">' . $text . '</a>';
+function l($title, $path, $options = array()) {
+  // TODO options attributes()
+  return '<a href="' . url($path) . '">' . $title . '</a>';
 }
 
 /**
@@ -290,6 +280,17 @@ function url($path = NULL) {
     // internal path
     return $conf['base_path'] . trim($path, '/');
   }
+}
+
+/**
+ * attributes()
+ */
+function attributes($attributes) {
+  $output = ' ';
+  foreach ($attributes as $key => $value) {
+    $output .= $key . '="' . $value . '" ';
+  }
+  return $output;
 }
 
 /**

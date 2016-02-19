@@ -61,7 +61,14 @@ function test_page($args = NULL) {
   // dsm('args:');
   // dsm($args);
   // dsm(arg(1));
-  dsm(url('<front>'));
+  // dsm(url('<front>'));
+  xcms_set_message('foo');
+  xcms_set_message('foo2');
+
+  xcms_set_message('error', 'error');
+  xcms_set_message('status', 'status');
+  xcms_set_message('warning', 'warning');
+  xcms_set_message('foo', 'foo');
   // xcms_goto('welcome');
   return 'hello world';
 }
