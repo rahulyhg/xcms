@@ -17,8 +17,8 @@
  */
 function xcms_init() {
   global $conf, $_menu;
-  $conf = xcms_conf_read();
   session_start();
+  xcms_conf_read();
   xcms_modules_load();
   xcms_menu_get();
   xcms_page_handler();
@@ -28,22 +28,16 @@ function xcms_init() {
  * xcms_conf_get()
  */
 function xcms_conf_read() {
-  // set sane defaults
-  /*
-  $defaults = array(
-    'base_path' => rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/',
-    'site_name' => 'XCMS',
-    'current_theme' => 'default',
-  );
-  */
-
-  // get site conf file and parse to array
-  // $conf = json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
-
-  // merge defaults and return
-  // return array_merge($defaults, $conf);
-
-  return json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
+  global $conf;
+  $conf_file = ROOT_DIR . '/conf.json';
+  if (file_exists($conf_file)) {
+    $conf = json_decode(file_get_contents($conf_file), TRUE);
+  }
+  else {
+    require_once ROOT_DIR . '/core/inc/install.inc';
+    $conf = xcms_install($conf_file);
+    xcms_goto('install');
+  }
 }
 
 /**
@@ -263,6 +257,35 @@ function theme_page(&$vars) {
 
   extract($vars);
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
+}
+
+/**
+ * url()
+ */
+function url($path = NULL) {
+  global $conf;
+
+  return $conf['base_path'] . $path;
+
+  /*
+  if (strpos($path, ':') !== FALSE) {
+    return $path;
+  }
+  elseif (empty($path) || $path == '<front>') {
+    return $conf['base_path'];
+  }
+  else {
+    return $path;
+  }
+  */
+}
+
+/**
+ * xcms_goto()
+ */
+function xcms_goto($url) {
+  header('Location: ' . url($url));
+  exit();
 }
 
 /**
