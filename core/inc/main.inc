@@ -28,20 +28,22 @@ function xcms_init() {
  * xcms_conf_get()
  */
 function xcms_conf_read() {
-  $conf = NULL;
-
   // set sane defaults
+  /*
   $defaults = array(
     'base_path' => rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/',
     'site_name' => 'XCMS',
     'current_theme' => 'default',
   );
+  */
 
   // get site conf file and parse to array
-  $conf = json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
+  // $conf = json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
 
   // merge defaults and return
-  return array_merge($defaults, $conf);
+  // return array_merge($defaults, $conf);
+
+  return json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
 }
 
 /**
