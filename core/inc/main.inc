@@ -74,11 +74,17 @@ function xcms_page_handler() {
     }
     xcms_set_title($menu_item['title']);
 
-    // TODO args broken
-    $menu_item['arguments'] = array();
+    // if ($menu_item['access'])
 
-    //
-    $return = call_user_func_array($menu_item['callback'], $menu_item['arguments']);
+    // TODO args broken
+    $menu_item['args'] = array();
+
+    // TODO page callback args
+    $return = call_user_func_array($menu_item['callback'], $menu_item['args']);
+  }
+  else {
+    // $return = FALSE;
+    $return = 'hi there';
   }
 
   /// good to go
@@ -103,10 +109,24 @@ function xcms_page_handler() {
  */
 function xcms_path_get($path) {
   global $_menu;
+  print ($path);
 
+  /*
   if (isset($_menu[$path])) {
+
+    $defaults = array(
+      'title' => NULL,
+      'weight' => 0,
+      'access' => TRUE,
+      // 'args' => FALSE,
+      // 'type' => MENU_ITEM,
+    );
+
     // $_menu = xcms_translate_menu($_menu);
+
+    // TODO do we have to set this?
     $menu = $_menu;
+
     foreach ($menu as $link => $value) {
 
       // path arg translation routine
@@ -114,17 +134,23 @@ function xcms_path_get($path) {
         $parts = explode('/', $link);
         for ($i = 0; $i < count($parts); $i++) {
           if ($parts[$i] == '%') {
+
             $parts[$i] = arg($i);
           }
         }
         $translated = implode('/', $parts);
         $menu[$translated] = $menu[$link];
+
+        // dsm($menu[$translated]);
         unset($menu[$link]);
       }
     }
+    // TODO do we have to set this?
     $_menu = $menu;
   }
+  */
 
+  // work backwards to search for a valid menu path
   while ($path && !array_key_exists($path, $_menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
@@ -142,54 +168,9 @@ function xcms_path_get($path) {
 function xcms_menu_get() {
   global $_menu;
 
-  // TODO menu list cache - if necessary
-  $menu_item_list = xcms_modules_invoke('menu');
-
-  foreach ($menu_item_list as $path => $menu_item) {
-
-    if (!isset($menu_item['weight'])) {
-      $menu_item['weight'] = 0;
-    }
-
-    if (isset($menu_item['access'])) {
-      // TODO, menu access should be either bool or allow args - rewrite
-      if (function_exists($menu_item['access']) && $menu_item['access']()) {
-        $_menu[$path] = $menu_item;
-      }
-    }
-    else {
-      $_menu[$path] = $menu_item;
-    }
-  }
-
-  // $_menu = order($_menu, 'weight', 'title');
-
-  // dsm($_menu);
-  // return $_menu;
+  // TODO menu list cache to json - requires admin flush
+  $_menu = xcms_modules_invoke('menu');
 }
-
-/**
- * xcms_translate_menu()
- * TODO can this go into xcms_get_item()?
- */
-/*
-function xcms_translate_menu($menu) {
-  foreach ($menu as $link => $value) {
-    if (strpos($link, '%')) {
-      $parts = explode('/', $link);
-      for ($i = 0; $i < count($parts); $i++) {
-        if ($parts[$i] == '%') {
-          $parts[$i] = arg($i);
-        }
-      }
-      $translated = implode('/', $parts);
-      $menu[$translated] = $menu[$link];
-      unset($menu[$link]);
-    }
-  }
-  return $menu;
-}
-*/
 
 /**
  * xcms_modules_load()
@@ -301,6 +282,23 @@ function theme_page(&$vars) {
 
   extract($vars);
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
+}
+
+/**
+ * issetor()
+ */
+function issetor(&$var, $default = NULL) {
+  return isset($var) ? $var : $default;
+}
+
+/**
+ * arg()
+ */
+function arg($index = 0) {
+  $args = explode('/', $_GET['q']);
+  if (array_key_exists($index, $args)) {
+    return $args[$index];
+  }
 }
 
 // TODO rewrite this as a module later

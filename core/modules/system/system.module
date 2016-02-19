@@ -3,15 +3,10 @@
 /**
  * @file
  */
-function test_page() {
-  return 'hello world';
-}
 
-// TODO move to somefile.inc
-function system_welcome_page() {
-  return 'No front page content has been created yet.';
-}
-
+/**
+ * Implements hook_menu()
+ */
 function system_menu() {
 
   $items['welcome'] = array(
@@ -24,6 +19,42 @@ function system_menu() {
     'callback' => 'test_page',
   );
 
+  $items['test_access_bool'] = array(
+    'title' => 'Test menu hook',
+    'callback' => 'test_page',
+    'access' => FALSE,
+  );
+
+  $items['test_access_function'] = array(
+    'title' => 'Test menu hook',
+    'callback' => 'test_page',
+    'access' => 'is_admin_test',
+  );
+
+  $items['test_args/%/test'] = array(
+    'title' => 'Test menu hook',
+    'callback' => 'test_page',
+    'args' => array(1),
+  );
+
+
   return $items;
+}
+
+// TODO move to somefile.pages.inc
+function system_welcome_page() {
+  return 'No front page content has been created yet.';
+}
+
+/**
+ * test page TODO remove me
+ */
+function test_page($args = NULL) {
+  dsm($args);
+  return 'hello world';
+}
+
+function is_admin_test() {
+  return FALSE;
 }
 
