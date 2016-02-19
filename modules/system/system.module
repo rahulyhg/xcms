@@ -13,12 +13,14 @@ function system_menu() {
     'title' => 'Welcome',
     'callback' => 'system_welcome_page',
     'file' => 'modules/system/system.pages.inc',
+    'access' => TRUE,
   );
 
   $items['install'] = array(
     'title' => 'install',
     'callback' => 'system_welcome_page',
     'file' => 'modules/system/system.pages.inc',
+    'access' => TRUE,
   );
 
   return $items;

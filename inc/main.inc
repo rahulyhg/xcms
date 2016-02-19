@@ -84,11 +84,11 @@ function xcms_page_handler() {
 /**
  * xcms_check_access()
  */
-function xcms_check_access($callback) {
-  if (function_exists($callback)) {
-    return call_user_func($callback);
+function xcms_check_access($access) {
+  if (function_exists($access)) {
+    return call_user_func($access);
   }
-  return $callback;
+  return $access;
 }
 
 /**
