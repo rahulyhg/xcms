@@ -5,6 +5,14 @@
  */
 
 /**
+ * Contants
+ * MENU_*
+ *  MENU_CALLBACK: hidden
+ */
+//define('MENU_CALLBACK', 0);
+//define('MENU_NORMAL', 1);
+
+/**
  * xcms_init()
  */
 function xcms_init() {
@@ -22,26 +30,24 @@ function xcms_init() {
 function xcms_conf_read() {
   $conf = NULL;
 
+  // set sane defaults
+  $defaults = array(
+    'base_path' => rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/',
+    'site_name' => 'XCMS',
+    'current_theme' => 'default',
+  );
+
   // get site conf file and parse to array
   $conf = json_decode(file_get_contents(ROOT_DIR . '/conf.json'), TRUE);
 
-  // TODO also check if these are set and exits (files)
-  // base_path, site_name, current_theme
-
-  // TODO merge ini file here (not blast it)
-  // $conf = parse_ini_file(ROOT_DIR . '/conf.ini');
-  // TODO, this should go befor ini file, so it can be overridden in the ini
-  $conf['base_path'] = rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/';
-
-  return $conf;
+  // merge defaults and return
+  return array_merge($defaults, $conf);
 }
 
 /**
  * xcms_conf_write()
  */
-function xcms_conf_write() {
-  // TODO array merge conf and array as parameter - eg for adding variables, variable_set() and syste_settings_form
-  global $conf;
+function xcms_conf_write($conf) {
   file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
 }
 
@@ -62,33 +68,21 @@ function xcms_page_handler() {
 
   if ($menu_item = xcms_path_get($path)) {
 
-    /* TODO access broken
-      if (function_exists($menu_item['access']) && !$menu_item['access']()) {
-        $return = FALSE;
-      }
-      */
-
-    // load file inc
+    // load inc file
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
-    xcms_set_title($menu_item['title']);
 
-    // if ($menu_item['access'])
-
-    // TODO args broken
-    $menu_item['args'] = array();
-
-    // TODO page callback args
-    $return = call_user_func_array($menu_item['callback'], $menu_item['args']);
+    $return = call_user_func($menu_item['callback']);
   }
   else {
-    // $return = FALSE;
-    $return = 'hi there';
+    // no access
+    $return = FALSE;
   }
 
-  /// good to go
+  // TODO clean up this
   if (!empty($return)) {
+    xcms_set_title($menu_item['title']);
     $vars['content'] = $return;
   }
   elseif ($return === FALSE) {
@@ -100,7 +94,7 @@ function xcms_page_handler() {
     $vars = array('title' => 'Page not found', 'content' => 'The requested page could not be found.');
   }
 
-  // TODO dont theme page always - eg. for errors, jason, or other where no page rendering is needed.
+  // TODO dont theme page always - eg. for errors, json, or other where no page rendering is needed.
   print theme_page($vars);
 }
 
@@ -109,57 +103,42 @@ function xcms_page_handler() {
  */
 function xcms_path_get($path) {
   global $_menu;
-  print ($path);
+  $menu = $_menu;
 
-  /*
-  if (isset($_menu[$path])) {
+  $defaults = array(
+    'title' => NULL,
+    'weight' => 0,
+    'access' => TRUE,
+    'args' => array(),
+    // 'type' => MENU_ITEM,
+  );
 
-    $defaults = array(
-      'title' => NULL,
-      'weight' => 0,
-      'access' => TRUE,
-      // 'args' => FALSE,
-      // 'type' => MENU_ITEM,
-    );
-
-    // $_menu = xcms_translate_menu($_menu);
-
-    // TODO do we have to set this?
-    $menu = $_menu;
-
-    foreach ($menu as $link => $value) {
-
-      // path arg translation routine
-      if (strpos($link, '%')) {
-        $parts = explode('/', $link);
-        for ($i = 0; $i < count($parts); $i++) {
-          if ($parts[$i] == '%') {
-
-            $parts[$i] = arg($i);
-          }
+  // translate placeholder menu % as args (current page)
+  foreach ($menu as $link => $value) {
+    if (strpos($link, '%')) {
+      $parts = explode('/', $link);
+      for ($i = 0; $i < count($parts); $i++) {
+        if ($parts[$i] == '%') {
+          $parts[$i] = arg($i);
         }
-        $translated = implode('/', $parts);
-        $menu[$translated] = $menu[$link];
-
-        // dsm($menu[$translated]);
-        unset($menu[$link]);
       }
+      $translated = implode('/', $parts);
+      $menu[$translated] = $menu[$link];
+      unset($menu[$link]);
     }
-    // TODO do we have to set this?
-    $_menu = $menu;
   }
-  */
 
   // work backwards to search for a valid menu path
-  while ($path && !array_key_exists($path, $_menu)) {
+  while ($path && !array_key_exists($path, $menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
 
-  if (!array_key_exists($path, $_menu)) {
+  // no suitable path found return NULL
+  if (!array_key_exists($path, $menu)) {
     return;
   }
 
-  return $_menu[$path];
+  return array_merge($defaults, $menu[$path]);
 }
 
 /**

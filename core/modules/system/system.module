@@ -31,12 +31,15 @@ function system_menu() {
     'access' => 'is_admin_test',
   );
 
-  $items['test_args/%/test'] = array(
-    'title' => 'Test menu hook',
+  $items['test_args/%/%'] = array(
+    'title' => 'Test 2 args',
     'callback' => 'test_page',
-    'args' => array(1),
   );
 
+  $items['test_args/%/test'] = array(
+    'title' => 'Test 1 arg',
+    'callback' => 'test_page',
+  );
 
   return $items;
 }
@@ -50,7 +53,10 @@ function system_welcome_page() {
  * test page TODO remove me
  */
 function test_page($args = NULL) {
+  dsm('args:');
   dsm($args);
+  dsm(arg(1));
+
   return 'hello world';
 }
 
