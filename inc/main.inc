@@ -60,7 +60,7 @@ function xcms_page_handler() {
 
   if ($menu_item = xcms_path_get($path)) {
 
-    // inc file arg requires full path, eg: 'modules/system/system.pages.inc'
+    // inc file arg requires full path
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
