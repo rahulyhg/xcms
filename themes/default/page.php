@@ -29,10 +29,6 @@
     <?php print $messages; ?>
     <?php if ($title): ?><h1><?php print $title; ?></h1><?php endif; ?>
     <?php print $content; ?>
-
-<?php 
-  // print l('linky', 'https://www.xweb.com.au/');
-?>
     </div>
   </div>
 

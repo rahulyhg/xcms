@@ -7,21 +7,17 @@
 /**
  * Implements hook_menu()
  */
-function system_menu() {
-
-  $items['install'] = array(
-    'title' => 'install',
-    'callback' => 'system_welcome_page',
-  );
-
-  $items['welcome'] = array(
-    'title' => 'Welcome',
-    'callback' => 'system_welcome_page',
-  );
+function test_menu() {
 
   $items['test'] = array(
     'title' => 'Test menu hook',
     'callback' => 'test_page',
+  );
+
+  $items['test_inc'] = array(
+    'title' => 'Test inc file param',
+    'callback' => 'test_page',
+    'file' => 'modules/test/test.pages.inc',
   );
 
   $items['test_access_bool'] = array(
@@ -49,11 +45,6 @@ function system_menu() {
   return $items;
 }
 
-// TODO move to somefile.pages.inc
-function system_welcome_page() {
-  return 'No front page content has been created yet.';
-}
-
 /**
  * test page TODO remove me
  */
@@ -70,11 +61,19 @@ function test_page($args = NULL) {
   xcms_set_message('warning', 'warning');
   xcms_set_message('foo', 'foo');
   // xcms_goto('welcome');
-  return 'hello world';
+  return lipsum(10);
 }
 
 function is_admin_test() {
 
   return FALSE;
+}
+
+function lipsum($count = 1) {
+  $output = '';
+  for ($i = 1; $i <= $count; $i++) {
+    $output .= 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>';
+  }
+  return $output;
 }
 

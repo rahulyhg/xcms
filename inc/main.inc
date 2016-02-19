@@ -34,7 +34,7 @@ function xcms_conf_read() {
     $conf = json_decode(file_get_contents($conf_file), TRUE);
   }
   else {
-    require_once ROOT_DIR . '/core/inc/install.inc';
+    require_once ROOT_DIR . '/inc/install.inc';
     $conf = xcms_install($conf_file);
   }
 }
@@ -53,16 +53,17 @@ function xcms_page_handler() {
   $return = NULL;
   $vars = array();
 
-  // front page
+  // set front page
   $path = empty($_GET['q']) ? variable_get('site_front', 'welcome') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
 
-    // load inc file
+    // inc file arg requires full path, eg: 'modules/system/system.pages.inc'
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
 
+    // callback function for page
     $return = call_user_func($menu_item['callback']);
   }
   else {
@@ -96,10 +97,10 @@ function xcms_path_get($path) {
   $menu = $_menu;
 
   $defaults = array(
-    'title' => NULL,
+    'title' => '',
     'weight' => 0,
-    'access' => TRUE,
-    'args' => array(),
+    'access' => FALSE,
+    'file' => '',
     // 'type' => MENU_ITEM,
   );
 
@@ -137,22 +138,29 @@ function xcms_path_get($path) {
 function xcms_menu_get() {
   global $_menu;
 
-  // TODO menu list cache to json - requires admin flush
+  // TODO menu list cache to json - requires admin flush (FAPI)
   $_menu = xcms_modules_invoke('menu');
+}
+
+/**
+ * xcms_modules_list()
+ */
+function xcms_modules_list() {
+
+  $modules = array(
+    'system',
+    'test',
+  );
+
+  return $modules;
 }
 
 /**
  * xcms_modules_load()
  */
 function xcms_modules_load() {
-  // global $conf;
-  // $modules = db_query('select', 'module', array('field' => 'status', 'value' => 1));
-  $modules = array(
-    'system',
-  );
-
-  foreach ($modules as $module) {
-    include_once (ROOT_DIR . '/core/modules/' . $module . '/' . $module . '.module');
+  foreach (xcms_modules_list() as $module) {
+    include_once (ROOT_DIR . '/modules/' . $module . '/' . $module . '.module');
   }
 }
 
@@ -160,15 +168,8 @@ function xcms_modules_load() {
  * xcms_modules_invoke()
  */
 function xcms_modules_invoke($hook) {
-  // $modules = db_query('select', 'module', array('field' => 'status', 'value' => 1));
   $return = array();
-
-  // TODO, load modules from ini
-  $modules = array(
-    'system',
-  );
-
-  foreach ($modules as $module) {
+  foreach (xcms_modules_list() as $module) {
     $function = $module . '_' . $hook;
     if (function_exists($function)) {
       $return = array_merge($return, $function());

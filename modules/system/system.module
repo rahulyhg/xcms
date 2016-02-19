@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_menu()
+ */
+function system_menu() {
+
+  $items['welcome'] = array(
+    'title' => 'Welcome',
+    'callback' => 'system_welcome_page',
+    'file' => 'modules/system/system.pages.inc',
+  );
+
+  $items['install'] = array(
+    'title' => 'install',
+    'callback' => 'system_welcome_page',
+    'file' => 'modules/system/system.pages.inc',
+  );
+
+  return $items;
+}
+
