@@ -15,6 +15,13 @@ function test_menu() {
     'access' => TRUE,
   );
 
+  $items['test_page_list'] = array(
+    'title' => 'Test theme_list()',
+    'callback' => 'test_page_list',
+    'file' => 'modules/test/test.pages.inc',
+    'access' => TRUE,
+  );
+
   $items['test_inc'] = array(
     'title' => 'Test inc file param',
     'callback' => 'test_page',
@@ -80,7 +87,7 @@ function is_admin_test() {
 function lipsum($count = 1) {
   $output = '';
   for ($i = 1; $i <= $count; $i++) {
-    $output .= 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>';
+    $output .= '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>';
   }
   return $output;
 }

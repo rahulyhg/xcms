@@ -9,7 +9,7 @@
  */
 function system_menu() {
 
-  $items['welcome'] = array(
+  $items['nocontent'] = array(
     'title' => 'Welcome',
     'callback' => 'system_welcome_page',
     'file' => 'modules/system/system.pages.inc',

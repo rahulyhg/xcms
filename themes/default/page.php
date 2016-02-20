@@ -1,3 +1,39 @@
+<?php
+// TODO move this into template.php
+
+/*
+  $links = array(
+    'home' => array(
+      'path' => '<front>',
+      'title' => 'home',
+    ),
+    'test' => array(
+      'path' => 'test',
+      'title' => 'Test',
+    ),
+    'test-2' => array(
+      'path' => 'test2',
+      'title' => 'Test 2',
+    ),
+  );
+
+  $nav = theme_links($links);
+  */
+
+$list_items = array(
+  'home' => l('Home', '<front>'),
+  'test' => l('Test', 'test'),
+  'test2' => l('Test 2', 'test2'),
+  'array-test' => array(
+    '1' => l('Home', '<front>'),
+    '2' => l('Test', 'test'),
+    '3' => l('Test 2', 'test2'),
+  ),
+);
+
+$nav = theme_list($list_items);
+?>
+
 <html>
   <head>
     <title><?php print $head_title; ?></title>
@@ -21,6 +57,7 @@
 
   <div id="nav-wrapper">
     <div id="nav" class="container clearfix">
+      <?php print $nav; ?>
     </div>
   </div>
 
@@ -46,3 +83,4 @@
 
   </body>
 </html>
+

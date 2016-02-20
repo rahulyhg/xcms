@@ -55,8 +55,8 @@ function xcms_conf_write($conf) {
 function xcms_page_handler() {
   $return = NULL;
 
-  // set front page
-  $path = empty($_GET['q']) ? variable_get('site_front', 'welcome') : $_GET['q'];
+  // set front page / empty ?q=
+  $path = empty($_GET['q']) ? variable_get('site_front', 'nocontent') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
 
@@ -98,6 +98,7 @@ function xcms_path_get($path) {
   global $_menu;
   $menu = $_menu;
 
+  // TODO Tabs functions
   $defaults = array(
     'title' => '',
     'weight' => 0,
@@ -140,8 +141,6 @@ function xcms_path_get($path) {
  */
 function xcms_menu_get() {
   global $_menu;
-
-  // TODO menu list cache to json - requires admin flush (FAPI)
   $_menu = xcms_modules_invoke('menu');
 }
 
@@ -149,12 +148,10 @@ function xcms_menu_get() {
  * xcms_modules_list()
  */
 function xcms_modules_list() {
-
   $modules = array(
     'system',
     'test',
   );
-
   return $modules;
 }
 
@@ -251,6 +248,91 @@ function theme_page($content) {
   extract($vars);
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
 }
+
+/**
+ * theme_list()
+ */
+function theme_list($list_items, $options = array()) {
+  $options += array(
+    'type' => 'ul',
+    'attributes' => array(
+      'class' => 'list',
+    ),
+  );
+  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
+  foreach ($list_items as $key => $item) {
+    if (!is_array($item)) {
+      $data = $item;
+    }
+    else {
+      $data .= theme_list($item);
+    }
+    $output .= '<li>' . $data . '</li>';
+  }
+  $output .= '</' . $options['type'] . '>';
+  return $output;
+}
+
+/**
+ * theme_list_test()
+ */
+function theme_list_test($list_items, $options = array()) {
+  $options += array(
+    'type' => 'ul',
+    'attributes' => array(
+      'class' => 'list',
+    ),
+  );
+
+  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
+  $children = '';
+  foreach ($list_items as $key => $item) {
+    if (is_array($item)) {
+      $children .= theme_list_test($item);
+    }
+    else {
+      $output .= '<li>' . $item . $children . '</li>';
+    }
+  }
+  $output .= '</' . $options['type'] . '>';
+  return $output;
+}
+/*
+/// ALMOST WORKING
+function theme_list_test($list_items, $options = array()) {
+  $options += array(
+    'type' => 'ul',
+    'attributes' => array(
+      'class' => 'list',
+    ),
+  );
+
+  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
+  foreach ($list_items as $key => $item) {
+    // $output .= '<li>' . (is_array($item) ? theme_list_test($item) : $item) . '</li>';
+    if (is_array($item)) {
+      $output .= theme_list_test($item);
+    }
+    else {
+      $output .= '<li>' . $item . '</li>';
+    }
+  }
+  $output .= '</' . $options['type'] . '>';
+  return $output;
+}
+*/
+
+/**
+ * theme_list_item()
+ */
+/*
+function theme_list_item($list_item, $options = array()) {
+  $options += array(
+    'attributes' => array(),
+  );
+  return '<li' . attributes($options['attributes']) . '>' . $list_item . '</li>';
+}
+*/
 
 /**
  * xcms_goto()
