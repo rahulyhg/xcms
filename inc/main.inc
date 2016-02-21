@@ -255,84 +255,22 @@ function theme_page($content) {
 function theme_list($list_items, $options = array()) {
   $options += array(
     'type' => 'ul',
-    'attributes' => array(
-      'class' => 'list',
-    ),
-  );
-  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
-  foreach ($list_items as $key => $item) {
-    if (!is_array($item)) {
-      $data = $item;
-    }
-    else {
-      $data .= theme_list($item);
-    }
-    $output .= '<li>' . $data . '</li>';
-  }
-  $output .= '</' . $options['type'] . '>';
-  return $output;
-}
-
-/**
- * theme_list_test()
- */
-function theme_list_test($list_items, $options = array()) {
-  $options += array(
-    'type' => 'ul',
-    'attributes' => array(
-      'class' => 'list',
-    ),
-  );
-
-  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
-  $children = '';
-  foreach ($list_items as $key => $item) {
-    if (is_array($item)) {
-      $children .= theme_list_test($item);
-    }
-    else {
-      $output .= '<li>' . $item . $children . '</li>';
-    }
-  }
-  $output .= '</' . $options['type'] . '>';
-  return $output;
-}
-/*
-/// ALMOST WORKING
-function theme_list_test($list_items, $options = array()) {
-  $options += array(
-    'type' => 'ul',
-    'attributes' => array(
-      'class' => 'list',
-    ),
-  );
-
-  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
-  foreach ($list_items as $key => $item) {
-    // $output .= '<li>' . (is_array($item) ? theme_list_test($item) : $item) . '</li>';
-    if (is_array($item)) {
-      $output .= theme_list_test($item);
-    }
-    else {
-      $output .= '<li>' . $item . '</li>';
-    }
-  }
-  $output .= '</' . $options['type'] . '>';
-  return $output;
-}
-*/
-
-/**
- * theme_list_item()
- */
-/*
-function theme_list_item($list_item, $options = array()) {
-  $options += array(
     'attributes' => array(),
   );
-  return '<li' . attributes($options['attributes']) . '>' . $list_item . '</li>';
+  $close_li = FALSE;
+  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
+  foreach ($list_items as $key => $item) {
+    if (is_array($item)) {
+      $output .= theme_list($item);
+    }
+    else {
+      // TODO THIS IS BROKEN!!
+      $output .= '</li><li>' . $item;
+    }
+  }
+  $output .= '</' . $options['type'] . '>';
+  return $output;
 }
-*/
 
 /**
  * xcms_goto()

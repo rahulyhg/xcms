@@ -22,10 +22,14 @@
 
 $list_items = array(
   'home' => l('Home', '<front>'),
-  'test' => l('Test', 'test'),
+  'array-test' => array(
+    '1' => l('22', '<front>'),
+    '2' => l('Test', 'test'),
+    '3' => l('Test 2', 'test2'),
+  ), 'test' => l('Test', 'test'),
   'test2' => l('Test 2', 'test2'),
   'array-test' => array(
-    '1' => l('Home', '<front>'),
+    '1' => l('44', '<front>'),
     '2' => l('Test', 'test'),
     '3' => l('Test 2', 'test2'),
   ),

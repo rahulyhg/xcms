@@ -35,14 +35,18 @@ function test_page_list() {
   */
 
   $list_items = array(
-    '1' => 'Parent 1',
+    '1' => 'Parent',
     'sub1' => array(
       '1' => 'child 1',
       '2' => 'child 2',
+      'sub1' => array(
+        '1' => lipsum(1),
+        '2' => 'child 2',
+      ),
     ),
   );
 
-  return theme_list_test($list_items);
+  return theme_list($list_items, array('attributes' => array('class' => 'nav-menu')));
 
   /*
   $list_items = array();
