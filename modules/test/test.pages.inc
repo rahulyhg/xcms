@@ -46,7 +46,7 @@ function test_page_list() {
     ),
   );
 
-  return theme_list($list_items, array('attributes' => array('class' => 'nav-menu')));
+  return ('<ul>' . theme_list($list_items) . '</ul>');
 
   /*
   $list_items = array();

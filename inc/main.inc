@@ -249,9 +249,56 @@ function theme_page($content) {
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
 }
 
+// usage: return ('<ul>' . theme_list($list_items) . '</ul>');
+
 /**
  * theme_list()
  */
+function theme_list($list_items, $options = array()) {
+  $options += array(
+    'type' => 'ul',
+    'attributes' => array(),
+  );
+
+  $output = '';
+  foreach ($list_items as $item) {
+    if (next($list_items)) {
+      $next_item = current($list_items);
+    }
+    if (is_array($item)) {
+      $output .= '<ul>' . theme_list($item) . '</ul></li>';
+    }
+    elseif (is_array($next_item)) {
+      $output .= '<li>' . $item;
+    }
+    else {
+      $output .= '<li>' . $item . '</li>';
+    }
+  }
+  return $output;
+}
+
+/*
+function theme_list_test($list_items, $options = array()) {
+
+  $options += array(
+    'type' => 'ul',
+    'attributes' => array(),
+  );
+  $close_li = FALSE;
+  $output = '<' . $options['type'] . attributes($options['attributes']) . '>';
+  foreach ($list_items as $key => $item) {
+    if (is_array($item)) {
+      $output .= theme_list($item);
+    }
+    else {
+      $output .= '<li>' . $item . '</li>';
+    }
+  }
+  $output .= '</' . $options['type'] . '>';
+  return $output;
+}
+
 function theme_list($list_items, $options = array()) {
   $options += array(
     'type' => 'ul',
@@ -264,13 +311,15 @@ function theme_list($list_items, $options = array()) {
       $output .= theme_list($item);
     }
     else {
-      // TODO THIS IS BROKEN!!
-      $output .= '</li><li>' . $item;
+      // TODO THIS works but IS BROKEN HTML!!
+      $output .= '</li>';
+      $output .= '<li>' . $item;
     }
   }
   $output .= '</' . $options['type'] . '>';
   return $output;
 }
+*/
 
 /**
  * xcms_goto()
