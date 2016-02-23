@@ -35,7 +35,7 @@ $list_items = array(
   ),
 );
 
-$nav = theme_list($list_items);
+$nav = theme_list($list_items, array('attributes' => array('class' => 'nav-menu testing')));
 ?>
 
 <html>
@@ -46,7 +46,6 @@ $nav = theme_list($list_items);
     <link rel="shortcut icon" href="<?php print $directory; ?>/favicon.ico" type="image/vnd.microsoft.icon" />
     <link rel="stylesheet" type="text/css" href="<?php print $directory; ?>/base.css" />
     <link rel="stylesheet" type="text/css" href="<?php print $directory; ?>/style.css" />
-    <meta name="Generator" content="XCMS (https://www.xweb.com.au)" />
   </head>
   <body>
 

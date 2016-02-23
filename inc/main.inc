@@ -258,15 +258,17 @@ function theme_list($list_items, $options = array()) {
   $options += array(
     'type' => 'ul',
     'attributes' => array(),
+    'root' => TRUE,
   );
 
-  $output = '';
+  $output = $options['root'] ? '<' . $options['type'] . attributes($options['attributes']) . '>' : NULL;
+
   foreach ($list_items as $item) {
     if (next($list_items)) {
       $next_item = current($list_items);
     }
     if (is_array($item)) {
-      $output .= '<ul>' . theme_list($item) . '</ul></li>';
+      $output .= '<ul>' . theme_list($item, array('root' => FALSE)) . '</ul></li>';
     }
     elseif (is_array($next_item)) {
       $output .= '<li>' . $item;
@@ -275,6 +277,9 @@ function theme_list($list_items, $options = array()) {
       $output .= '<li>' . $item . '</li>';
     }
   }
+
+  $output .= $options['root'] ? '</' . $options['type'] . '>' : NULL;
+
   return $output;
 }
 
@@ -361,9 +366,9 @@ function url($path = NULL) {
  * attributes()
  */
 function attributes($attributes) {
-  $output = ' ';
+  $output = '';
   foreach ($attributes as $key => $value) {
-    $output .= $key . '="' . $value . '" ';
+    $output .= ' ' . $key . '="' . $value . '"';
   }
   return $output;
 }
