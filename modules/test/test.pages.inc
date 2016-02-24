@@ -3,12 +3,77 @@
 /**
  * @file
  */
+function user_login_form() {
+  // global $user;
+
+  $form['name'] = array(
+    'type' => 'text',
+    'title' => 'Username',
+    'value' => '',
+    'description' => 'Enter your ' . variable_get('site_name', 'XCMS') . ' username.',
+    'required' => TRUE,
+  );
+
+  $form['pass'] = array(
+    'type' => 'password',
+    'title' => 'Password',
+    'description' => 'Enter the password that accompanies your username.',
+    'required' => TRUE,
+  );
+
+  $form['textarea_of_doom'] = array(
+    'type' => 'textarea',
+    'title' => 'textarea',
+    'attributes' => array(
+      'rows' => 10,
+      'class' => array('bazinga'),
+    ),
+  );
+
+  $form['select'] = array(
+    'type' => 'select',
+    'title' => 'select',
+    'options' => array(
+      'test' => 'test',
+      'test2' => 'test2',
+    ),
+    'attributes' => array(
+      'class' => array('bazinga'),
+    ),
+  );
+
+  $form['submit'] = array(
+    'type' => 'submit',
+    'value' => 'Login',
+  );
+
+  return $form;
+}
 
 /**
  * test_page_inc()
  */
 function test_page_inc() {
-  return lipsum(10);
+  // return lipsum(10);
+$output = ''; 
+  /*
+  $element = array(
+    'type' => 'text',
+    'title' => 'Test Input',
+    'markup' => 'asda',
+  );
+
+  $output = theme_form_element($element);
+  */
+
+  $output .= xcms_get_form('user_login_form');
+
+
+
+
+  $output .= theme_table($header = array('this', 'that', 'the other'), $rows = array(array('this', 'that', 'the other')));
+
+  return $output;
 }
 
 /**

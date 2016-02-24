@@ -37,8 +37,6 @@ function theme_page($content) {
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
 }
 
-// usage: return ('<ul>' . theme_list($list_items) . '</ul>');
-
 /**
  * theme_list()
  */
@@ -68,6 +66,117 @@ function theme_list($list_items, $options = array()) {
 
   $output .= $options['root'] ? '</' . $options['type'] . '>' : NULL;
 
+  return $output;
+}
+
+/**
+ * theme_form_element()
+ */
+function theme_form_element($name, $element) {
+  $element += array(
+    'type' => 'markup',
+    'title' => '',
+    'description' => '',
+    'required' => FALSE,
+    'attributes' => array(),
+    'markup' => '',
+    'options' => array(),
+  );
+
+  $output = '';
+
+  // element wrapper
+  $attributes['id'] = 'edit-' . strip_class($name);
+  $attributes['class'][] = 'form-item';
+  $attributes['class'][] = 'form-type-' . $element['type'];
+  if ($element['required']) {
+    $attributes['class'][] = 'form-required';
+  }
+
+  $output .= '<div' . attributes($attributes) . '>';
+
+  // set type and class on form item
+  $element['attributes']['type'] = $element['type'];
+  $element['attributes']['class'][] = 'form-' . $element['type'];
+
+  if ($element['title']) {
+    $output .= '<label>' . $element['title'] . '</label>';
+  }
+
+  // check if there is a special function for the element
+  $function = 'theme_form_' . $element['type'];
+  if (function_exists($function)) {
+    $output .= call_user_func($function, $element);
+  }
+  else {
+    // default form element function
+    $output .= theme_form_input($element);
+  }
+
+  if ($element['description']) {
+    $output .= '<div class="description">' . check_plain($element['description']) . '</div>';
+  }
+
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * theme_form_item()
+ */
+function theme_form_markup($element) {
+  return '<div' . attributes($element['attributes']) . '>' . $element['markup'] . '</div>';
+}
+
+/**
+ * theme_form_input()
+ */
+function theme_form_input($element) {
+  return '<input' . attributes($element['attributes']) . ' />';
+}
+
+/**
+ * theme_form_textarea()
+ */
+function theme_form_textarea($element) {
+  unset($element['attributes']['type']);
+  return '<textarea' . attributes($element['attributes']) . ' ></textarea>';
+}
+
+/**
+ * theme_form_select()
+ */
+function theme_form_select($element) {
+  unset($element['attributes']['type']);
+
+  $options = '';
+  foreach ($element['options'] as $key => $value) {
+    $options .= '<option value="' . $key . '">' . $value . '</option>';
+  }
+
+  return '<select' . attributes($element['attributes']) . ' >' . $options . '</select>';
+}
+
+/**
+ * theme_table()
+ */
+function theme_table($header, $rows, $attributes) {
+  $output = '<table' . attributes($attributes) . '>';
+  $output .= '<tr>';
+  foreach ($header as $th) {
+    $output .= '<th>' . $th . '</th>';
+  }
+  $output .= '</tr>';
+
+  foreach ($rows as $row) {
+    $output .= '<tr>';
+    foreach ($row as $td) {
+      $output .= '<td>' . $td . '</td>';
+    }
+    $output .= '</tr>';
+  }
+
+  $output .= '</table>';
   return $output;
 }
 

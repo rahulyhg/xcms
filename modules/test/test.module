@@ -24,7 +24,7 @@ function test_menu() {
 
   $items['test_inc'] = array(
     'title' => 'Test inc file param',
-    'callback' => 'test_page',
+    'callback' => 'test_page_inc',
     'file' => 'modules/test/test.pages.inc',
     'access' => TRUE,
   );

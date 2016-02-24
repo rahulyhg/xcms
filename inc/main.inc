@@ -218,6 +218,40 @@ function xcms_set_message($message = NULL, $type = 'status') {
   }
 }
 
+function xcms_get_form($form_id) {
+  $form = $form_id();
+  /*
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    unset($_POST['submit']);
+    foreach ($form as $name => $item) {
+      if ($item['required'] && empty($_POST[$name])) {
+        $required = TRUE;
+         ud_set_message($item['title'] . ' field is required.');
+      }
+    }
+    if (function_exists($form_id . '_submit')) {
+      $submit = $form_id . '_submit';
+      if (function_exists($form_id . '_validate')) {
+        $validate = $form_id . '_validate';
+        if ($validate($form, $_POST)) {
+          $submit($form, $_POST);
+        }
+      }
+      elseif (!$required) {
+        $submit($form, $_POST);
+      }
+    }
+  }
+  */
+  if (is_array($form)) {
+    $output = '<form method="post">';
+    foreach ($form as $name => $element) {
+      $output .= theme_form_element($name, $element);
+    }
+    $output .= '</form>';
+  }
+  return $output;
+}
 
 /**
  * xcms_goto()
@@ -259,11 +293,11 @@ function url($path = NULL) {
  * attributes()
  */
 function attributes($attributes) {
-  $output = '';
-  foreach ($attributes as $key => $value) {
-    $output .= ' ' . $key . '="' . $value . '"';
+  foreach ($attributes as $attribute => & $data) {
+    $data = implode(' ', (array) $data);
+    $data = $attribute . '="' . check_plain($data) . '"';
   }
-  return $output;
+  return $attributes ? ' ' . implode(' ', $attributes) : '';
 }
 
 /**
