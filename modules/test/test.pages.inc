@@ -55,7 +55,7 @@ function user_login_form() {
  */
 function test_page_inc() {
   // return lipsum(10);
-$output = ''; 
+  $output = '';
   /*
   $element = array(
     'type' => 'text',
@@ -67,9 +67,6 @@ $output = '';
   */
 
   $output .= xcms_get_form('user_login_form');
-
-
-
 
   $output .= theme_table($header = array('this', 'that', 'the other'), $rows = array(array('this', 'that', 'the other')));
 
@@ -111,7 +108,7 @@ function test_page_list() {
     ),
   );
 
-  return ('<ul>' . theme_list($list_items) . '</ul>');
+  return ('<ul>' . theme_list(array('items' => $list_items)) . '</ul>');
 
   /*
   $list_items = array();

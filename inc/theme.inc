@@ -7,11 +7,11 @@
 /**
  * theme_page()
  */
-function theme_page($content) {
+function theme_page($vars) {
   global $conf;
 
   $title = strip_tags(xcms_set_title());
-  $vars = array(
+  $vars += array(
     'title' => $title,
     'directory' => $conf['base_path'] . 'themes/' . $conf['current_theme'],
     'head_title' => $conf['site_name'] . ' | ' . $title,
@@ -40,21 +40,24 @@ function theme_page($content) {
 /**
  * theme_list()
  */
-function theme_list($list_items, $options = array()) {
-  $options += array(
+function theme_list($vars) {
+
+  $vars += array(
+    'items' => array(),
+    'options' => array(),
     'type' => 'ul',
     'attributes' => array(),
     'root' => TRUE,
   );
 
-  $output = $options['root'] ? '<' . $options['type'] . attributes($options['attributes']) . '>' : NULL;
+  $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
 
-  foreach ($list_items as $item) {
-    if (next($list_items)) {
-      $next_item = current($list_items);
+  foreach ($vars['items'] as $item) {
+    if (next($vars['items'])) {
+      $next_item = current($vars['items']);
     }
     if (is_array($item)) {
-      $output .= '<ul>' . theme_list($item, array('root' => FALSE)) . '</ul></li>';
+      $output .= '<ul>' . theme_list(array('items' => $item, 'root' => FALSE)) . '</ul></li>';
     }
     elseif (is_array($next_item)) {
       $output .= '<li>' . $item;
@@ -64,7 +67,7 @@ function theme_list($list_items, $options = array()) {
     }
   }
 
-  $output .= $options['root'] ? '</' . $options['type'] . '>' : NULL;
+  $output .= $vars['root'] ? '</' . $vars['type'] . '>' : NULL;
 
   return $output;
 }
@@ -72,8 +75,9 @@ function theme_list($list_items, $options = array()) {
 /**
  * theme_form_element()
  */
-function theme_form_element($name, $element) {
-  $element += array(
+function theme_form_element($vars) {
+  $vars += array(
+    'name' => '',
     'type' => 'markup',
     'title' => '',
     'description' => '',
@@ -86,35 +90,35 @@ function theme_form_element($name, $element) {
   $output = '';
 
   // element wrapper
-  $attributes['id'] = 'edit-' . strip_class($name);
+  $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
-  $attributes['class'][] = 'form-type-' . $element['type'];
-  if ($element['required']) {
+  $attributes['class'][] = 'form-type-' . $vars['type'];
+  if ($vars['required']) {
     $attributes['class'][] = 'form-required';
   }
 
   $output .= '<div' . attributes($attributes) . '>';
 
   // set type and class on form item
-  $element['attributes']['type'] = $element['type'];
-  $element['attributes']['class'][] = 'form-' . $element['type'];
+  $vars['attributes']['type'] = $vars['type'];
+  $vars['attributes']['class'][] = 'form-' . $vars['type'];
 
-  if ($element['title']) {
-    $output .= '<label>' . $element['title'] . '</label>';
+  if ($vars['title']) {
+    $output .= '<label>' . $vars['title'] . '</label>';
   }
 
   // check if there is a special function for the element
-  $function = 'theme_form_' . $element['type'];
+  $function = 'theme_form_' . $vars['type'];
   if (function_exists($function)) {
-    $output .= call_user_func($function, $element);
+    $output .= call_user_func($function, $vars);
   }
   else {
     // default form element function
-    $output .= theme_form_input($element);
+    $output .= theme_form_input($vars);
   }
 
-  if ($element['description']) {
-    $output .= '<div class="description">' . check_plain($element['description']) . '</div>';
+  if ($vars['description']) {
+    $output .= '<div class="description">' . check_plain($vars['description']) . '</div>';
   }
 
   $output .= '</div>';

@@ -35,7 +35,8 @@ $list_items = array(
   ),
 );
 
-$nav = theme_list($list_items, array('attributes' => array('class' => 'nav-menu testing')));
+// $nav = theme_list($list_items, array('attributes' => array('class' => 'nav-menu testing')));
+$nav = '';
 ?>
 
 <html>
