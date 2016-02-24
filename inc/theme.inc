@@ -128,51 +128,56 @@ function theme_form_element($vars) {
 /**
  * theme_form_item()
  */
-function theme_form_markup($element) {
-  return '<div' . attributes($element['attributes']) . '>' . $element['markup'] . '</div>';
+function theme_form_markup($vars) {
+  return '<div' . attributes($vars['attributes']) . '>' . $vars['markup'] . '</div>';
 }
 
 /**
  * theme_form_input()
  */
-function theme_form_input($element) {
-  return '<input' . attributes($element['attributes']) . ' />';
+function theme_form_input($vars) {
+  return '<input' . attributes($vars['attributes']) . ' />';
 }
 
 /**
  * theme_form_textarea()
  */
-function theme_form_textarea($element) {
-  unset($element['attributes']['type']);
-  return '<textarea' . attributes($element['attributes']) . ' ></textarea>';
+function theme_form_textarea($vars) {
+  unset($vars['attributes']['type']);
+  return '<textarea' . attributes($vars['attributes']) . ' ></textarea>';
 }
 
 /**
  * theme_form_select()
  */
-function theme_form_select($element) {
-  unset($element['attributes']['type']);
-
+function theme_form_select($vars) {
   $options = '';
-  foreach ($element['options'] as $key => $value) {
+  unset($vars['attributes']['type']);
+  foreach ($vars['options'] as $key => $value) {
     $options .= '<option value="' . $key . '">' . $value . '</option>';
   }
-
-  return '<select' . attributes($element['attributes']) . ' >' . $options . '</select>';
+  return '<select' . attributes($vars['attributes']) . ' >' . $options . '</select>';
 }
 
 /**
  * theme_table()
  */
-function theme_table($header, $rows, $attributes) {
-  $output = '<table' . attributes($attributes) . '>';
+function theme_table($vars) {
+
+  $vars += array(
+    'header' => array(),
+    'rows' => array(),
+    'attributes' => array(),
+  );
+
+  $output = '<table' . attributes($vars['attributes']) . '>';
   $output .= '<tr>';
-  foreach ($header as $th) {
+  foreach ($vars['header'] as $th) {
     $output .= '<th>' . $th . '</th>';
   }
   $output .= '</tr>';
 
-  foreach ($rows as $row) {
+  foreach ($vars['rows'] as $row) {
     $output .= '<tr>';
     foreach ($row as $td) {
       $output .= '<td>' . $td . '</td>';

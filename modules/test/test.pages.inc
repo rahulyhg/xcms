@@ -68,7 +68,14 @@ function test_page_inc() {
 
   $output .= xcms_get_form('user_login_form');
 
-  $output .= theme_table($header = array('this', 'that', 'the other'), $rows = array(array('this', 'that', 'the other')));
+  $table_vars = array(
+    'header' => array('this', 'that', 'the other'),
+    'rows' => array(
+      '0' => array('this', 'that', 'the other'),
+    ),
+  );
+
+  $output .= theme_table($table_vars);
 
   return $output;
 }
