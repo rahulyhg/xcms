@@ -171,18 +171,18 @@ function theme_table($vars) {
   );
 
   $output = '<table' . attributes($vars['attributes']) . '>';
-  $output .= '<tr>';
+  $output .= '<thead><tr>';
   foreach ($vars['header'] as $th) {
     $output .= '<th>' . $th . '</th>';
   }
-  $output .= '</tr>';
+  $output .= '</thead></tr>';
 
   foreach ($vars['rows'] as $row) {
-    $output .= '<tr>';
+    $output .= '<tr><tbody>';
     foreach ($row as $td) {
       $output .= '<td>' . $td . '</td>';
     }
-    $output .= '</tr>';
+    $output .= '</tr></tbody>';
   }
 
   $output .= '</table>';

@@ -73,6 +73,7 @@ function test_page_inc() {
     'rows' => array(
       '0' => array('this', 'that', 'the other'),
     ),
+    'attributes' => array('id' => 'funky-table'),
   );
 
   $output .= theme_table($table_vars);
