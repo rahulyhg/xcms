@@ -5,12 +5,12 @@
  */
 
 /**
- * xcms_install()
- * $options for automated installation
+ * Xcms_install()
+ * $options for automated installation.
  */
 function xcms_install($conf_file, $options = array()) {
-  // merge defaults
-  // TODO, could possibly pull these defaults in from conf.json.example
+  // Merge defaults
+  // TODO, could possibly pull these defaults in from conf.json.example.
   $options += array(
     'base_path' => rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/',
     'site_name' => 'XCMS',
@@ -18,14 +18,13 @@ function xcms_install($conf_file, $options = array()) {
   );
 
   if (is_writable($conf_file)) {
-    // need FAPI here to prompt for defaults for install
+    // Need FAPI here to prompt for defaults for install.
   }
   else {
 
-    // prompt for example conf file to be copied writable
+    // Prompt for example conf file to be copied writable.
   }
 
-  // do something useful
+  // Do something useful.
   return $options;
 }
-

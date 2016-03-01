@@ -1,11 +1,12 @@
 <?php
 
 /**
+ * @file
  * The theme functions, controls the output.
  */
 
 /**
- * theme_page()
+ * Theme_page().
  */
 function theme_page($vars) {
   global $conf;
@@ -21,24 +22,21 @@ function theme_page($vars) {
 
   // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
-
   // TODO $body_classes
-  //if ( .. is front) body_classes [] = is_front
+  // if ( .. is front) body_classes [] = is_front
   // $body_classes = array();
-  //if (is_admin()) {
+  // if (is_admin()) {
   //  $body_classes[] = 'is_admin';
-  //}
-  //$body_classes = implode(' ', $body_classes);
-
+  // }
+  // $body_classes = implode(' ', $body_classes);
   // TODO hook_page for theme hooks.php
-  // so variables can be modified from hook call
-
+  // so variables can be modified from hook call.
   extract($vars);
   require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
 }
 
 /**
- * theme_list()
+ * Theme_list().
  */
 function theme_list($vars) {
 
@@ -73,7 +71,7 @@ function theme_list($vars) {
 }
 
 /**
- * theme_form_element()
+ * Theme_form_element().
  */
 function theme_form_element($vars) {
   $vars += array(
@@ -89,7 +87,7 @@ function theme_form_element($vars) {
 
   $output = '';
 
-  // element wrapper
+  // Element wrapper.
   $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
   $attributes['class'][] = 'form-type-' . $vars['type'];
@@ -99,21 +97,23 @@ function theme_form_element($vars) {
 
   $output .= '<div' . attributes($attributes) . '>';
 
-  // set type and class on form item
+  // Set type and class on form item.
   $vars['attributes']['type'] = $vars['type'];
+  $vars['attributes']['name'] = $vars['name'];
+  $vars['attributes']['value'] = $vars['default_value'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
 
   if ($vars['title']) {
     $output .= '<label>' . $vars['title'] . '</label>';
   }
 
-  // check if there is a special function for the element
+  // Check if there is a special function for the element.
   $function = 'theme_form_' . $vars['type'];
   if (function_exists($function)) {
     $output .= call_user_func($function, $vars);
   }
   else {
-    // default form element function
+    // Default form element function.
     $output .= theme_form_input($vars);
   }
 
@@ -126,29 +126,39 @@ function theme_form_element($vars) {
 }
 
 /**
- * theme_form_item()
+ * Theme_form_item().
  */
 function theme_form_markup($vars) {
   return '<div' . attributes($vars['attributes']) . '>' . $vars['markup'] . '</div>';
 }
 
 /**
- * theme_form_input()
+ * Theme_form_input().
  */
 function theme_form_input($vars) {
   return '<input' . attributes($vars['attributes']) . ' />';
 }
 
 /**
- * theme_form_textarea()
+ * Theme_form_submit().
  */
-function theme_form_textarea($vars) {
-  unset($vars['attributes']['type']);
-  return '<textarea' . attributes($vars['attributes']) . ' ></textarea>';
+function theme_form_submit($vars) {
+  $vars['attributes']['value'] = $vars['value'];
+  return '<input' . attributes($vars['attributes']) . ' />';
 }
 
 /**
- * theme_form_select()
+ * Theme_form_textarea().
+ */
+function theme_form_textarea($vars) {
+  $text = $vars['attributes']['value'];
+  unset($vars['attributes']['value']);
+  unset($vars['attributes']['type']);
+  return '<textarea' . attributes($vars['attributes']) . ' >' . $text . '</textarea>';
+}
+
+/**
+ * Theme_form_select().
  */
 function theme_form_select($vars) {
   $options = '';
@@ -160,7 +170,7 @@ function theme_form_select($vars) {
 }
 
 /**
- * theme_table()
+ * Theme_table().
  */
 function theme_table($vars) {
 
@@ -188,4 +198,3 @@ function theme_table($vars) {
   $output .= '</table>';
   return $output;
 }
-

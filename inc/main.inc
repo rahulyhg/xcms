@@ -8,13 +8,12 @@
 /**
  * Contants
  * MENU_*
- *  MENU_CALLBACK: hidden
+ *  MENU_CALLBACK: hidden.
  */
-//define('MENU_CALLBACK', 0);
-//define('MENU_NORMAL', 1);
-
+// define('MENU_CALLBACK', 0);
+// define('MENU_NORMAL', 1);.
 /**
- * xcms_init()
+ * Xcms_init().
  */
 function xcms_init() {
   global $conf, $_menu;
@@ -30,7 +29,7 @@ function xcms_init() {
 }
 
 /**
- * xcms_conf_get()
+ * Xcms_conf_get().
  */
 function xcms_conf_read() {
   global $conf;
@@ -45,29 +44,29 @@ function xcms_conf_read() {
 }
 
 /**
- * xcms_conf_write()
+ * Xcms_conf_write().
  */
 function xcms_conf_write($conf) {
   file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
 }
 
 /**
- * xcms_page_handler()
+ * Xcms_page_handler().
  */
 function xcms_page_handler() {
   $return = NULL;
 
-  // set front page / empty ?q=
+  // Set front page / empty ?q=.
   $path = empty($_GET['q']) ? variable_get('site_front', 'nocontent') : $_GET['q'];
 
   if ($menu_item = xcms_path_get($path)) {
 
-    // inc file arg requires full path
+    // Inc file arg requires full path.
     if (!empty($menu_item['file'])) {
       require_once $menu_item['file'];
     }
 
-    // check access and page callback
+    // Check access and page callback.
     if (xcms_check_access($menu_item['access'])) {
       return call_user_func($menu_item['callback']);
     }
@@ -84,7 +83,7 @@ function xcms_page_handler() {
 }
 
 /**
- * xcms_check_access()
+ * Xcms_check_access().
  */
 function xcms_check_access($access) {
   if (function_exists($access)) {
@@ -94,22 +93,22 @@ function xcms_check_access($access) {
 }
 
 /**
- * xcms_path_get()
+ * Xcms_path_get().
  */
 function xcms_path_get($path) {
   global $_menu;
   $menu = $_menu;
 
-  // TODO Tabs functions
+  // TODO Tabs functions.
   $defaults = array(
     'title' => '',
     'weight' => 0,
     'access' => FALSE,
     'file' => '',
-    // 'type' => MENU_ITEM,
+    // 'type' => MENU_ITEM,.
   );
 
-  // translate placeholder menu % as args (current page)
+  // Translate placeholder menu % as args (current page).
   foreach ($menu as $link => $value) {
     if (strpos($link, '%')) {
       $parts = explode('/', $link);
@@ -124,12 +123,12 @@ function xcms_path_get($path) {
     }
   }
 
-  // work backwards to search for a valid menu path
+  // Work backwards to search for a valid menu path.
   while ($path && !array_key_exists($path, $menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
 
-  // no suitable path found return NULL
+  // No suitable path found return NULL.
   if (!array_key_exists($path, $menu)) {
     return;
   }
@@ -139,7 +138,7 @@ function xcms_path_get($path) {
 }
 
 /**
- * xcms_menu_get()
+ * Xcms_menu_get().
  */
 function xcms_menu_get() {
   global $_menu;
@@ -147,7 +146,7 @@ function xcms_menu_get() {
 }
 
 /**
- * xcms_modules_list()
+ * Xcms_modules_list().
  */
 function xcms_modules_list() {
   $modules = array(
@@ -158,16 +157,16 @@ function xcms_modules_list() {
 }
 
 /**
- * xcms_modules_load()
+ * Xcms_modules_load().
  */
 function xcms_modules_load() {
   foreach (xcms_modules_list() as $module) {
-    include_once (ROOT_DIR . '/modules/' . $module . '/' . $module . '.module');
+    include_once ROOT_DIR . '/modules/' . $module . '/' . $module . '.module';
   }
 }
 
 /**
- * xcms_modules_invoke()
+ * Xcms_modules_invoke().
  */
 function xcms_modules_invoke($hook) {
   $return = array();
@@ -181,7 +180,7 @@ function xcms_modules_invoke($hook) {
 }
 
 /**
- * xcms_set_title()
+ * Xcms_set_title().
  */
 function xcms_set_title($title = NULL) {
   static $stored_title;
@@ -192,7 +191,7 @@ function xcms_set_title($title = NULL) {
 }
 
 /**
- * variable_get()
+ * Variable_get().
  */
 function variable_get($name, $default) {
   global $conf;
@@ -200,7 +199,7 @@ function variable_get($name, $default) {
 }
 
 /**
- * xcms_set_message()
+ * Xcms_set_message().
  */
 function xcms_set_message($message = NULL, $type = 'status') {
   if ($message) {
@@ -218,40 +217,65 @@ function xcms_set_message($message = NULL, $type = 'status') {
   }
 }
 
+/**
+ *
+ */
 function xcms_get_form($form_id) {
-  $form = $form_id();
+
+  // $form = $form_id();
   /*
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    unset($_POST['submit']);
-    foreach ($form as $name => $item) {
-      if ($item['required'] && empty($_POST[$name])) {
-        $required = TRUE;
-         ud_set_message($item['title'] . ' field is required.');
-      }
-    }
-    if (function_exists($form_id . '_submit')) {
-      $submit = $form_id . '_submit';
-      if (function_exists($form_id . '_validate')) {
-        $validate = $form_id . '_validate';
-        if ($validate($form, $_POST)) {
-          $submit($form, $_POST);
-        }
-      }
-      elseif (!$required) {
-        $submit($form, $_POST);
-      }
-    }
+  unset($_POST['submit']);
+  foreach ($form as $name => $item) {
+  if ($item['required'] && empty($_POST[$name])) {
+  $required = TRUE;
+  ud_set_message($item['title'] . ' field is required.');
   }
-  */
+  }
+  if (function_exists($form_id . '_submit')) {
+  $submit = $form_id . '_submit';
+  if (function_exists($form_id . '_validate')) {
+  $validate = $form_id . '_validate';
+  if ($validate($form, $_POST)) {
+  $submit($form, $_POST);
+  }
+  }
+  elseif (!$required) {
+  $submit($form, $_POST);
+  }
+  }
+  }
+   */
+  $form_state = array();
+  return xcms_build_form($form_id, $form_state);
+
+}
+
+/**
+ *
+ */
+function xcms_build_form($form_id, &$form_state) {
+  $form_state += array(
+    'redirect' => NULL,
+    'form_id' => $form_id,
+  );
+
+  $form_state['input'] = $_POST;
+
+  $form = call_user_func($form_id);
+  $output = '';
 
   if (is_array($form)) {
-    $output = '<form method="post">';
+    $output .= '<form action="' . url($_GET['q']) . '" method="post" id="' . strip_class($form_id) . '">';
     foreach ($form as $name => $element) {
       $element['name'] = $name;
+      $element['default_value'] = issetor($form_state['input']['name']);
       $output .= theme_form_element($element);
     }
     $output .= '</form>';
   }
+
+  dsm($_POST);
+
   return $output;
 }
-
