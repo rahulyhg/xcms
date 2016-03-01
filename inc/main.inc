@@ -180,7 +180,7 @@ function xcms_modules_invoke($hook) {
 }
 
 /**
- * Xcms_set_title().
+ *
  */
 function xcms_set_title($title = NULL) {
   static $stored_title;
@@ -191,7 +191,7 @@ function xcms_set_title($title = NULL) {
 }
 
 /**
- * Variable_get().
+ *
  */
 function variable_get($name, $default) {
   global $conf;
@@ -199,7 +199,7 @@ function variable_get($name, $default) {
 }
 
 /**
- * Xcms_set_message().
+ *
  */
 function xcms_set_message($message = NULL, $type = 'status') {
   if ($message) {
@@ -222,7 +222,34 @@ function xcms_set_message($message = NULL, $type = 'status') {
  */
 function xcms_get_form($form_id) {
 
-  // $form = $form_id();
+  $form_state = array();
+  return xcms_build_form($form_id, $form_state);
+}
+
+/**
+ *
+ */
+function xcms_build_form($form_id, &$form_state) {
+  $form_state += array(
+    'input' => issetor($_POST, array()),
+    'redirect' => NULL,
+    'form_id' => $form_id,
+    'submit' => array(),
+    'validate' => array(),
+  );
+
+  $form = call_user_func($form_id);
+
+  // Check for default form validation function.
+  if (function_exists($form_id . '_validate')) {
+    $form['validate'][] = $form_id . '_validate';
+  }
+
+  // Check for default form submit function.
+  if (function_exists($form_id . '_submit')) {
+    $form['submit'][] = $form_id . '_submit';
+  }
+
   /*
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   unset($_POST['submit']);
@@ -246,36 +273,46 @@ function xcms_get_form($form_id) {
   }
   }
    */
-  $form_state = array();
-  return xcms_build_form($form_id, $form_state);
 
-}
-
-/**
- *
- */
-function xcms_build_form($form_id, &$form_state) {
-  $form_state += array(
-    'redirect' => NULL,
-    'form_id' => $form_id,
-  );
-
-  $form_state['input'] = $_POST;
-
-  $form = call_user_func($form_id);
+  // Print form html.
   $output = '';
-
   if (is_array($form)) {
     $output .= '<form action="' . url($_GET['q']) . '" method="post" id="' . strip_class($form_id) . '">';
+
     foreach ($form as $name => $element) {
       $element['name'] = $name;
-      $element['default_value'] = issetor($form_state['input']['name']);
+      $element['default_value'] = issetor($form_state['input'][$name]);
+
+      // Form was posted so process it.
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        // Form required fields.
+        if (isset($element['required']) && empty($form_state['input'][$name])) {
+          $element['attributes']['class'][] = 'error';
+          // Todo deal with elements without title.
+          xcms_set_message($element['title'] . ' field is required.', 'error');
+
+          // Todo test this
+          // Don't allow form to be submitted or validated until the fields are complete.
+          unset($form['submit'], $form['validate']);
+        }
+
+        // Form validation.
+        // Form submit.
+      }
+
       $output .= theme_form_element($element);
     }
     $output .= '</form>';
   }
 
-  dsm($_POST);
-
+  // dsm($_POST);
   return $output;
+}
+
+/**
+ *
+ */
+function xcms_validate_form($form_id, &$form, &$form_state) {
+
 }

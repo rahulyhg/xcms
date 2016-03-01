@@ -152,8 +152,7 @@ function theme_form_submit($vars) {
  */
 function theme_form_textarea($vars) {
   $text = $vars['attributes']['value'];
-  unset($vars['attributes']['value']);
-  unset($vars['attributes']['type']);
+  unset($vars['attributes']['value'], $vars['attributes']['type']);
   return '<textarea' . attributes($vars['attributes']) . ' >' . $text . '</textarea>';
 }
 
