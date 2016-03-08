@@ -14,7 +14,7 @@ function theme_page($vars) {
   $title = strip_tags(xcms_set_title());
   $vars += array(
     'title' => $title,
-    'directory' => $conf['base_path'] . 'themes/' . $conf['current_theme'],
+    'directory' => issetor($conf['base_path'], '/') . 'themes/' . issetor($conf['current_theme'], 'default'),
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
     'messages' => xcms_set_message(),
@@ -32,7 +32,7 @@ function theme_page($vars) {
   // TODO hook_page for theme hooks.php
   // so variables can be modified from hook call.
   extract($vars);
-  require_once ROOT_DIR . '/themes/' . $conf['current_theme'] . '/page.php';
+  require_once ROOT_DIR . '/themes/' . issetor($conf['current_theme'], 'default') . '/page.php';
 }
 
 /**
