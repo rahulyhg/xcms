@@ -4,8 +4,7 @@
  * @file
  */
 function user_login_form() {
-  // global $user;
-
+  // Global $user;.
   $form['name'] = array(
     'type' => 'text',
     'title' => 'Username',
@@ -51,20 +50,20 @@ function user_login_form() {
 }
 
 /**
- * test_page_inc()
+ * Test_page_inc().
  */
 function test_page_inc() {
-  // return lipsum(10);
+  // Return lipsum(10);.
   $output = '';
   /*
   $element = array(
-    'type' => 'text',
-    'title' => 'Test Input',
-    'markup' => 'asda',
+  'type' => 'text',
+  'title' => 'Test Input',
+  'markup' => 'asda',
   );
 
   $output = theme_form_element($element);
-  */
+   */
 
   $output .= xcms_get_form('user_login_form');
 
@@ -82,27 +81,27 @@ function test_page_inc() {
 }
 
 /**
- * test_page_list()
+ * Test_page_list().
  */
 function test_page_list() {
 
   /*
   $list_items = array(
-    '1' => lipsum(1),
-    '2' => lipsum(1),
-    '3' => 'parent',
-    '4' => array(
-      '41' => lipsum(1),
-      '42' => lipsum(1),
-      '3' => 'parent',
-      '4' => array(
-        '41' => lipsum(1),
-        '42' => lipsum(1),
-        '43' => lipsum(1),
-      ),
-    ),
+  '1' => lipsum(1),
+  '2' => lipsum(1),
+  '3' => 'parent',
+  '4' => array(
+  '41' => lipsum(1),
+  '42' => lipsum(1),
+  '3' => 'parent',
+  '4' => array(
+  '41' => lipsum(1),
+  '42' => lipsum(1),
+  '43' => lipsum(1),
+  ),
+  ),
   );
-  */
+   */
 
   $list_items = array(
     '1' => 'Parent',
@@ -122,8 +121,7 @@ function test_page_list() {
   $list_items = array();
   $list_items['test'] = lipsum(1);
   $list_items['test']['second'] = lipsum(1);
-  */
+   */
 
-  // return theme_list_test($list_items);
+  // Return theme_list_test($list_items);
 }
-

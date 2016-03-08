@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  */
 function system_menu() {
 
@@ -25,4 +25,3 @@ function system_menu() {
 
   return $items;
 }
-

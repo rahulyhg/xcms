@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  */
 function test_menu() {
 
@@ -56,12 +56,15 @@ function test_menu() {
   return $items;
 }
 
+/**
+ *
+ */
 function test_access_callback() {
   return FALSE;
 }
 
 /**
- * test page TODO remove me
+ * Test page TODO remove me.
  */
 function test_page($args = NULL) {
   // dsm('args:');
@@ -75,15 +78,21 @@ function test_page($args = NULL) {
   xcms_set_message('status', 'status');
   xcms_set_message('warning', 'warning');
   xcms_set_message('foo', 'foo');
-  // xcms_goto('welcome');
+  // xcms_goto('welcome');.
   return lipsum(10);
 }
 
+/**
+ *
+ */
 function is_admin_test() {
 
   return FALSE;
 }
 
+/**
+ *
+ */
 function lipsum($count = 1) {
   $output = '';
   for ($i = 1; $i <= $count; $i++) {
@@ -91,4 +100,3 @@ function lipsum($count = 1) {
   }
   return $output;
 }
-
