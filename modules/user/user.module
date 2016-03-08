@@ -1,0 +1,145 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_init().
+ */
+function user_init() {
+  //
+  global $user;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function user_menu() {
+
+  $items['user'] = array(
+    'title' => 'User account',
+    'callback' => 'user_page',
+    'file' => 'modules/user/user.pages.inc',
+    'access' => TRUE,
+  );
+
+  $items['user/login'] = array(
+    'title' => 'Login',
+    'callback' => 'user_login_page',
+    'file' => 'modules/user/user.pages.inc',
+    'access' => TRUE,
+  );
+
+  $items['user/logout'] = array(
+    'callback' => 'user_logout_page',
+    'file' => 'modules/user/user.pages.inc',
+    'access' => TRUE,
+  );
+
+  $items['user/%/edit'] = array(
+    'title' => 'Edit',
+    'callback' => 'user_edit_page',
+    'access' => TRUE,
+  );
+
+  /*
+  $items['test_inc'] = array(
+  'title' => 'Test inc file param',
+  'callback' => 'test_page_inc',
+  'file' => 'modules/test/test.pages.inc',
+  'access' => TRUE,
+  );
+
+  $items['test_access_bool'] = array(
+  'title' => 'Test menu hook',
+  'callback' => 'test_page',
+  'access' => TRUE,
+  );
+
+  $items['test_access_function'] = array(
+  'title' => 'Test menu hook',
+  'callback' => 'test_page',
+  'access' => 'test_access_callback',
+  );
+
+  $items['test_args/%/%'] = array(
+  'title' => 'Test 2 args',
+  'callback' => 'test_page',
+  'access' => TRUE,
+  );
+
+  $items['test_args/%/test'] = array(
+  'title' => 'Test 1 arg',
+  'callback' => 'test_page',
+  'access' => TRUE,
+  );
+   */
+
+  return $items;
+}
+
+/**
+ *
+ */
+function user_logout() {
+  setcookie('name', '', strtotime('-1 month'), '/');
+  session_destroy();
+}
+
+/**
+ *
+ */
+function user_load_all() {
+  global $conf;
+  return $conf['users'];
+}
+
+/**
+ *
+ */
+function user_load($uid) {
+  $users = user_load_all();
+  if (isset($users[$uid])) {
+    $users[$uid]['uid'] = $uid;
+    $account = $users[$uid];
+  }
+  else {
+    $account = $users[0];
+  }
+  return (object) $account;
+}
+
+/**
+ *
+ */
+function user_load_by_name($name) {
+  $users = user_load_all();
+  return user_load(array_search($name, array_column($users, 'name')));
+}
+
+/**
+ *
+ */
+function user_authenticate($name, $pass) {
+  $account = user_load_by_name($name);
+  if ($account->pass == md5($pass)) {
+    return TRUE;
+  }
+}
+
+/**
+ *
+ */
+function user_session($name) {
+  session_start();
+  setcookie('name', $name, strtotime('+1 month'), '/');
+}
+
+/**
+ *
+ */
+function user_is_logged_in() {
+  return isset($_COOKIE['name']);
+}
+

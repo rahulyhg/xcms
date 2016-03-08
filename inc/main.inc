@@ -18,12 +18,22 @@
  */
 function xcms_init() {
   global $conf, $_menu;
+
   require ROOT_DIR . '/inc/common.inc';
   require ROOT_DIR . '/inc/theme.inc';
-  session_start();
+
+  // Load site variables
   xcms_conf_read();
+
+  // Load all enabled modules.
   xcms_modules_load();
+
+  // Call hook_init
+  xcms_modules_invoke('init');
+
+  // Get menu
   xcms_menu_get();
+
   if ($return = xcms_page_handler()) {
     print theme_page(array('content' => $return));
   }
