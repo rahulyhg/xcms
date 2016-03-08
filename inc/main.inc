@@ -229,7 +229,7 @@ function xcms_set_message($message = NULL, $type = 'status') {
 }
 
 /**
- * Provides central static variable storage.
+ * Provides central cached static variable storage.
  */
 function &xcms_static($name, $value = NULL) {
   static $data = array();
@@ -262,7 +262,7 @@ function xcms_build_form($form_id, &$form_state) {
   );
 
   // Form attributes.
-  // TODO array_merge form attributes (overrides) from actual form.
+  // TODO array_merge form attributes (overrides) from $form[].
   $attributes = array(
     'action' => url($_GET['q']),
     'method' => 'post',
@@ -333,7 +333,8 @@ function xcms_build_form($form_id, &$form_state) {
 }
 
 /**
- *
+ * Files an error against a form element.
+ * TODO don't want to have to parse the form_state, can we do this with static?
  */
 function form_set_error($name, $message, &$form_state) {
   $form_state['errors'][$name] = $message;
