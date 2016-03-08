@@ -2,24 +2,6 @@
 // TODO move this into template.php
 
 /*
-  $links = array(
-    'home' => array(
-      'path' => '<front>',
-      'title' => 'home',
-    ),
-    'test' => array(
-      'path' => 'test',
-      'title' => 'Test',
-    ),
-    'test-2' => array(
-      'path' => 'test2',
-      'title' => 'Test 2',
-    ),
-  );
-
-  $nav = theme_links($links);
-  */
-
 $list_items = array(
   'home' => l('Home', '<front>'),
   'array-test' => array(
@@ -34,9 +16,22 @@ $list_items = array(
     '3' => l('Test 2', 'test2'),
   ),
 );
+*/
 
-// $nav = theme_list($list_items, array('attributes' => array('class' => 'nav-menu testing')));
-$nav = '';
+$nav_items = array(
+  'home' => l('Home', '<front>'),
+  'test' => l('Test', 'test'),
+  'user' => l('User', 'user'),
+);
+
+if (user_is_logged_in()) {
+  $nav_items['logout'] = l('Log out', 'user/logout');
+}
+else {
+  $nav_items['login'] = l('Login', 'user/login');
+}
+
+$nav = theme_list(array('items' => $nav_items, 'attributes' => array('class' => 'nav-menu testing')));
 ?>
 
 <html>

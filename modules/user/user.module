@@ -8,8 +8,9 @@
  * Implements hook_init().
  */
 function user_init() {
-  //
   global $user;
+  $user = user_load_by_name($_COOKIE['name']);
+  return array();
 }
 
 /**

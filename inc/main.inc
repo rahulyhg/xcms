@@ -192,7 +192,10 @@ function xcms_modules_invoke($hook) {
   foreach (xcms_modules_list() as $module => $path) {
     $function = $module . '_' . $hook;
     if (function_exists($function)) {
-      $return = array_merge($return, $function());
+      $result = call_user_func($function);
+      if (is_array($result)) {
+        $return = array_merge($return, $result);
+      }
     }
   }
   return $return;

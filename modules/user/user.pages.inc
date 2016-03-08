@@ -7,8 +7,10 @@ function user_page() {
   global $user;
 
   if (user_is_logged_in()) {
-    $output = ' ';
-    dsm($_COOKIE);
+    $output = '';
+    $output .= '<h3>History</h3>';
+    $output .= '<p><strong>Member since</strong></p>';
+    $output .= '<p>' . date('d/m/Y', $user->created) . '</p>';
     return $output;
   }
   else {

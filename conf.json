@@ -1,24 +1,24 @@
 {
-    "site_name": "XCMS",
-    "site_front": "test",
-    "current_theme": "default",
-    "date_format": "d\/m\/Y H:i",
-    "base_path": "\/",
-    "users": [
-        {
-            "name": "anonymous",
-            "pass": "",
-            "mail": ""
-        },
-        {
-            "name": "admin",
-            "pass": "21232f297a57a5a743894a0e4a801fc3",
-            "mail": "chris@xweb.com.au"
-        },
-        {
-            "name": "test",
-            "pass": "098f6bcd4621d373cade4e832627b4f6",
-            "mail": "chrisherberte@gmail.com"
-        }
-    ]
+  "site_name": "XCMS",
+  "site_front": "test",
+  "current_theme": "default",
+  "date_format": "d\/m\/Y H:i",
+  "base_path": "\/",
+  "users": [{
+      "name": "anonymous",
+      "pass": "",
+      "mail": "",
+      "created": ""
+    }, {
+      "name": "admin",
+      "pass": "21232f297a57a5a743894a0e4a801fc3",
+      "mail": "chris@xweb.com.au",
+      "created": "1457314709"
+    }, {
+      "name": "test",
+      "pass": "098f6bcd4621d373cade4e832627b4f6",
+      "mail": "chrisherberte@gmail.com",
+      "created": "1457314709"
+    }
+  ]
 }

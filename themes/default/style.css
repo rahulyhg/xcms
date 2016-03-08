@@ -1,5 +1,5 @@
 /**
- * @file 
+ * @file
  */
 
 body {
@@ -152,7 +152,8 @@ ul.tabs li.active a {
   background: url("images/nav.png") center top no-repeat;
 }
 
-#nav ul li.active a {
+#nav ul a.active {
+  color: #c7dd2f;
 }
 
 .description {

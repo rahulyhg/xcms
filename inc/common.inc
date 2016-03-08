@@ -17,8 +17,14 @@ function xcms_goto($url) {
  * L().
  */
 function l($title, $path, $options = array()) {
-  // TODO options attributes()
-  return '<a href="' . url($path) . '">' . $title . '</a>';
+  $options['attributes']['href'] = url($path);
+
+  // Set active class.
+  if ($path == $_GET['q']) {
+    $options['attributes']['class'][] = 'active';
+  }
+
+  return '<a' . attributes($options['attributes']) . '>' . $title . '</a>';
 }
 
 /**
@@ -141,3 +147,4 @@ function strip_class($text) {
   $text = preg_replace('/[\s_]/', '-', $text);
   return $text;
 }
+
