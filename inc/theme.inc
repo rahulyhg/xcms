@@ -103,7 +103,7 @@ function theme_form_element($vars) {
   $vars['attributes']['value'] = $vars['default_value'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
 
-  // HTML5 "required" validation
+  // HTML5 "required" validation.
   if ($vars['required']) {
     $vars['attributes']['required'] = TRUE;
   }
@@ -202,4 +202,3 @@ function theme_table($vars) {
   $output .= '</table>';
   return $output;
 }
-
