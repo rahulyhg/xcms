@@ -152,11 +152,15 @@ function xcms_menu_get() {
  * @return array of files with module extension, key as module name
  */
 function xcms_modules_list() {
-  $regex = '#(?<!/)\.module$|^[^\.]*$#i';
-  $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('modules'), $regex));
-  foreach ($files as $file) {
-    $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
-    $modules[$module] = $file->getPathname();
+  $modules = &xcms_static(__FUNCTION__);
+
+  if (!isset($modules)) {
+    $regex = '#(?<!/)\.module$|^[^\.]*$#i';
+    $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('modules'), $regex));
+    foreach ($files as $file) {
+      $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
+      $modules[$module] = $file->getPathname();
+    }
   }
   return $modules;
 }
@@ -188,10 +192,12 @@ function xcms_modules_invoke($hook) {
  * Sets the title of the current page.
  */
 function xcms_set_title($title = NULL) {
-  static $stored_title;
+  $stored_title = &xcms_static(__FUNCTION__);
+
   if (isset($title)) {
     $stored_title = $title;
   }
+
   return $stored_title;
 }
 
@@ -223,6 +229,17 @@ function xcms_set_message($message = NULL, $type = 'status') {
 }
 
 /**
+ * Provides central static variable storage.
+ */
+function &xcms_static($name, $value = NULL) {
+  static $data = array();
+  if ($value) {
+    $data[$name] = $value;
+  }
+  return $data[$name];
+}
+
+/**
  * Returns a form array for a given form ID.
  */
 function xcms_get_form($form_id) {
@@ -234,88 +251,96 @@ function xcms_get_form($form_id) {
  *
  */
 function xcms_build_form($form_id, &$form_state) {
+  $output = '';
+
+  // Set $form_state defaults.
   $form_state += array(
-    'input' => issetor($_POST, array()),
+    'values' => issetor($_POST, array()),
     'redirect' => NULL,
     'form_id' => $form_id,
-    'submit' => array(),
-    'validate' => array(),
+    'errors' => array(),
   );
 
+  // Form attributes.
+  // TODO array_merge form attributes (overrides) from actual form.
+  $attributes = array(
+    'action' => url($_GET['q']),
+    'method' => 'post',
+    'id' => strip_class($form_id),
+  );
+
+  // Get form array.
   $form = call_user_func($form_id);
 
-  // Check for default form validation function.
-  if (function_exists($form_id . '_validate')) {
-    $form['validate'][] = $form_id . '_validate';
-  }
+  // Check for default validate and submit handlers.
+  $form['validate_callbacks'][] = $form_id . '_validate';
+  $form['submit_callbacks'][] = $form_id . '_submit';
 
-  // Check for default form submit function.
-  if (function_exists($form_id . '_submit')) {
-    $form['submit'][] = $form_id . '_submit';
-  }
-
-  /*
+  // Form has been submitted, process it.
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  unset($_POST['submit']);
-  foreach ($form as $name => $item) {
-  if ($item['required'] && empty($_POST[$name])) {
-  $required = TRUE;
-  ud_set_message($item['title'] . ' field is required.');
-  }
-  }
-  if (function_exists($form_id . '_submit')) {
-  $submit = $form_id . '_submit';
-  if (function_exists($form_id . '_validate')) {
-  $validate = $form_id . '_validate';
-  if ($validate($form, $_POST)) {
-  $submit($form, $_POST);
-  }
-  }
-  elseif (!$required) {
-  $submit($form, $_POST);
-  }
-  }
-  }
-   */
 
-  // Print form html.
-  $output = '';
-  if (is_array($form)) {
-    $output .= '<form action="' . url($_GET['q']) . '" method="post" id="' . strip_class($form_id) . '">';
-
+    // Check form elements for missing required fields.
     foreach ($form as $name => $element) {
-      $element['name'] = $name;
-      $element['default_value'] = issetor($form_state['input'][$name]);
+      if (isset($element['required']) && empty($form_state['values'][$name])) {
+        form_set_error($name, $element['title'] . ' field is required.', $form_state);
 
-      // Form was posted so process it.
-      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Don't process validate callbacks if form required empty.
+        unset($form['validate_callbacks']);
+      }
+    }
 
-        // Form required fields.
-        if (isset($element['required']) && empty($form_state['input'][$name])) {
-          $element['attributes']['class'][] = 'error';
-          // Todo deal with elements without title.
-          xcms_set_message($element['title'] . ' field is required.', 'error');
+    // Validation callbacks.
+    foreach ($form['validate_callbacks'] as $callback) {
+      if (function_exists($callback)) {
+        call_user_func_array($callback, array($form, &$form_state));
+      }
+    }
 
-          // Todo test this
-          // Don't allow form to be submitted or validated until the fields are complete.
-          unset($form['submit'], $form['validate']);
-        }
-
-        // Form validation.
-        // Form submit.
+    // Check for form errors. Set by form_set_error()
+    if (!empty($form_state['errors'])) {
+      foreach ($form_state['errors'] as $name => $message) {
+        xcms_set_message($message, 'error');
+        $form['name']['attributes']['class'][] = 'error';
       }
 
-      $output .= theme_form_element($element);
+      // Don't process submit callbacks if form has errors.
+      unset($form['submit_callbacks']);
     }
-    $output .= '</form>';
+
+    // Submit callbacks.
+    foreach ($form['submit_callbacks'] as $callback) {
+      if (function_exists($callback)) {
+        call_user_func_array($callback, array($form, &$form_state));
+      }
+    }
   }
 
-  // dsm($_POST);
+  // Print form html.
+  $output .= '<form' . attributes($attributes) . '>';
+
+  // Render the form elements.
+  foreach ($form as $name => $element) {
+    $element['name'] = $name;
+
+    // TODO, check this works and we can override it? this just here to satisfy validation form testing.
+    $element['default_value'] = issetor($form_state['values'][$name]);
+
+    $output .= theme_form_element($element);
+  }
+
+  $output .= '</form>';
   return $output;
 }
 
 /**
  *
  */
-function xcms_validate_form($form_id, &$form, &$form_state) {}
+function form_set_error($name, $message, &$form_state) {
+  $form_state['errors'][$name] = $message;
+}
+
+/**
+ *
+ */
+// Function xcms_validate_form($form_id, &$form, &$form_state) {}.
 

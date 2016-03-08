@@ -105,7 +105,7 @@ function theme_form_element($vars) {
 
   // HTML5 "required" validation.
   if ($vars['required']) {
-    $vars['attributes']['required'] = TRUE;
+    // $vars['attributes']['required'] = TRUE;
   }
 
   if ($vars['title']) {
@@ -202,3 +202,4 @@ function theme_table($vars) {
   $output .= '</table>';
   return $output;
 }
+
