@@ -12,8 +12,9 @@
  */
 // define('MENU_CALLBACK', 0);
 // define('MENU_NORMAL', 1);.
+
 /**
- * Xcms_init().
+ * Bootstrap and load system includes.
  */
 function xcms_init() {
   global $conf, $_menu;
@@ -29,7 +30,7 @@ function xcms_init() {
 }
 
 /**
- * Xcms_conf_get().
+ * Xcms_conf_read().
  */
 function xcms_conf_read() {
   global $conf;
@@ -51,7 +52,7 @@ function xcms_conf_write($conf) {
 }
 
 /**
- * Xcms_page_handler().
+ * Execute the page callback associated with the current path.
  */
 function xcms_page_handler() {
   $return = NULL;
@@ -146,31 +147,35 @@ function xcms_menu_get() {
 }
 
 /**
- * Xcms_modules_list().
+ * Recusively scan modules directory for .module files.
+ *
+ * @return array of files with module extension, key as module name
  */
 function xcms_modules_list() {
-  $modules = array(
-    'system',
-    'test',
-  );
+  $regex = '#(?<!/)\.module$|^[^\.]*$#i';
+  $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('modules'), $regex));
+  foreach ($files as $file) {
+    $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
+    $modules[$module] = $file->getPathname();
+  }
   return $modules;
 }
 
 /**
- * Xcms_modules_load().
+ * Include all module found from xcms_modules_list().
  */
 function xcms_modules_load() {
-  foreach (xcms_modules_list() as $module) {
-    include_once ROOT_DIR . '/modules/' . $module . '/' . $module . '.module';
+  foreach (xcms_modules_list() as $module => $path) {
+    include_once ROOT_DIR . '/' . $path;
   }
 }
 
 /**
- * Xcms_modules_invoke().
+ * Invokes a hook in all enabled modules that implement it.
  */
 function xcms_modules_invoke($hook) {
   $return = array();
-  foreach (xcms_modules_list() as $module) {
+  foreach (xcms_modules_list() as $module => $path) {
     $function = $module . '_' . $hook;
     if (function_exists($function)) {
       $return = array_merge($return, $function());
@@ -180,7 +185,7 @@ function xcms_modules_invoke($hook) {
 }
 
 /**
- *
+ * Sets the title of the current page.
  */
 function xcms_set_title($title = NULL) {
   static $stored_title;
@@ -191,7 +196,7 @@ function xcms_set_title($title = NULL) {
 }
 
 /**
- *
+ * Return a persistent variable.
  */
 function variable_get($name, $default) {
   global $conf;
@@ -199,7 +204,7 @@ function variable_get($name, $default) {
 }
 
 /**
- *
+ * Sets a message to display to the user.
  */
 function xcms_set_message($message = NULL, $type = 'status') {
   if ($message) {
@@ -218,10 +223,9 @@ function xcms_set_message($message = NULL, $type = 'status') {
 }
 
 /**
- *
+ * Returns a form array for a given form ID.
  */
 function xcms_get_form($form_id) {
-
   $form_state = array();
   return xcms_build_form($form_id, $form_state);
 }
@@ -313,6 +317,5 @@ function xcms_build_form($form_id, &$form_state) {
 /**
  *
  */
-function xcms_validate_form($form_id, &$form, &$form_state) {
+function xcms_validate_form($form_id, &$form, &$form_state) {}
 
-}
