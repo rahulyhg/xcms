@@ -36,23 +36,19 @@ function admin_menu() {
  * Implements hook_footer().
  */
 function admin_footer() {
-
-  global $user;
-  // TODO roles / permissions for admin
-  // required permission hooks.
   if (user_is_admin()) {
     xcms_add_css('modules/admin/css/admin.css');
 
-    $admin_items = array(
-      'home' => l('Home', ''),
-      'conf' => l('Configuration', 'admin/conf'),
-      'status' => l('Status', 'admin/status'),
-      // 'status' => l('Status', 'admin/status'),
-      // 'status' => l('Status', 'admin/status'),
-      'user' => l('User', 'user'),
-    );
-
+    // Load top level admin items for menu.
+    global $_menu;
+    $admin_items = array('home' => l('Home', ''));
+    foreach ($_menu as $path => $item) {
+      if (arg(0, $path) == 'admin' && empty(arg(2, $path))) {
+        $admin_items[] = l($item['title'], $path);
+      }
+    }
     $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
+
     return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
   }
 }

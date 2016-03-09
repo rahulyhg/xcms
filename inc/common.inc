@@ -68,8 +68,12 @@ function issetor(&$var, $default = NULL) {
 /**
  * Arg().
  */
-function arg($index = 0) {
-  $args = explode('/', $_GET['q']);
+function arg($index = 0, $path = NULL) {
+  if (empty($path)) {
+    $path = $_GET['q'];
+  }
+
+  $args = explode('/', $path);
   if (array_key_exists($index, $args)) {
     return $args[$index];
   }
@@ -84,7 +88,7 @@ function dsm($input) {
 
 /**
  * Sorts arrays with weight, eg. Menu, CSS and JavaScript resources.
- * @usage uasort($css, 'xcms_weight_sort'); 
+ * @usage uasort($css, 'xcms_weight_sort');
  */
 function xcms_weight_sort($a, $b) {
   if ($a['weight'] < $b['weight']) {
