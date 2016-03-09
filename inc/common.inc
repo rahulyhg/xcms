@@ -10,7 +10,7 @@
  */
 function xcms_goto($url = NULL) {
   header('Location: ' . url($url));
-  exit();
+  exit;
 }
 
 /**

@@ -20,6 +20,10 @@ define('XCMS_VERSION', '0.x-dev');
 function xcms_init() {
   global $conf, $_menu;
 
+  // TODO where to put this? also no session_destroy() is in place!!
+  // Start session.
+  session_start();
+
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
@@ -342,6 +346,9 @@ function xcms_build_form($form_id, &$form_state) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
+    // Redirect to self after submission.
+    // TODO form redirect - broken messages
+    xcms_goto($_GET['q']);
   }
 
   // Print form html.
