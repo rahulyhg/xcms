@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_init().
+ */
+function admin_init() {
+  xcms_add_css('modules/admin/css/admin.css');
+}
+
+/**
+ * Implements hook_footer().
+ */
+function admin_footer() {
+  $admin_items = array(
+    'home' => l('Home', '<front>'),
+    'test' => l('Test', 'test'),
+    'user' => l('User', 'user'),
+  );
+  $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
+  return array('toolbar' => '<div id="toolbar">' . $links . '</div>');
+}
+

@@ -39,8 +39,9 @@ function user_menu() {
   );
 
   $items['user/%/edit'] = array(
-    'title' => 'Edit',
-    'callback' => 'user_edit_page',
+    'title' => 'Edit account',
+    'callback' => 'user_account_page',
+    'file' => 'modules/user/user.pages.inc',
     'access' => TRUE,
   );
 

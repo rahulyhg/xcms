@@ -8,7 +8,7 @@ function user_page() {
 
   if (user_is_logged_in()) {
     $output = '';
-    $output .= l('View', 'user') . ' | ' . l('Edit' , 'user/' . $user->uid . '/edit');
+    $output .= l('View', 'user') . ' | ' . l('Edit', 'user/' . $user->uid . '/edit');
     $output .= '<h3>History</h3>';
     $output .= '<p><strong>Member since</strong></p>';
     $output .= '<p>' . date('d/m/Y', $user->created) . '</p>';
@@ -75,5 +75,59 @@ function user_login_form_submit($form, &$form_state) {
   user_session($form_state['values']['name']);
   // todo use redirect callback for goto
   xcms_goto('user');
+}
+
+/**
+ * user_account_page().
+ */
+function user_account_page() {
+  global $user;
+  $output = '';
+  $output .= l('View', 'user') . ' | ' . l('Edit', 'user/' . $user->uid . '/edit');
+  $output .= xcms_get_form('user_account_form');
+  return $output;
+}
+
+/**
+ *
+ */
+function user_account_form() {
+  global $user;
+  // TODO default_value not working??
+  $form['name'] = array(
+    'type' => 'text',
+    'title' => 'Username',
+    'description' => 'Spaces are allowed; punctuation is not allowed except for periods, hyphens, apostrophes, and underscores.',
+    'required' => TRUE,
+  );
+
+  $form['pass'] = array(
+    'type' => 'password',
+    'title' => 'Password',
+    'description' => 'Enter your current password to change the E-mail address or Password.',
+    'required' => TRUE,
+  );
+
+  $form['mail'] = array(
+    'type' => 'text',
+    'title' => 'E-mail address',
+    // TODO default_value not working??
+    'default_value' => $user->mail,
+    'description' => 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.',
+    'required' => TRUE,
+  );
+
+  $form['pass_confirm'] = array(
+    'type' => 'password',
+    'title' => 'Confirm Password',
+    'description' => 'To change the current user password, enter the new password in both fields.',
+    'required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    'type' => 'submit',
+    'value' => 'Save',
+  );
+  return $form;
 }
 

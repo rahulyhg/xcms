@@ -1,0 +1,36 @@
+/**
+ * @file
+ */
+
+#toolbar {
+  position: absolute;
+  width: 100%;
+  background: #000;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  font: 11px/20px Tahoma, Verdana, Arial, 'Liberation Sans', FreeSans, sans-serif;
+  color: #ddd;
+}
+
+#toolbar ul,
+#toolbar li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#toolbar li {
+  display: inline-block;
+}
+
+#toolbar a {
+  color: #ddd;
+  display: block;
+  padding: 0 10px;
+}
+
+#toolbar a.active {
+  background: #222;
+}
+

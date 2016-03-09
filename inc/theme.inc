@@ -11,6 +11,12 @@
 function theme_page($vars) {
   global $conf;
 
+  // TODO load styles from styles[] theme.info file.
+  xcms_add_css('themes/default/base.css', array('weight' => -1));
+  xcms_add_css('themes/default/style.css');
+  xcms_add_js('themes/default/js/jquery-1.12.1.min.js', array('weight' => -1));
+  xcms_add_js('themes/default/js/site.js');
+
   $title = strip_tags(xcms_set_title());
   $vars += array(
     'title' => $title,
@@ -18,7 +24,18 @@ function theme_page($vars) {
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
     'messages' => xcms_set_message(),
+    'page_top' => implode("\n", xcms_modules_invoke('header')),
+    'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
   );
+
+  $vars['styles'] = xcms_get_css();
+  $vars['scripts'] =  xcms_get_js();
+  //'styles' => xcms_get_css(),
+  //    'scripts' => xcms_get_js(),
+
+  // TODO - hook_preprocess_page
+  // to allow for additional vars to be inserted.
+  extract($vars);
 
   // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
@@ -31,7 +48,8 @@ function theme_page($vars) {
   // $body_classes = implode(' ', $body_classes);
   // TODO hook_page for theme hooks.php
   // so variables can be modified from hook call.
-  extract($vars);
+  //
+  // $page_bottom = explode("\n", xcms_modules_invoke('footer'));.
   require_once ROOT_DIR . '/themes/' . issetor($conf['current_theme'], 'default') . '/page.php';
 }
 
@@ -105,7 +123,7 @@ function theme_form_element($vars) {
 
   // HTML5 "required" validation.
   if ($vars['required']) {
-    // $vars['attributes']['required'] = TRUE;
+    // $vars['attributes']['required'] = TRUE;.
   }
 
   if ($vars['title']) {
@@ -201,5 +219,78 @@ function theme_table($vars) {
 
   $output .= '</table>';
   return $output;
+}
+
+/**
+ * Adds a cascading stylesheet to the stylesheet queue.
+ */
+function xcms_add_css($data = NULL, $options = array()) {
+  dsm($data);
+  $css = &xcms_static(__FUNCTION__);
+  if (isset($data)) {
+    $options += array(
+      'weight' => 0,
+      'media' => 'all',
+    );
+    $css[$data] = $options;
+  }
+
+  return $css;
+}
+
+/**
+ * Returns all stylesheets to print on page.
+ */
+function xcms_get_css() {
+  $styles = array();
+  $css = xcms_add_css();
+  uasort($css, 'xcms_weight_sort');
+
+  foreach ($css as $path => $options) {
+    $attributes = array(
+      'type' => 'text/css',
+      'rel' => 'stylesheet',
+      'href' => url($path),
+      'media' => $options['media'],
+    );
+    $styles[] = '<link' . attributes($attributes) . ' />';
+  }
+
+  return implode("\n", $styles);
+}
+
+/**
+ * Adds a JavaScript file to the page.
+ */
+function xcms_add_js($data = NULL, $options = array()) {
+  $js = &xcms_static(__FUNCTION__);
+  if (isset($data)) {
+    $options += array(
+      'weight' => 0,
+    );
+    $js[$data] = $options;
+  }
+
+  return $js;
+}
+
+/**
+ * Returns a themed presentation of all JavaScript code for the current page.
+ *
+ * TODO, loads all on every page, should be optimised to load only on page if needed?
+ */
+function xcms_get_js() {
+  $scripts = array();
+  $js = xcms_add_js();
+  uasort($js, 'xcms_weight_sort');
+
+  foreach ($js as $path => $options) {
+    $attributes = array(
+      'type' => 'text/javascript',
+      'src' => url($path),
+    );
+    $scripts[] = '<script' . attributes($attributes) . '></script>';
+  }
+  return implode("\n", $scripts);
 }
 

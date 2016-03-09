@@ -83,44 +83,20 @@ function dsm($input) {
 }
 
 /**
- * Order_cmp()
- * TODO this was added to satisfy xcms_get_menu() do we need it - different way?
+ * Sorts arrays with weight, eg. Menu, CSS and JavaScript resources.
+ * @usage uasort($css, 'xcms_weight_sort'); 
  */
-
-/*
-function order_cmp($a, $b = NULL) {
-static $keys;
-if ($b === NULL) {
-return $keys = $a;
+function xcms_weight_sort($a, $b) {
+  if ($a['weight'] < $b['weight']) {
+    return - 1;
+  }
+  elseif ($a['weight'] > $b['weight']) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
-foreach ($keys as $k) {
-if (@$k[0] == '!') {
-$k = substr($k, 1);
-if (@$a[$k] !== @$b[$k]) {
-return strcmp(@$b[$k], @$a[$k]);
-}
-}
-elseif (@$a[$k] !== @$b[$k]) {
-return strcmp(@$a[$k], @$b[$k]);
-}
-}
-return 0;
-}
- */
-
-/**
- * Order()
- * TODO this was added to satisfy xcms_get_menu() do we need it - different way?
- */
-/*
-function order($array) {
-$keys = func_get_args();
-array_shift($keys);
-order_cmp($keys);
-uasort($array, 'order_cmp');
-return $array;
-}
- */
 
 /**
  * Encode special characters in plain-text.

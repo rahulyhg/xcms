@@ -40,10 +40,12 @@ $nav = theme_list(array('items' => $nav_items, 'attributes' => array('class' => 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="<?php print $directory; ?>/favicon.ico" type="image/vnd.microsoft.icon" />
-    <link rel="stylesheet" type="text/css" href="<?php print $directory; ?>/base.css" />
-    <link rel="stylesheet" type="text/css" href="<?php print $directory; ?>/style.css" />
+    <?php print $scripts; ?>
+    <?php print $styles; ?>
   </head>
   <body>
+
+  <?php print $page_top; ?>
 
   <div id="header-wrapper">
     <div id="header" class="container clearfix">
@@ -81,5 +83,10 @@ $nav = theme_list(array('items' => $nav_items, 'attributes' => array('class' => 
     </div>
 
   </body>
+
+  <?php print $page_bottom; ?>
+
 </html>
+
+
 
