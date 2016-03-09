@@ -45,6 +45,9 @@ function xcms_init() {
   if ($return = xcms_page_handler()) {
     print theme_page(array('content' => $return));
   }
+
+  // TODO where to put this??
+  session_destroy();
 }
 
 function xcms_version() {
