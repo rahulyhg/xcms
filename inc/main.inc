@@ -284,9 +284,7 @@ function xcms_build_form($form_id, &$form_state) {
   // Set $form_state defaults.
   $form_state += array(
     'values' => issetor($_POST, array()),
-    'redirect' => NULL,
-    'form_id' => $form_id,
-    'errors' => array(),
+    // 'submitted' => FALSE,
   );
 
   // Form attributes.

@@ -41,9 +41,8 @@ function theme_page($vars) {
 
   $vars['styles'] = xcms_get_css();
   $vars['scripts'] = xcms_get_js();
-  //'styles' => xcms_get_css(),
+  // 'styles' => xcms_get_css(),
   //    'scripts' => xcms_get_js(),
-
   // TODO - hook_preprocess_page
   // to allow for additional vars to be inserted.
   extract($vars);
@@ -104,18 +103,7 @@ function theme_list($vars) {
  */
 function theme_form_element($vars) {
   $output = '';
-  $vars += array(
-    'name' => '',
-    'type' => 'markup',
-    'title' => '',
-    'description' => '',
-    'required' => FALSE,
-    'attributes' => array(),
-    'markup' => '',
-    'options' => array(),
-    'default_value' => NULL,
-    'value' => NULL,
-  );
+  $vars += form_element_defaults();
 
   // Element wrapper.
   $attributes['id'] = 'edit-' . strip_class($vars['name']);
@@ -158,6 +146,24 @@ function theme_form_element($vars) {
 
   $output .= '</div>';
   return $output;
+}
+
+/**
+ * Retrieves default values for the element array.
+ */
+function form_element_defaults() {
+  return array(
+    'attributes' => array(),
+    'default_value' => NULL,
+    'description' => NULL,
+    'markup' => NULL,
+    'name' => NULL,
+    'options' => array(),
+    'required' => FALSE,
+    'title' => NULL,
+    'type' => 'markup',
+    'value' => NULL,
+  );
 }
 
 /**
