@@ -349,9 +349,9 @@ function xcms_build_form($form_id, &$form_state) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
-    // Redirect to self after submission.
-    // TODO form redirect - broken messages
-    xcms_goto($_GET['q']);
+
+    // Redirect to $form['redirect'] or self after submission.
+    xcms_goto(empty($form['redirect']) ? $_GET['q'] : $form['redirect']);
   }
 
   // Print form html.
