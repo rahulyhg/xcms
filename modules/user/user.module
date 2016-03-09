@@ -9,7 +9,7 @@
  */
 function user_init() {
   global $user;
-  $user = user_load_by_name($_COOKIE['name']);
+  $user = user_load_by_name(issetor($_COOKIE['name']));
   return array();
 }
 
@@ -45,39 +45,6 @@ function user_menu() {
     'access' => TRUE,
   );
 
-  /*
-  $items['test_inc'] = array(
-  'title' => 'Test inc file param',
-  'callback' => 'test_page_inc',
-  'file' => 'modules/test/test.pages.inc',
-  'access' => TRUE,
-  );
-
-  $items['test_access_bool'] = array(
-  'title' => 'Test menu hook',
-  'callback' => 'test_page',
-  'access' => TRUE,
-  );
-
-  $items['test_access_function'] = array(
-  'title' => 'Test menu hook',
-  'callback' => 'test_page',
-  'access' => 'test_access_callback',
-  );
-
-  $items['test_args/%/%'] = array(
-  'title' => 'Test 2 args',
-  'callback' => 'test_page',
-  'access' => TRUE,
-  );
-
-  $items['test_args/%/test'] = array(
-  'title' => 'Test 1 arg',
-  'callback' => 'test_page',
-  'access' => TRUE,
-  );
-   */
-
   return $items;
 }
 
@@ -86,7 +53,7 @@ function user_menu() {
  */
 function user_logout() {
   setcookie('name', '', strtotime('-1 month'), '/');
-  session_destroy();
+  // session_destroy();
 }
 
 /**
@@ -134,7 +101,7 @@ function user_authenticate($name, $pass) {
  *
  */
 function user_session($name) {
-  session_start();
+  // session_start();
   setcookie('name', $name, strtotime('+1 month'), '/');
 }
 

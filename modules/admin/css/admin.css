@@ -20,6 +20,10 @@
   list-style: none;
 }
 
+#toolbar ul {
+  float: left;
+}
+
 #toolbar li {
   display: inline-block;
 }
@@ -34,3 +38,6 @@
   background: #222;
 }
 
+#toolbar .toolbar-logout {
+  float: right;
+}

@@ -5,22 +5,39 @@
  */
 
 /**
- * Implements hook_init().
+ * Implements hook_menu().
  */
-function admin_init() {
-  xcms_add_css('modules/admin/css/admin.css');
+function admin_menu() {
+
+  $items['admin/status'] = array(
+    'title' => 'Status',
+    'callback' => 'admin_status_page',
+    'file' => 'modules/admin/admin.admin.inc',
+    'access' => TRUE,
+  );
+
+  return $items;
 }
 
 /**
  * Implements hook_footer().
  */
 function admin_footer() {
-  $admin_items = array(
-    'home' => l('Home', '<front>'),
-    'test' => l('Test', 'test'),
-    'user' => l('User', 'user'),
-  );
-  $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
-  return array('toolbar' => '<div id="toolbar">' . $links . '</div>');
+
+  global $user;
+  // TODO roles / permissions for admin
+  // required permission hooks.
+  if ($user->uid == 1) {
+    xcms_add_css('modules/admin/css/admin.css');
+
+    $admin_items = array(
+      'home' => l('Home', '<front>'),
+      'status' => l('Status', 'admin/status'),
+      'user' => l('User', 'user'),
+    );
+
+    $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
+    return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
+  }
 }
 

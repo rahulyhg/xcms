@@ -1,3 +1,4 @@
 name = Admin
 description = Admin features.
 version = 0.x
+dependencies[] = user

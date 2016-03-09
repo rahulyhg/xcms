@@ -29,7 +29,7 @@ function theme_page($vars) {
   );
 
   $vars['styles'] = xcms_get_css();
-  $vars['scripts'] =  xcms_get_js();
+  $vars['scripts'] = xcms_get_js();
   //'styles' => xcms_get_css(),
   //    'scripts' => xcms_get_js(),
 
@@ -225,7 +225,6 @@ function theme_table($vars) {
  * Adds a cascading stylesheet to the stylesheet queue.
  */
 function xcms_add_css($data = NULL, $options = array()) {
-  dsm($data);
   $css = &xcms_static(__FUNCTION__);
   if (isset($data)) {
     $options += array(

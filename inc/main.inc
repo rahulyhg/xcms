@@ -144,7 +144,7 @@ function xcms_path_get($path) {
     return;
   }
 
-  xcms_set_title($menu[$path]['title']);
+  xcms_set_title(issetor($menu[$path]['title']));
   return array_merge($defaults, $menu[$path]);
 }
 
