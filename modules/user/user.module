@@ -70,14 +70,7 @@ function user_load_all() {
  */
 function user_load($uid) {
   $users = user_load_all();
-  if (isset($users[$uid])) {
-    $users[$uid]['uid'] = $uid;
-    $account = $users[$uid];
-  }
-  else {
-    $account = $users[0];
-  }
-  return (object) $account;
+  return (object) $users[array_search($uid, array_column($users, 'uid'))];
 }
 
 /**
@@ -85,7 +78,7 @@ function user_load($uid) {
  */
 function user_load_by_name($name) {
   $users = user_load_all();
-  return user_load(array_search($name, array_column($users, 'name')));
+  return (object) $users[array_search($name, array_column($users, 'name'))];
 }
 
 /**
