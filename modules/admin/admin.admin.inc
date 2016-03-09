@@ -5,14 +5,14 @@
  */
 
 /**
- *
+ * Page callback for admin_conf_form().
  */
 function admin_conf_page() {
   return xcms_get_form('admin_conf_form');
 }
 
 /**
- *
+ * Admin configuration settings form.
  */
 function admin_conf_form($form, &$form_state) {
   global $conf;
@@ -57,40 +57,35 @@ function admin_conf_form($form, &$form_state) {
 }
 
 /**
- *
+ * Validation handler for admin_conf_form().
  */
 function admin_conf_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['site_mail'])) {
-    // Validate site_mail email address.
     form_set_error('site_mail', 'The e-mail address <i>' . $form_state['values']['site_mail'] . '</i> is not valid.', $form_state);
   }
 }
 
 /**
- *
+ * Submit handler for admin_conf_form().
  */
 function admin_conf_form_submit($form, &$form_state) {
   xcms_set_message('The configuration options have been saved.');
 }
 
 /**
- *
+ * Admin Status page.
  */
 function admin_status_page() {
-  $output = ' ';
-
   $rows[] = array('XCMS', xcms_version());
   $rows[] = array('PHP', phpversion() . ' (' . l('phpinfo', 'admin/status/phpinfo') . ')');
   $rows[] = array('PHP memory limit', ini_get('memory_limit'));
   $rows[] = array('Web server', $_SERVER['SERVER_SOFTWARE']);
 
-  $output .= theme('table', array('rows' => $rows));
-
-  return $output;
+  return theme('table', array('rows' => $rows));
 }
 
 /**
- *
+ * Status page for phpinfo().
  */
 function admin_phpinfo_page() {
   print phpinfo();
