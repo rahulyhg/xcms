@@ -28,39 +28,39 @@ function theme_page($vars) {
   xcms_add_js('themes/default/js/site.js');
 
   $title = strip_tags(xcms_set_title());
+
   $vars += array(
     'title' => $title,
-    'directory' => issetor($conf['base_path'], '/') . 'themes/' . issetor($conf['current_theme'], 'default'),
+    'directory' => 'themes/' . issetor($conf['current_theme'], 'default'),
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
     'messages' => xcms_set_message(),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
-    'body_classes' => '',
+    'body_classes' => array(),
   );
 
   $vars['styles'] = xcms_get_css();
   $vars['scripts'] = xcms_get_js();
-  // 'styles' => xcms_get_css(),
-  //    'scripts' => xcms_get_js(),
-  // TODO - hook_preprocess_page
-  // to allow for additional vars to be inserted.
-  extract($vars);
 
   // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
-  // TODO $body_classes
-  // if ( .. is front) body_classes [] = is_front
-  // $body_classes = array();
-  // if (is_admin()) {
-  //  $body_classes[] = 'is_admin';
-  // }
-  // $body_classes = implode(' ', $body_classes);
-  // TODO hook_page for theme hooks.php
-  // so variables can be modified from hook call.
-  //
-  // $page_bottom = explode("\n", xcms_modules_invoke('footer'));.
-  require_once ROOT_DIR . '/themes/' . issetor($conf['current_theme'], 'default') . '/page.php';
+
+  // 1st attempt at a theme hook
+  // TODO this should go into a function
+  if (file_exists($vars['directory'] . '/template.php')) {
+    require_once $vars['directory'] . '/template.php';
+    if (function_exists($conf['current_theme'] . '_preprocess_page')) {
+      call_user_func_array($conf['current_theme'] . '_preprocess_page', array(&$vars));
+    }
+  }
+
+  // Extract $vars.
+  extract($vars);
+
+  $body_classes = implode(' ', $body_classes);
+
+  require_once $directory . '/page.tpl.php';
 }
 
 /**

@@ -230,11 +230,19 @@ function xcms_set_title($title = NULL) {
 }
 
 /**
+ * Issetor().
+ */
+function issetor(&$var, $default = NULL) {
+  return isset($var) ? $var : $default;
+}
+
+/**
  * Return a persistent variable.
  */
 function variable_get($name, $default) {
   global $conf;
-  return isset($conf[$name]) ? $conf[$name] : $default;
+  // return isset($conf[$name]) ? $conf[$name] : $default;
+  return issetor($conf[$name], $default);
 }
 
 /**

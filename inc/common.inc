@@ -58,12 +58,6 @@ function attributes($attributes) {
   return $attributes ? ' ' . implode(' ', $attributes) : '';
 }
 
-/**
- * Issetor().
- */
-function issetor(&$var, $default = NULL) {
-  return isset($var) ? $var : $default;
-}
 
 /**
  * Arg().
