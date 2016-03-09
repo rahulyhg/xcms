@@ -69,6 +69,13 @@ function admin_conf_form_validate($form, &$form_state) {
  * Submit handler for admin_conf_form().
  */
 function admin_conf_form_submit($form, &$form_state) {
+  global $conf;
+  foreach ($form_state['values'] as $key => $value) {
+    if (array_key_exists($key, $conf)) {
+      $conf[$key] = $value;
+    }
+  }
+  xcms_conf_write($conf);
   xcms_set_message('The configuration options have been saved.');
 }
 

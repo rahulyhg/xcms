@@ -350,8 +350,11 @@ function xcms_build_form($form_id, &$form_state) {
       }
     }
 
-    // Redirect to $form['redirect'] or self after submission.
-    xcms_goto(empty($form['redirect']) ? $_GET['q'] : $form['redirect']);
+    // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation
+    if (empty($form_errors)) {
+      // Redirect to $form['redirect'] or self after submission.
+      xcms_goto(empty($form['redirect']) ? $_GET['q'] : $form['redirect']);
+    }
   }
 
   // Print form html.
