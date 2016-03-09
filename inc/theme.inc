@@ -36,6 +36,7 @@ function theme_page($vars) {
     'messages' => xcms_set_message(),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
+    'body_classes' => '',
   );
 
   $vars['styles'] = xcms_get_css();

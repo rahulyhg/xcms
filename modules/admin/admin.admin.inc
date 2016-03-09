@@ -61,7 +61,7 @@ function admin_conf_form($form, &$form_state) {
  */
 function admin_conf_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['site_mail'])) {
-    form_set_error('site_mail', 'The e-mail address <i>' . $form_state['values']['site_mail'] . '</i> is not valid.', $form_state);
+    form_set_error('site_mail', 'The e-mail address <i>' . $form_state['values']['site_mail'] . '</i> is not valid.');
   }
 }
 

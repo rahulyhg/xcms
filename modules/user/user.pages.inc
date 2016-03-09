@@ -64,7 +64,7 @@ function user_login_form($form, &$form_state) {
  */
 function user_login_form_validate($form, &$form_state) {
   if (!user_authenticate($form_state['values']['name'], $form_state['values']['pass'])) {
-    form_set_error('name', 'Sorry, invalid username or password. Have you forgotten your password?', $form_state);
+    form_set_error('name', 'Sorry, invalid username or password. Have you forgotten your password?');
   }
 }
 

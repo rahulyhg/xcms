@@ -304,7 +304,10 @@ function xcms_build_form($form_id, &$form_state) {
     foreach ($form as $name => $element) {
 
       // Set element value from post
-      $form[$name]['value'] = issetor($form_state['values'][$name]);
+      if (isset($form_state['values'][$name])) {
+        $form[$name]['value'] = $form_state['values'][$name];
+        unset($form[$name]['default_value']);
+      }
 
       if (isset($element['required']) && empty($form_state['values'][$name])) {
         form_set_error($name, $element['title'] . ' field is required.', $form_state);
@@ -322,8 +325,9 @@ function xcms_build_form($form_id, &$form_state) {
     }
 
     // Check for form errors. Set by form_set_error()
-    if (!empty($form_state['errors'])) {
-      foreach ($form_state['errors'] as $name => $message) {
+    $form_errors = xcms_static('form_set_error');
+    if (!empty($form_errors)) {
+      foreach ($form_errors as $name => $message) {
         xcms_set_message($message, 'error');
         $form[$name]['attributes']['class'][] = 'error';
       }
@@ -355,10 +359,13 @@ function xcms_build_form($form_id, &$form_state) {
 
 /**
  * Files an error against a form element.
- * TODO don't want to have to parse the form_state, can we do this with static?
  */
-function form_set_error($name, $message, &$form_state) {
-  $form_state['errors'][$name] = $message;
+function form_set_error($name = NULL, $message) {
+  $form_errors = &xcms_static(__FUNCTION__, array());
+  if (isset($name)) {
+    $form_errors[$name] = $message;
+  }
+  return $form_errors;
 }
 
 /**
