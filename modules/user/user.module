@@ -10,7 +10,6 @@
 function user_init() {
   global $user;
   $user = user_load_by_name(issetor($_COOKIE['name']));
-  return array();
 }
 
 /**

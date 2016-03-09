@@ -5,6 +5,13 @@
  */
 
 /**
+ * Implements hook_init().
+ */
+function system_init() {
+  xcms_add_css('modules/system/system.css');
+}
+
+/**
  * Implements hook_menu().
  */
 function system_menu() {
@@ -25,3 +32,4 @@ function system_menu() {
 
   return $items;
 }
+
