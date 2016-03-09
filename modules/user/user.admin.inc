@@ -32,7 +32,7 @@ function user_login_form() {
  */
 function user_login_form_validate($form, &$form_state) {
   if ($form_state['values']['name'] == 'chris') {
-    form_set_error('name', 'my error message', $form_state);
+    form_set_error('name', 'my error message');
   }
 }
 

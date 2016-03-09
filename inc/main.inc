@@ -310,7 +310,7 @@ function xcms_build_form($form_id, &$form_state) {
       }
 
       if (isset($element['required']) && empty($form_state['values'][$name])) {
-        form_set_error($name, $element['title'] . ' field is required.', $form_state);
+        form_set_error($name, $element['title'] . ' field is required.');
 
         // Don't process validate callbacks if form required empty.
         $form['validate_callbacks'] = array();
