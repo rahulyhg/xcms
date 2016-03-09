@@ -7,7 +7,7 @@
 
 /**
  * Contants
- * MENU_*
+ *  MENU_*
  *  MENU_CALLBACK: hidden.
  */
 define('XCMS_VERSION', '0.x-dev');
@@ -55,7 +55,7 @@ function xcms_version() {
 }
 
 /**
- * Xcms_conf_read().
+ * Read site configuration from file.
  */
 function xcms_conf_read() {
   global $conf;
@@ -70,7 +70,7 @@ function xcms_conf_read() {
 }
 
 /**
- * Xcms_conf_write().
+ * Write site configuration to file.
  */
 function xcms_conf_write($conf) {
   file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
@@ -109,7 +109,7 @@ function xcms_page_handler() {
 }
 
 /**
- * Xcms_check_access().
+ * Menu access helper function.
  */
 function xcms_check_access($access) {
   if (function_exists($access)) {
@@ -230,7 +230,7 @@ function xcms_set_title($title = NULL) {
 }
 
 /**
- * Issetor().
+ * Check if a variable is set, return default if not.
  */
 function issetor(&$var, $default = NULL) {
   return isset($var) ? $var : $default;
@@ -284,7 +284,7 @@ function xcms_get_form($form_id) {
 }
 
 /**
- *
+ * Form builder function.
  */
 function xcms_build_form($form_id, &$form_state) {
   $output = '';
