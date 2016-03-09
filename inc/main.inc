@@ -20,6 +20,9 @@ define('XCMS_VERSION', '0.x-dev');
 function xcms_init() {
   global $conf, $_menu;
 
+  // Set error handler.
+  set_error_handler('_xcms_error_handler');
+
   require ROOT_DIR . '/inc/common.inc';
   require ROOT_DIR . '/inc/theme.inc';
 
@@ -359,7 +362,9 @@ function form_set_error($name, $message, &$form_state) {
 }
 
 /**
- *
+ * Provides custom PHP error handling.
  */
-// Function xcms_validate_form($form_id, &$form, &$form_state) {}.
+function _xcms_error_handler($error_level, $message, $filename, $line, $context) {
+  xcms_set_message('<i>' . $message . '</i>' . ' in <strong>' . $filename . '</strong> on line ' . $line, 'error');
+}
 
