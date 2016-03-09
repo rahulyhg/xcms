@@ -46,6 +46,13 @@ function user_menu() {
     'access' => 'user_is_logged_in',
   );
 
+  $items['admin/user'] = array(
+    'title' => 'Users',
+    'callback' => 'user_admin_page',
+    'file' => 'modules/user/user.admin.inc',
+    'access' => 'user_is_admin',
+  );
+
   return $items;
 }
 

@@ -129,3 +129,8 @@ function valid_email_address($mail) {
   return (bool) filter_var($mail, FILTER_VALIDATE_EMAIL);
 }
 
+
+function format_date($timestamp) {
+  // TODO add user / site time zone - currently only local
+  return date(variable_get('date_format', 'Y-m-d'), $timestamp);
+}

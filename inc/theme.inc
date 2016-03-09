@@ -78,24 +78,53 @@ function theme_list($vars) {
 
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
 
-  foreach ($vars['items'] as $item) {
+  foreach ($vars['items'] as $key => $item) {
+    // TODO: first / last class?
+
+    // Use the $key as class name if it's set and not numeric
+    $li_attributes = array();
+    if (!is_numeric($key)) {
+      $li_attributes['class'] = $key;
+    }
+
+    // Iterate over items build a HTML compliant nested list
     if (next($vars['items'])) {
       $next_item = current($vars['items']);
     }
     if (is_array($item)) {
       $output .= '<ul>' . theme_list(array('items' => $item, 'root' => FALSE)) . '</ul></li>';
     }
-    elseif (is_array($next_item)) {
-      $output .= '<li>' . $item;
+    elseif (isset($next_item) && is_array($next_item)) {
+      $output .= '<li' . attributes($li_attributes) . '>' . $item;
     }
     else {
-      $output .= '<li>' . $item . '</li>';
+      $output .= '<li' . attributes($li_attributes) . '>' . $item . '</li>';
     }
   }
 
   $output .= $vars['root'] ? '</' . $vars['type'] . '>' : NULL;
 
   return $output;
+}
+
+/**
+ * Theme_links().
+ */
+function theme_links($vars) {
+
+  $vars += array(
+    'links' => array(),
+    'attributes' => array(
+      'class' => array('links'),
+    ),
+  );
+
+  $items = array();
+  foreach ($vars['links'] as $key => $link) {
+    $items[$key] = l($link['title'], $link['href']);
+  }
+
+  return theme('list', array('items' => $items, 'attributes' => $vars['attributes']));
 }
 
 /**

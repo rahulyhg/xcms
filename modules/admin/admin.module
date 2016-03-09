@@ -37,7 +37,7 @@ function admin_menu() {
  */
 function admin_footer() {
   if (user_is_admin()) {
-    xcms_add_css('modules/admin/css/admin.css');
+    xcms_add_css('modules/admin/admin.toolbar.css');
 
     // Load top level admin items for menu.
     global $_menu;

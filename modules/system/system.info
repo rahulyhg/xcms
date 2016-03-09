@@ -1,4 +1,4 @@
 name = System
 description = Site configuration.
-version = 1.x
+version = 0.x
 package = Core - required
