@@ -15,23 +15,26 @@ function admin_conf_page() {
  *
  */
 function admin_conf_form($form, &$form_state) {
-dsm($form_state);
+  global $conf;
 
   $form['site_name'] = array(
     'type' => 'text',
     'title' => 'Site name',
+    'default_value' => issetor($conf['site_name']),
     'required' => TRUE,
   );
 
   $form['site_mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
+    'default_value' => issetor($conf['site_mail']),
     'description' => 'The From address in automated e-mails sent from other notifications.',
     'required' => TRUE,
   );
 
-  $form['front_page'] = array(
+  $form['site_front'] = array(
     'type' => 'text',
+    'default_value' => issetor($conf['site_front']),
     'title' => 'Default front page',
     'description' => 'Optionally, specify a relative URL to display as the front page.',
   );
@@ -41,7 +44,8 @@ dsm($form_state);
   $form['current_theme'] = array(
     'type' => 'select',
     'title' => 'Current theme',
-    'options' => array('default' => 'default'),
+    'default_value' => issetor($conf['current_theme']),
+    'options' => array('default' => 'default', 'nothing' => 'nothing'),
   );
 
   $form['submit'] = array(
@@ -50,6 +54,23 @@ dsm($form_state);
   );
 
   return $form;
+}
+
+/**
+ *
+ */
+function admin_conf_form_validate($form, &$form_state) {
+  if (!valid_email_address($form_state['values']['site_mail'])) {
+    // Validate site_mail email address.
+    form_set_error('site_mail', 'The e-mail address <i>' . $form_state['values']['site_mail'] . '</i> is not valid.', $form_state);
+  }
+}
+
+/**
+ *
+ */
+function admin_conf_form_submit($form, &$form_state) {
+  xcms_set_message('The configuration options have been saved.');
 }
 
 /**

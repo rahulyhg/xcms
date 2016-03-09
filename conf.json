@@ -1,6 +1,7 @@
 {
   "site_name": "XCMS",
   "site_front": "test",
+  "site_mail": "chrisherberte@gmail.com",
   "current_theme": "default",
   "date_format": "d\/m\/Y H:i",
   "base_path": "\/",

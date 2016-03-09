@@ -102,6 +102,7 @@ function theme_list($vars) {
  * Theme_form_element().
  */
 function theme_form_element($vars) {
+  $output = '';
   $vars += array(
     'name' => '',
     'type' => 'markup',
@@ -111,9 +112,9 @@ function theme_form_element($vars) {
     'attributes' => array(),
     'markup' => '',
     'options' => array(),
+    'default_value' => NULL,
+    'value' => NULL,
   );
-
-  $output = '';
 
   // Element wrapper.
   $attributes['id'] = 'edit-' . strip_class($vars['name']);
@@ -128,8 +129,8 @@ function theme_form_element($vars) {
   // Set type and class on form item.
   $vars['attributes']['type'] = $vars['type'];
   $vars['attributes']['name'] = $vars['name'];
-  $vars['attributes']['value'] = $vars['default_value'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
+  $vars['attributes']['value'] = empty($vars['value']) ? $vars['default_value'] : $vars['value'];
 
   // HTML5 "required" validation.
   if ($vars['required']) {

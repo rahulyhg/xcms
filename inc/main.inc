@@ -302,6 +302,10 @@ function xcms_build_form($form_id, &$form_state) {
 
     // Check form elements for missing required fields.
     foreach ($form as $name => $element) {
+
+      // Set element value from post
+      $form[$name]['value'] = issetor($form_state['values'][$name]);
+
       if (isset($element['required']) && empty($form_state['values'][$name])) {
         form_set_error($name, $element['title'] . ' field is required.', $form_state);
 
@@ -321,7 +325,7 @@ function xcms_build_form($form_id, &$form_state) {
     if (!empty($form_state['errors'])) {
       foreach ($form_state['errors'] as $name => $message) {
         xcms_set_message($message, 'error');
-        $form['name']['attributes']['class'][] = 'error';
+        $form[$name]['attributes']['class'][] = 'error';
       }
 
       // Don't process submit callbacks if form has errors.
@@ -342,10 +346,6 @@ function xcms_build_form($form_id, &$form_state) {
   // Render the form elements.
   foreach ($form as $name => $element) {
     $element['name'] = $name;
-
-    // TODO, check this works and we can override it? this just here to satisfy validation form testing.
-    $element['default_value'] = issetor($form_state['values'][$name]);
-
     $output .= theme_form_element($element);
   }
 

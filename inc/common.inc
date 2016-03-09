@@ -128,3 +128,10 @@ function strip_class($text) {
   return $text;
 }
 
+/**
+ * Verifies the syntax of the given e-mail address.
+ */
+function valid_email_address($mail) {
+  return (bool) filter_var($mail, FILTER_VALIDATE_EMAIL);
+}
+
