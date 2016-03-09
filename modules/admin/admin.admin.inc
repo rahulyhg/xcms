@@ -15,6 +15,7 @@ function admin_conf_page() {
  *
  */
 function admin_conf_form($form, &$form_state) {
+dsm($form_state);
 
   $form['site_name'] = array(
     'type' => 'text',

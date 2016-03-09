@@ -291,7 +291,7 @@ function xcms_build_form($form_id, &$form_state) {
   );
 
   // Get form array.
-  $form = call_user_func($form_id);
+  $form = call_user_func_array($form_id, array(array(), &$form_state));
 
   // Check for default validate and submit handlers.
   $form['validate_callbacks'][] = $form_id . '_validate';
@@ -306,7 +306,7 @@ function xcms_build_form($form_id, &$form_state) {
         form_set_error($name, $element['title'] . ' field is required.', $form_state);
 
         // Don't process validate callbacks if form required empty.
-        unset($form['validate_callbacks']);
+        $form['validate_callbacks'] = array();
       }
     }
 
@@ -325,7 +325,7 @@ function xcms_build_form($form_id, &$form_state) {
       }
 
       // Don't process submit callbacks if form has errors.
-      unset($form['submit_callbacks']);
+      $form['submit_callbacks'] = array();
     }
 
     // Submit callbacks.
