@@ -38,7 +38,7 @@ function user_logout_page() {
 /**
  *
  */
-function user_login_form() {
+function user_login_form($form, &$form_state) {
   // Global $user;.
   $form['name'] = array(
     'type' => 'text',
@@ -91,7 +91,7 @@ function user_account_page() {
 /**
  *
  */
-function user_account_form() {
+function user_account_form($form, &$form_state) {
   global $user;
   // TODO default_value not working??
   $form['name'] = array(
@@ -108,19 +108,19 @@ function user_account_form() {
     'required' => TRUE,
   );
 
+  $form['pass_confirm'] = array(
+    'type' => 'password',
+    'title' => 'Confirm Password',
+    'description' => 'To change the current user password, enter the new password in both fields.',
+    'required' => TRUE,
+  );
+
   $form['mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
     // TODO default_value not working??
     'default_value' => $user->mail,
     'description' => 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.',
-    'required' => TRUE,
-  );
-
-  $form['pass_confirm'] = array(
-    'type' => 'password',
-    'title' => 'Confirm Password',
-    'description' => 'To change the current user password, enter the new password in both fields.',
     'required' => TRUE,
   );
 

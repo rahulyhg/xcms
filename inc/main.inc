@@ -10,6 +10,7 @@
  * MENU_*
  *  MENU_CALLBACK: hidden.
  */
+define('XCMS_VERSION', '0.x-dev');
 // define('MENU_CALLBACK', 0);
 // define('MENU_NORMAL', 1);.
 
@@ -37,6 +38,10 @@ function xcms_init() {
   if ($return = xcms_page_handler()) {
     print theme_page(array('content' => $return));
   }
+}
+
+function xcms_version() {
+  return XCMS_VERSION;
 }
 
 /**

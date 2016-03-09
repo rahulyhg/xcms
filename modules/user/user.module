@@ -29,20 +29,21 @@ function user_menu() {
     'title' => 'Login',
     'callback' => 'user_login_page',
     'file' => 'modules/user/user.pages.inc',
-    'access' => TRUE,
+    'access' => 'user_is_anonymous',
   );
 
   $items['user/logout'] = array(
     'callback' => 'user_logout_page',
     'file' => 'modules/user/user.pages.inc',
-    'access' => TRUE,
+    'access' => 'user_is_logged_in',
   );
 
+  // TODO - admin only edits other users.
   $items['user/%/edit'] = array(
     'title' => 'Edit account',
     'callback' => 'user_account_page',
     'file' => 'modules/user/user.pages.inc',
-    'access' => TRUE,
+    'access' => 'user_is_logged_in',
   );
 
   return $items;
@@ -110,5 +111,22 @@ function user_session($name) {
  */
 function user_is_logged_in() {
   return isset($_COOKIE['name']);
+}
+
+/**
+ *
+ */
+function user_is_anonymous() {
+  return !user_is_logged_in();
+}
+
+/**
+ *
+ */
+function user_is_admin() {
+  global $user;
+  if (issetor($user->uid, 0) == 1) {
+    return TRUE;
+  }
 }
 

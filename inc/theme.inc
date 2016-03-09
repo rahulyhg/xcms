@@ -6,6 +6,16 @@
  */
 
 /**
+ * Generates themed output.
+ */
+function theme($hook, $vars = array()) {
+  $function = 'theme_' . $hook;
+  if (function_exists($function)) {
+    return call_user_func($function, $vars);
+  }
+}
+
+/**
  * Theme_page().
  */
 function theme_page($vars) {

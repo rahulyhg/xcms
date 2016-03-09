@@ -9,11 +9,24 @@
  */
 function admin_menu() {
 
+  $items['admin/conf'] = array(
+    'title' => 'Configuration',
+    'callback' => 'admin_conf_page',
+    'file' => 'modules/admin/admin.admin.inc',
+    'access' => 'user_is_admin',
+  );
+
   $items['admin/status'] = array(
     'title' => 'Status',
     'callback' => 'admin_status_page',
     'file' => 'modules/admin/admin.admin.inc',
-    'access' => TRUE,
+    'access' => 'user_is_admin',
+  );
+
+  $items['admin/status/phpinfo'] = array(
+    'callback' => 'admin_phpinfo_page',
+    'file' => 'modules/admin/admin.admin.inc',
+    'access' => 'user_is_admin',
   );
 
   return $items;
@@ -27,12 +40,15 @@ function admin_footer() {
   global $user;
   // TODO roles / permissions for admin
   // required permission hooks.
-  if ($user->uid == 1) {
+  if (user_is_admin()) {
     xcms_add_css('modules/admin/css/admin.css');
 
     $admin_items = array(
-      'home' => l('Home', '<front>'),
+      'home' => l('Home', ''),
+      'conf' => l('Configuration', 'admin/conf'),
       'status' => l('Status', 'admin/status'),
+      // 'status' => l('Status', 'admin/status'),
+      // 'status' => l('Status', 'admin/status'),
       'user' => l('User', 'user'),
     );
 
