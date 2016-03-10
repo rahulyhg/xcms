@@ -21,14 +21,14 @@ function user_page() {
 }
 
 /**
- * user_login_page().
+ * User_login_page().
  */
 function user_login_page() {
   return xcms_get_form('user_login_form');
 }
 
 /**
- * user_logout_page().
+ * User_logout_page().
  */
 function user_logout_page() {
   user_logout();
@@ -39,19 +39,20 @@ function user_logout_page() {
  *
  */
 function user_login_form($form, &$form_state) {
-  // Global $user;.
   $form['name'] = array(
     'type' => 'text',
     'title' => 'Username',
     'description' => 'Enter your ' . variable_get('site_name', 'XCMS') . ' username.',
     'required' => TRUE,
   );
+
   $form['pass'] = array(
     'type' => 'password',
     'title' => 'Password',
     'description' => 'Enter the password that accompanies your username.',
     'required' => TRUE,
   );
+
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Login',
@@ -73,12 +74,12 @@ function user_login_form_validate($form, &$form_state) {
  */
 function user_login_form_submit($form, &$form_state) {
   user_session($form_state['values']['name']);
-  // todo use redirect callback for goto
-  xcms_goto('user');
+  // Todo use redirect callback for goto. - set GET-destination=variable from form?
+  xcms_goto();
 }
 
 /**
- * user_account_page().
+ * User_account_page().
  */
 function user_account_page() {
   global $user;
@@ -93,13 +94,17 @@ function user_account_page() {
  */
 function user_account_form($form, &$form_state) {
   global $user;
-  // TODO default_value not working??
+
   $form['name'] = array(
     'type' => 'text',
     'title' => 'Username',
+    'default_value' => $user->name,
     'description' => 'Spaces are allowed; punctuation is not allowed except for periods, hyphens, apostrophes, and underscores.',
     'required' => TRUE,
   );
+
+  // TODO password match pure javascript html client side
+  // http://codepen.io/diegoleme/pen/surIK
 
   $form['pass'] = array(
     'type' => 'password',
@@ -118,7 +123,6 @@ function user_account_form($form, &$form_state) {
   $form['mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
-    // TODO default_value not working??
     'default_value' => $user->mail,
     'description' => 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.',
     'required' => TRUE,
