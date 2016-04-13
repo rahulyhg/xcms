@@ -15,26 +15,24 @@ function admin_conf_page() {
  * Admin configuration settings form.
  */
 function admin_conf_form($form, &$form_state) {
-  global $conf;
-
   $form['site_name'] = array(
     'type' => 'text',
     'title' => 'Site name',
-    'default_value' => issetor($conf['site_name']),
+    'default_value' => variable_get('site_name'),
     'required' => TRUE,
   );
 
   $form['site_mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
-    'default_value' => issetor($conf['site_mail']),
+    'default_value' => variable_get('site_mail'),
     'description' => 'The From address in automated e-mails sent from other notifications.',
     'required' => TRUE,
   );
 
   $form['site_front'] = array(
     'type' => 'text',
-    'default_value' => issetor($conf['site_front']),
+    'default_value' => variable_get('site_front'),
     'title' => 'Default front page',
     'description' => 'Optionally, specify a relative URL to display as the front page.',
   );
@@ -44,8 +42,15 @@ function admin_conf_form($form, &$form_state) {
   $form['current_theme'] = array(
     'type' => 'select',
     'title' => 'Current theme',
-    'default_value' => issetor($conf['current_theme']),
+    'default_value' => variable_get('current_theme'),
     'options' => array('default' => 'default', 'nothing' => 'nothing'),
+  );
+
+  $form['date_format'] = array(
+    'type' => 'text',
+    'default_value' => variable_get('date_format'),
+    'title' => 'Date format',
+    'description' => 'Date format see PHP date() - TODO linky',
   );
 
   $form['submit'] = array(
@@ -69,13 +74,9 @@ function admin_conf_form_validate($form, &$form_state) {
  * Submit handler for admin_conf_form().
  */
 function admin_conf_form_submit($form, &$form_state) {
-  global $conf;
   foreach ($form_state['values'] as $key => $value) {
-    if (array_key_exists($key, $conf)) {
-      $conf[$key] = $value;
-    }
+    variable_set($key, $value);
   }
-  xcms_conf_write($conf);
   xcms_set_message('The configuration options have been saved.');
 }
 
@@ -83,11 +84,10 @@ function admin_conf_form_submit($form, &$form_state) {
  * Admin Status page.
  */
 function admin_status_page() {
-  $rows[] = array('XCMS', xcms_version());
-  $rows[] = array('PHP', phpversion() . ' (' . l('phpinfo', 'admin/status/phpinfo') . ')');
-  $rows[] = array('PHP memory limit', ini_get('memory_limit'));
-  $rows[] = array('Web server', $_SERVER['SERVER_SOFTWARE']);
-
+  $rows['xcms_version'] = array('XCMS', xcms_version());
+  $rows['php_version'] = array('PHP', phpversion() . ' (' . l('phpinfo', 'admin/status/phpinfo') . ')');
+  $rows['php_memory_limit'] = array('PHP memory limit', ini_get('memory_limit'));
+  $rows['web_server'] = array('Web server', $_SERVER['SERVER_SOFTWARE']);
   return theme('table', array('rows' => $rows));
 }
 

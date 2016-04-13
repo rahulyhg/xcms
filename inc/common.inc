@@ -14,6 +14,36 @@ function xcms_goto($url = NULL) {
 }
 
 /**
+ * Sets a persistent variable.
+ */
+function variable_set($key, $value) {
+  global $xcms_db, $conf;
+
+  // TODO replace this with a future db_merge() type function, try keep the logic in php (cleaner)
+  // db_merge('variable')->key(array('name' => $name))->fields(array('value' => serialize($value)))->execute();
+  $query = $xcms_db->query('SELECT count(key) FROM variables WHERE key = :key LIMIT 1');
+  $query->execute(array(':key' => $key));
+
+  if ($query->fetchColumn()) {
+    $query = $xcms_db->prepare('UPDATE variables SET value = :value WHERE key = :key');
+  }
+  else {
+    $query = $xcms_db->prepare('INSERT INTO variables (key, value) VALUES (:key, :value)');
+  }
+  $query->execute(array(':key' => $key, ':value' => $value));
+
+  $conf[$key] = $value;
+}
+
+/**
+ * Return a persistent variable.
+ */
+function variable_get($key, $default = NULL) {
+  global $conf;
+  return issetor($conf[$key], $default);
+}
+
+/**
  * L().
  */
 function l($title, $path, $options = array()) {
@@ -58,7 +88,6 @@ function attributes($attributes) {
   return $attributes ? ' ' . implode(' ', $attributes) : '';
 }
 
-
 /**
  * Arg().
  */
@@ -76,12 +105,13 @@ function arg($index = 0, $path = NULL) {
 /**
  * TODO rewrite this as a module later.
  */
-function dsm($input) {
+function xsm($input) {
   xcms_set_message('<pre>' . print_r($input, TRUE) . '</pre>');
 }
 
 /**
  * Sorts arrays with weight, eg. Menu, CSS and JavaScript resources.
+ *
  * @usage uasort($css, 'xcms_weight_sort');
  */
 function xcms_weight_sort($a, $b) {
@@ -129,8 +159,11 @@ function valid_email_address($mail) {
   return (bool) filter_var($mail, FILTER_VALIDATE_EMAIL);
 }
 
-
+/**
+ *
+ */
 function format_date($timestamp) {
-  // TODO add user / site time zone - currently only local
+  // TODO add user / site time zone - currently only local.
   return date(variable_get('date_format', 'Y-m-d'), $timestamp);
 }
+

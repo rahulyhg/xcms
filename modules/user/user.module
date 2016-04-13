@@ -67,7 +67,10 @@ function user_logout() {
  *
  */
 function user_load_all() {
-  global $conf;
+  // global $conf;
+  // return $conf['users'];
+  $conf_file = ROOT_DIR . '/conf.json';
+  $conf = json_decode(file_get_contents($conf_file), TRUE);
   return $conf['users'];
 }
 

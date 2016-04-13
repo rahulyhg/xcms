@@ -18,7 +18,7 @@ define('XCMS_VERSION', '0.x-dev');
  * Bootstrap and load system includes.
  */
 function xcms_init() {
-  global $conf, $_menu;
+  global $xcms_db, $conf, $_menu;
 
   // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
@@ -28,21 +28,21 @@ function xcms_init() {
   set_error_handler('_xcms_error_handler');
 
   // Connect to database.
-  $db = new PDO('sqlite:files/.ht.sqlite3');
+  $xcms_db = new PDO('sqlite:files/.ht.sqlite3');
 
   require ROOT_DIR . '/inc/common.inc';
   require ROOT_DIR . '/inc/theme.inc';
 
-  // Load site variables
+  // Load site variables.
   xcms_conf_read();
 
   // Load all enabled modules.
   xcms_modules_load();
 
-  // Call hook_init
+  // Call hook_init.
   xcms_modules_invoke('init');
 
-  // Get menu
+  // Get menu.
   xcms_menu_get();
 
   if ($return = xcms_page_handler()) {
@@ -53,6 +53,9 @@ function xcms_init() {
   session_destroy();
 }
 
+/**
+ *
+ */
 function xcms_version() {
   return XCMS_VERSION;
 }
@@ -61,23 +64,22 @@ function xcms_version() {
  * Read site configuration from file.
  */
 function xcms_conf_read() {
-  global $conf;
-  $conf_file = ROOT_DIR . '/conf.json';
-  if (file_exists($conf_file)) {
-    $conf = json_decode(file_get_contents($conf_file), TRUE);
-  }
-  else {
-    require_once ROOT_DIR . '/inc/install.inc';
-    $conf = xcms_install($conf_file);
-  }
+  global $xcms_db, $conf;
+  $conf = $xcms_db->query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
+
+  // TODO get predefined conf settings / extras from file - load conf settings.php? needed for mysql in future too.
+  $conf['base_path'] = '/';
 }
 
 /**
  * Write site configuration to file.
  */
+/*
 function xcms_conf_write($conf) {
-  file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
+dsm('xcms_conf_write');
+file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
 }
+ */
 
 /**
  * Execute the page callback associated with the current path.
@@ -240,15 +242,6 @@ function issetor(&$var, $default = NULL) {
 }
 
 /**
- * Return a persistent variable.
- */
-function variable_get($name, $default) {
-  global $conf;
-  // return isset($conf[$name]) ? $conf[$name] : $default;
-  return issetor($conf[$name], $default);
-}
-
-/**
  * Sets a message to display to the user.
  */
 function xcms_set_message($message = NULL, $type = 'status') {
@@ -295,7 +288,7 @@ function xcms_build_form($form_id, &$form_state) {
   // Set $form_state defaults.
   $form_state += array(
     'values' => issetor($_POST, array()),
-    // 'submitted' => FALSE,
+    // 'submitted' => FALSE,.
   );
 
   // Form attributes.
@@ -319,7 +312,7 @@ function xcms_build_form($form_id, &$form_state) {
     // Check form elements for missing required fields.
     foreach ($form as $name => $element) {
 
-      // Set element value from post
+      // Set element value from post.
       if (isset($form_state['values'][$name])) {
         $form[$name]['value'] = $form_state['values'][$name];
         unset($form[$name]['default_value']);
@@ -359,7 +352,7 @@ function xcms_build_form($form_id, &$form_state) {
       }
     }
 
-    // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation
+    // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation.
     if (empty($form_errors)) {
       // Redirect to $form['redirect'] or self after submission.
       xcms_goto(empty($form['redirect']) ? $_GET['q'] : $form['redirect']);
