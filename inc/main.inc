@@ -27,6 +27,9 @@ function xcms_init() {
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
+  // Connect to database.
+  $db = new PDO('sqlite:files/.ht.sqlite3');
+
   require ROOT_DIR . '/inc/common.inc';
   require ROOT_DIR . '/inc/theme.inc';
 
