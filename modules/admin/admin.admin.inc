@@ -53,12 +53,16 @@ function admin_conf_form($form, &$form_state) {
     'description' => 'Date format eg: "d/m/Y H:i". see ' . l('PHP date()', 'http://php.net/manual/en/function.date.php'),
   );
 
+  /*
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Save configuration',
   );
 
   return $form;
+  */
+
+  return system_settings_form($form);
 }
 
 /**
@@ -73,12 +77,14 @@ function admin_conf_form_validate($form, &$form_state) {
 /**
  * Submit handler for admin_conf_form().
  */
+/*
 function admin_conf_form_submit($form, &$form_state) {
   foreach ($form_state['values'] as $key => $value) {
     variable_set($key, $value);
   }
   xcms_set_message('The configuration options have been saved.');
 }
+*/
 
 /**
  * Admin Status page.
