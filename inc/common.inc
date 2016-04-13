@@ -17,21 +17,21 @@ function xcms_goto($url = NULL) {
  * Sets a persistent variable.
  */
 function variable_set($key, $value) {
-  global $xcms_db, $conf;
+  global $conf;
 
-  // TODO replace this with a future db_merge() type function, try keep the logic in php (cleaner)
-  // db_merge('variable')->key(array('name' => $name))->fields(array('value' => serialize($value)))->execute();
-  $query = $xcms_db->query('SELECT count(key) FROM variables WHERE key = :key LIMIT 1');
-  $query->execute(array(':key' => $key));
+  // Check for existing key.
+  $variable_exists = db_query('SELECT count(key) FROM variables WHERE key = :key', array(':key' => $key))->fetchColumn();
 
-  if ($query->fetchColumn()) {
-    $query = $xcms_db->prepare('UPDATE variables SET value = :value WHERE key = :key');
+  // Key exists do update.
+  if ($variable_exists) {
+    db_query('UPDATE variables SET value = :value WHERE key = :key', array(':value' => $value, ':key' => $key));
   }
+  // Key does not exist do insert.
   else {
-    $query = $xcms_db->prepare('INSERT INTO variables (key, value) VALUES (:key, :value)');
+    db_query('INSERT INTO variables (key, value) VALUES (:key, :value)', array(':value' => $value, ':key' => $key));
   }
-  $query->execute(array(':key' => $key, ':value' => $value));
 
+  // Update global conf with new value.
   $conf[$key] = $value;
 }
 
@@ -105,7 +105,7 @@ function arg($index = 0, $path = NULL) {
 /**
  * TODO rewrite this as a module later.
  */
-function xsm($input) {
+function xsm($input = NULL) {
   xcms_set_message('<pre>' . print_r($input, TRUE) . '</pre>');
 }
 
@@ -165,5 +165,15 @@ function valid_email_address($mail) {
 function format_date($timestamp) {
   // TODO add user / site time zone - currently only local.
   return date(variable_get('date_format', 'Y-m-d'), $timestamp);
+}
+
+/**
+ *
+ */
+function db_query($sql, $args = array()) {
+  global $xcms_db;
+  $query = $xcms_db->prepare($sql);
+  $query->execute($args);
+  return $query;
 }
 

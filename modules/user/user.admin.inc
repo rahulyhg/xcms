@@ -6,15 +6,14 @@
 
 /**
  * user_admin_page().
+ * TODO pager
  */
 function user_admin_page() {
-  $output = '';
-  $users = user_load_all();
 
   $header = array('UID', 'Username', 'E-mail', 'Created', 'Operations');
   $rows = array();
 
-  foreach ($users as $account) {
+  foreach (user_load_all() as $account) {
     $account = (object) $account;
     if ($account->uid) {
 
@@ -34,7 +33,6 @@ function user_admin_page() {
     }
   }
 
-  $output .= theme('table', array('header' => $header, 'rows' => $rows));
-  return $output;
+  return theme('table', array('header' => $header, 'rows' => $rows));
 }
 

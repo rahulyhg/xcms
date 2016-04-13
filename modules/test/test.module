@@ -15,9 +15,16 @@ function test_menu() {
     'access' => TRUE,
   );
 
-  $items['test_page_list'] = array(
-    'title' => 'Test theme_list()',
-    'callback' => 'test_page_list',
+  $items['test_page'] = array(
+    'title' => 'Test Page',
+    'callback' => 'test_page',
+    'file' => 'modules/test/test.pages.inc',
+    'access' => TRUE,
+  );
+
+  $items['test_db'] = array(
+    'title' => 'Test DB',
+    'callback' => 'test_db',
     'file' => 'modules/test/test.pages.inc',
     'access' => TRUE,
   );

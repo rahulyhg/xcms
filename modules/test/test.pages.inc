@@ -3,44 +3,15 @@
 /**
  * @file
  */
-function user_login_form() {
-  // Global $user;.
-  $form['name'] = array(
-    'type' => 'text',
-    'title' => 'Username',
-    'description' => 'Enter your ' . variable_get('site_name', 'XCMS') . ' username.',
-    'required' => TRUE,
-  );
-
-  $form['pass'] = array(
-    'type' => 'password',
-    'title' => 'Password',
-    'description' => 'Enter the password that accompanies your username.',
-    'required' => TRUE,
-  );
-
-  $form['submit'] = array(
-    'type' => 'submit',
-    'value' => 'Login',
-  );
-
-  return $form;
-}
 
 /**
- *
+ * Test_page_inc().
  */
-function user_login_form_validate($form, &$form_state) {
-  if ($form_state['values']['name'] == 'chris') {
-    form_set_error('name', 'my error message');
-  }
-}
+function test_db() {
+  $output = ' ';
+  xsm('');
 
-/**
- *
- */
-function user_login_form_submit($form, &$form_state) {
-  dsm('form submit !!');
+  return $output;
 }
 
 /**
@@ -132,4 +103,3 @@ function form_test_form() {
 
   return $form;
 }
-

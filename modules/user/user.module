@@ -64,30 +64,24 @@ function user_logout() {
 }
 
 /**
- *
+ * TODO - this is not needed!
  */
 function user_load_all() {
-  // global $conf;
-  // return $conf['users'];
-  $conf_file = ROOT_DIR . '/conf.json';
-  $conf = json_decode(file_get_contents($conf_file), TRUE);
-  return $conf['users'];
+  return db_query('SELECT * FROM users ORDER BY uid')->fetchAll(PDO::FETCH_OBJ);
 }
 
 /**
  *
  */
 function user_load($uid) {
-  $users = user_load_all();
-  return (object) $users[array_search($uid, array_column($users, 'uid'))];
+  return db_query('SELECT * FROM users WHERE uid = :uid', array(':uid' => $uid))->fetchObject();
 }
 
 /**
  *
  */
 function user_load_by_name($name) {
-  $users = user_load_all();
-  return (object) $users[array_search($name, array_column($users, 'name'))];
+  return db_query('SELECT * FROM users WHERE name = :name', array(':name' => $name))->fetchObject();
 }
 
 /**
