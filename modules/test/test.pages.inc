@@ -9,7 +9,10 @@
  */
 function test_db() {
   $output = ' ';
-  xsm('');
+
+  $result = db_query('SELECT * FROM users ORDER BY uid')->fetchAll(PDO::FETCH_ASSOC);
+
+  $output = '<pre>' . print_r($result, TRUE) . '</pre>';
 
   return $output;
 }
@@ -103,3 +106,4 @@ function form_test_form() {
 
   return $form;
 }
+

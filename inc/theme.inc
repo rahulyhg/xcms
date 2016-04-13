@@ -170,7 +170,7 @@ function theme_form_element($vars) {
   }
 
   if ($vars['description']) {
-    $output .= '<div class="description">' . check_plain($vars['description']) . '</div>';
+    $output .= '<div class="description">' . $vars['description'] . '</div>';
   }
 
   $output .= '</div>';

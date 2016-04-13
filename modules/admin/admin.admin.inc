@@ -50,7 +50,7 @@ function admin_conf_form($form, &$form_state) {
     'type' => 'text',
     'default_value' => variable_get('date_format'),
     'title' => 'Date format',
-    'description' => 'Date format see PHP date() - TODO linky',
+    'description' => 'Date format eg: "d/m/Y H:i". see ' . l('PHP date()', 'http://php.net/manual/en/function.date.php'),
   );
 
   $form['submit'] = array(

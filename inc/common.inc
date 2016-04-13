@@ -164,11 +164,28 @@ function valid_email_address($mail) {
  */
 function format_date($timestamp) {
   // TODO add user / site time zone - currently only local.
-  return date(variable_get('date_format', 'Y-m-d'), $timestamp);
+  return date(variable_get('date_format', 'Y-m-d h:i'), $timestamp);
 }
 
 /**
+ * Executes an arbitrary query string against the active database.
  *
+ * Fetch next (or a single) row as a stdClass object.
+ * $record = $result->fetchObject();
+ *
+ * Retrieve a 2-column result set as an associative array of field 1 => field 2.
+ * $record = $result->fetchAll(PDO::FETCH_KEY_PAIR);
+ *
+ * Fetch data from specific column from next row
+ * Defaults to first column if not specified as argument
+ * Grabs the title from the next row
+ * $data = $result->fetchColumn(1);
+ *
+ * Retrieve all records into an indexed array of stdClass objects.
+ * $result->fetchAll(PDO::FETCH_OBJ);
+ *
+ * Retrieve all records into an indexed associative array.
+ * $result->fetchAll(PDO::FETCH_ASSOC);
  */
 function db_query($sql, $args = array()) {
   global $xcms_db;

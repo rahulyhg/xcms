@@ -64,22 +64,12 @@ function xcms_version() {
  * Read site configuration from file.
  */
 function xcms_conf_read() {
-  global $xcms_db, $conf;
-  $conf = $xcms_db->query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
+  global $conf;
+  $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
 
-  // TODO get predefined conf settings / extras from file - load conf settings.php? needed for mysql in future too.
+  // TODO get and merge predefined conf settings / extras from file - load conf settings.php? needed for mysql in future too.
   $conf['base_path'] = '/';
 }
-
-/**
- * Write site configuration to file.
- */
-/*
-function xcms_conf_write($conf) {
-dsm('xcms_conf_write');
-file_put_contents(ROOT_DIR . '/conf.json', json_encode($conf, JSON_PRETTY_PRINT));
-}
- */
 
 /**
  * Execute the page callback associated with the current path.
