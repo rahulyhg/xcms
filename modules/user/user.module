@@ -80,7 +80,21 @@ function user_load($uid) {
 /**
  * Save changes to a user account or add a new user.
  */
-function user_save($account, $edit = array()) {}
+function user_save($account, $edit = array()) {
+
+  // TODO - make this a reusable function.
+  $placeholders = array();
+  $args = array();
+  foreach ($edit as $key => $value) {
+    $placeholders[] = $key . ' = :' . $key;
+    $args[':' . $key] = $value;
+  }
+
+  // TODO - if no uid / uid=0. query next id from users-uid (need user_save to create new users)
+  $args[':uid'] = $account->uid;
+
+  db_query('UPDATE users SET ' . implode(', ', $placeholders) . ' WHERE uid = :uid', $args);
+}
 
 /**
  * Fetch a user object by account name.

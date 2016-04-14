@@ -93,12 +93,12 @@ function user_account_page() {
  *
  */
 function user_account_form($form, &$form_state) {
-  global $user;
+  $account = user_load(arg(1));
 
   $form['name'] = array(
     'type' => 'text',
     'title' => 'Username',
-    'default_value' => $user->name,
+    'default_value' => $account->name,
     'description' => 'Spaces are allowed; punctuation is not allowed except for periods, hyphens, apostrophes, and underscores.',
     'required' => TRUE,
   );
@@ -120,7 +120,7 @@ function user_account_form($form, &$form_state) {
   $form['mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
-    'default_value' => $user->mail,
+    'default_value' => $account->mail,
     'description' => 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.',
     'required' => TRUE,
   );
@@ -130,6 +130,7 @@ function user_account_form($form, &$form_state) {
     'title' => 'Time zone',
     'description' => 'Select the desired local time and time zone. Dates and times throughout this site will be displayed using this time zone.',
     'options' => tz_options(),
+    'default_value' => $account->timezone,
   );
 
   $form['submit'] = array(
@@ -143,7 +144,13 @@ function user_account_form($form, &$form_state) {
  *
  */
 function user_account_form_submit($form, &$form_state) {
-  // TODO user_save(); function
+  $account = user_load(arg(1));
+  $edit = array(
+    'name' => $form_state['values']['name'],
+    'mail' => $form_state['values']['mail'],
+    'timezone' => $form_state['values']['timezone'],
+  );
+  user_save($account, $edit);
   xcms_set_message('The changes have been saved.');
 }
 
