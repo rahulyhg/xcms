@@ -53,14 +53,13 @@ function admin_conf_form($form, &$form_state) {
     'description' => 'Date format eg: "d/m/Y H:i". see ' . l('PHP date()', 'http://php.net/manual/en/function.date.php'),
   );
 
-  /*
-  $form['submit'] = array(
-    'type' => 'submit',
-    'value' => 'Save configuration',
+  $form['timezone'] = array(
+    'type' => 'select',
+    'title' => 'Default time zone',
+    'description' => 'Select the default time zone. Dates and times throughout this site will be displayed using this time zone.',
+    'options' => tz_options(),
+    'default_value' => array(variable_get('timezone')),
   );
-
-  return $form;
-  */
 
   return system_settings_form($form);
 }

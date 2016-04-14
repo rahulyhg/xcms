@@ -71,21 +71,26 @@ function user_load_all() {
 }
 
 /**
- *
+ * Loads a user object.
  */
 function user_load($uid) {
   return db_query('SELECT * FROM users WHERE uid = :uid', array(':uid' => $uid))->fetchObject();
 }
 
 /**
- *
+ * Save changes to a user account or add a new user.
+ */
+function user_save($account, $edit = array()) {}
+
+/**
+ * Fetch a user object by account name.
  */
 function user_load_by_name($name) {
   return db_query('SELECT * FROM users WHERE name = :name', array(':name' => $name))->fetchObject();
 }
 
 /**
- *
+ * Try to validate the user's login credentials locally.
  */
 function user_authenticate($name, $pass) {
   $account = user_load_by_name($name);
@@ -103,14 +108,14 @@ function user_session($name) {
 }
 
 /**
- *
+ * Determines if the current user is logged in.
  */
 function user_is_logged_in() {
   return isset($_COOKIE['name']);
 }
 
 /**
- *
+ * Determines if the current user is anonymous.
  */
 function user_is_anonymous() {
   return !user_is_logged_in();

@@ -242,7 +242,7 @@ function xcms_set_message($message = NULL, $type = 'status') {
     $output = '';
     if (!empty($_SESSION['messages'])) {
       foreach ($_SESSION['messages'] as $class => $messages) {
-        $output .= '<div class="messages ' . $class . '">' . implode('<br />', $messages) . '</div>';
+        $output .= '<div class="messages ' . $class . '">' . theme('list', array('items' => $messages)) . '</div>';
       }
       $_SESSION['messages'] = array();
     }

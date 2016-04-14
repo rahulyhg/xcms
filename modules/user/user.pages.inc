@@ -105,19 +105,16 @@ function user_account_form($form, &$form_state) {
 
   // TODO password match pure javascript html client side
   // http://codepen.io/diegoleme/pen/surIK
-
   $form['pass'] = array(
     'type' => 'password',
     'title' => 'Password',
     'description' => 'Enter your current password to change the E-mail address or Password.',
-    'required' => TRUE,
   );
 
   $form['pass_confirm'] = array(
     'type' => 'password',
     'title' => 'Confirm Password',
     'description' => 'To change the current user password, enter the new password in both fields.',
-    'required' => TRUE,
   );
 
   $form['mail'] = array(
@@ -128,10 +125,25 @@ function user_account_form($form, &$form_state) {
     'required' => TRUE,
   );
 
+  $form['timezone'] = array(
+    'type' => 'select',
+    'title' => 'Time zone',
+    'description' => 'Select the desired local time and time zone. Dates and times throughout this site will be displayed using this time zone.',
+    'options' => tz_options(),
+  );
+
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Save',
   );
   return $form;
+}
+
+/**
+ *
+ */
+function user_account_form_submit($form, &$form_state) {
+  // TODO user_save(); function
+  xcms_set_message('The changes have been saved.');
 }
 

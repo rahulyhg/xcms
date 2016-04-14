@@ -116,7 +116,7 @@ function xsm($input = NULL) {
  */
 function xcms_weight_sort($a, $b) {
   if ($a['weight'] < $b['weight']) {
-    return - 1;
+    return -1;
   }
   elseif ($a['weight'] > $b['weight']) {
     return 1;
@@ -194,3 +194,10 @@ function db_query($sql, $args = array()) {
   return $query;
 }
 
+/**
+ * Return array of timezones for form select options.
+ */
+function tz_options() {
+  $tz = timezone_identifiers_list();
+  return array_combine($tz, $tz);
+}
