@@ -58,7 +58,7 @@ function admin_conf_form($form, &$form_state) {
     'title' => 'Default time zone',
     'description' => 'Select the default time zone. Dates and times throughout this site will be displayed using this time zone.',
     'options' => tz_options(),
-    'default_value' => array(variable_get('timezone')),
+    'default_value' => variable_get('timezone'),
   );
 
   return system_settings_form($form);

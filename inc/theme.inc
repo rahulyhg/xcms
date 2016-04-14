@@ -223,7 +223,7 @@ function theme_form_submit($vars) {
 function theme_form_textarea($vars) {
   $text = $vars['attributes']['value'];
   unset($vars['attributes']['value'], $vars['attributes']['type']);
-  return '<textarea' . attributes($vars['attributes']) . ' >' . $text . '</textarea>';
+  return '<textarea' . attributes($vars['attributes']) . '>' . $text . '</textarea>';
 }
 
 /**
@@ -233,9 +233,14 @@ function theme_form_select($vars) {
   $options = '';
   unset($vars['attributes']['type']);
   foreach ($vars['options'] as $key => $value) {
-    $options .= '<option value="' . $key . '">' . $value . '</option>';
+    $option_attributes = array();
+    $option_attributes['value'] = $key;
+    if ($key == $vars['default_value']) {
+      $option_attributes['selected'] = 'selected';
+    }
+    $options .= '<option' . attributes($option_attributes) . '>' . $value . '</option>';
   }
-  return '<select' . attributes($vars['attributes']) . ' >' . $options . '</select>';
+  return '<select' . attributes($vars['attributes']) . '>' . $options . '</select>';
 }
 
 /**
@@ -316,7 +321,6 @@ function xcms_add_js($data = NULL, $options = array()) {
     );
     $js[$data] = $options;
   }
-
   return $js;
 }
 
