@@ -20,20 +20,20 @@ function user_menu() {
   $items['user'] = array(
     'title' => 'User account',
     'callback' => 'user_page',
-    'file' => 'modules/user/user.pages.inc',
+    'file' => 'core/modules/user/user.pages.inc',
     'access' => TRUE,
   );
 
   $items['user/login'] = array(
     'title' => 'Login',
     'callback' => 'user_login_page',
-    'file' => 'modules/user/user.pages.inc',
+    'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_anonymous',
   );
 
   $items['user/logout'] = array(
     'callback' => 'user_logout_page',
-    'file' => 'modules/user/user.pages.inc',
+    'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_logged_in',
   );
 
@@ -41,14 +41,14 @@ function user_menu() {
   $items['user/%/edit'] = array(
     'title' => 'Edit account',
     'callback' => 'user_account_page',
-    'file' => 'modules/user/user.pages.inc',
+    'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_logged_in',
   );
 
   $items['admin/user'] = array(
     'title' => 'Users',
     'callback' => 'user_admin_page',
-    'file' => 'modules/user/user.admin.inc',
+    'file' => 'core/modules/user/user.admin.inc',
     'access' => 'user_is_admin',
   );
 

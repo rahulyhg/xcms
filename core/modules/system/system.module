@@ -8,7 +8,7 @@
  * Implements hook_init().
  */
 function system_init() {
-  xcms_add_css('modules/system/system.css');
+  xcms_add_css('core/modules/system/system.css');
 }
 
 /**
@@ -19,14 +19,14 @@ function system_menu() {
   $items['nocontent'] = array(
     'title' => 'Welcome',
     'callback' => 'system_welcome_page',
-    'file' => 'modules/system/system.pages.inc',
+    'file' => 'core/modules/system/system.pages.inc',
     'access' => TRUE,
   );
 
   $items['install'] = array(
     'title' => 'install',
     'callback' => 'system_welcome_page',
-    'file' => 'modules/system/system.pages.inc',
+    'file' => 'core/modules/system/system.pages.inc',
     'access' => TRUE,
   );
 

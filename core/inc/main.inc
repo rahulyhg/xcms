@@ -27,11 +27,12 @@ function xcms_init() {
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
+  // TODO, multisite.
   // Connect to database.
-  $xcms_db = new PDO('sqlite:files/.ht.sqlite3');
+  $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');
 
-  require ROOT_DIR . '/inc/common.inc';
-  require ROOT_DIR . '/inc/theme.inc';
+  require ROOT_DIR . '/core/inc/common.inc';
+  require ROOT_DIR . '/core/inc/theme.inc';
 
   // Load site variables.
   xcms_conf_read();
@@ -176,7 +177,7 @@ function xcms_modules_list() {
 
   if (!isset($modules)) {
     $regex = '#(?<!/)\.module$|^[^\.]*$#i';
-    $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('modules'), $regex));
+    $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('core/modules'), $regex));
     foreach ($files as $file) {
       $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
       $modules[$module] = $file->getPathname();

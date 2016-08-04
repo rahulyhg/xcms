@@ -12,20 +12,20 @@ function admin_menu() {
   $items['admin/conf'] = array(
     'title' => 'Configuration',
     'callback' => 'admin_conf_page',
-    'file' => 'modules/admin/admin.admin.inc',
+    'file' => 'core/modules/admin/admin.admin.inc',
     'access' => 'user_is_admin',
   );
 
   $items['admin/status'] = array(
     'title' => 'Status',
     'callback' => 'admin_status_page',
-    'file' => 'modules/admin/admin.admin.inc',
+    'file' => 'core/modules/admin/admin.admin.inc',
     'access' => 'user_is_admin',
   );
 
   $items['admin/status/phpinfo'] = array(
     'callback' => 'admin_phpinfo_page',
-    'file' => 'modules/admin/admin.admin.inc',
+    'file' => 'core/modules/admin/admin.admin.inc',
     'access' => 'user_is_admin',
   );
 
@@ -37,7 +37,7 @@ function admin_menu() {
  */
 function admin_footer() {
   if (user_is_admin()) {
-    xcms_add_css('modules/admin/admin.toolbar.css');
+    xcms_add_css('core/modules/admin/admin.toolbar.css');
 
     // Load top level admin items for menu.
     global $_menu;

@@ -1,5 +1,5 @@
-#sites/*/*settings*.php
-files/
+sites/*/*settings*.php
+sites/*/files/
 
 *.swp
 *.swo
