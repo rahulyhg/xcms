@@ -108,7 +108,7 @@ function user_load_by_name($name) {
  */
 function user_authenticate($name, $pass) {
   $account = user_load_by_name($name);
-  if ($account->pass == md5($pass)) {
+  if (isset($account->pass) && $account->pass == md5($pass)) {
     return TRUE;
   }
 }
