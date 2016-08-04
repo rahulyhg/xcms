@@ -55,7 +55,7 @@ function xcms_init() {
 }
 
 /**
- *
+ * Return XCMS version number.
  */
 function xcms_version() {
   return XCMS_VERSION;
@@ -176,8 +176,20 @@ function xcms_modules_list() {
   $modules = &xcms_static(__FUNCTION__);
 
   if (!isset($modules)) {
+
+    // TODO include those from multisite: sites/*/modules
+    $directories = array(
+      'core/modules',
+      'sites/all/modules',
+    );
+
     $regex = '#(?<!/)\.module$|^[^\.]*$#i';
-    $files = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator('core/modules'), $regex));
+
+    $files = new AppendIterator();
+    foreach ($directories as $directory) {
+      $files->append(new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($directory), $regex)));
+    }
+
     foreach ($files as $file) {
       $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
       $modules[$module] = $file->getPathname();
@@ -211,6 +223,38 @@ function xcms_modules_invoke($hook) {
   }
   return $return;
 }
+
+/**
+ * Recusively scan themes directory for .info files.
+ *
+ * @return array of files with info extension, key as module name
+ */
+function xcms_themes_list() {
+  $themes = &xcms_static(__FUNCTION__);
+
+  if (!isset($themes)) {
+
+    // TODO include those from multisite: sites/*/themes
+    $directories = array(
+      'core/themes',
+      'sites/all/themes',
+    );
+
+    $regex = '#(?<!/)\.info$|^[^\.]*$#i';
+
+    $files = new AppendIterator();
+    foreach ($directories as $directory) {
+      $files->append(new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($directory), $regex)));
+    }
+
+    foreach ($files as $file) {
+      $theme = pathinfo($file->getPathname(), PATHINFO_FILENAME);
+      $themes[$file->getPath()] = $theme;
+    }
+  }
+  return $themes;
+}
+
 
 /**
  * Sets the title of the current page.

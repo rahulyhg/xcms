@@ -43,7 +43,8 @@ function admin_conf_form($form, &$form_state) {
     'type' => 'select',
     'title' => 'Current theme',
     'default_value' => variable_get('current_theme'),
-    'options' => array('default' => 'default', 'nothing' => 'nothing'),
+    // 'options' => array('default' => 'default', 'nothing' => 'nothing'),
+    'options' => xcms_themes_list(),
   );
 
   $form['date_format'] = array(

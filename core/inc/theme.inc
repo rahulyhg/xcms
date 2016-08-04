@@ -21,17 +21,19 @@ function theme($hook, $vars = array()) {
 function theme_page($vars) {
   global $conf;
 
+  $directory = issetor($conf['current_theme'], 'core/themes/default');
   // TODO load styles from styles[] theme.info file.
-  xcms_add_css('core/themes/default/base.css', array('weight' => -1));
-  xcms_add_css('core/themes/default/style.css');
-  xcms_add_js('core/themes/default/js/jquery-1.12.1.min.js', array('weight' => -1));
-  xcms_add_js('core/themes/default/js/site.js');
+  xcms_add_css($directory . '/base.css', array('weight' => -1));
+  xcms_add_css($directory . '/style.css');
+  xcms_add_js($directory . '/js/jquery-1.12.1.min.js', array('weight' => -1));
+  xcms_add_js($directory . '/js/site.js');
 
   $title = strip_tags(xcms_set_title());
 
   $vars += array(
     'title' => $title,
-    'directory' => 'core/themes/' . issetor($conf['current_theme'], 'default'),
+    // 'directory' => 'core/themes/' . issetor($conf['current_theme'], 'default'),
+    'directory' => $directory,
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
     'messages' => xcms_set_message(),
