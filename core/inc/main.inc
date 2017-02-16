@@ -10,7 +10,7 @@
  *  MENU_*
  *  MENU_CALLBACK: hidden.
  */
-define('XCMS_VERSION', '0.x-dev');
+define('XCMS_VERSION', '1.x-dev');
 // define('MENU_CALLBACK', 0);
 // define('MENU_NORMAL', 1);.
 
@@ -27,12 +27,15 @@ function xcms_init() {
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
-  // TODO, multisite.
-  // Connect to database.
-  $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');
-
   require ROOT_DIR . '/core/inc/common.inc';
   require ROOT_DIR . '/core/inc/theme.inc';
+
+  // Connect to database.
+  // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');
+  require ROOT_DIR . '/sites/default/settings.php';
+
+  $db = $settings_database;
+  $xcms_db = new PDO('mysql:host=' . $db['host'] . ';dbname=' . $db['database'], $db['username'], $db['password']);
 
   // Load site variables.
   xcms_conf_read();
@@ -254,7 +257,6 @@ function xcms_themes_list() {
   }
   return $themes;
 }
-
 
 /**
  * Sets the title of the current page.
