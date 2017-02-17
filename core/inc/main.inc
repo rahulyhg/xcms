@@ -18,7 +18,7 @@ define('XCMS_VERSION', '1.x-dev');
  * Bootstrap and load system includes.
  */
 function xcms_init() {
-  global $xcms_db, $conf, $_menu;
+  global $xcms_db, $conf, $_menu, $base_path;
 
   // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
@@ -68,21 +68,26 @@ function xcms_version() {
  * Read site configuration from file.
  */
 function xcms_conf_read() {
-  global $conf;
+  global $conf, $base_path;
   $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
 
   // TODO get and merge predefined conf settings / extras from file - load conf settings.php? needed for mysql in future too.
-  $conf['base_path'] = '/';
+  $conf['base_path'] = issetor($base_path, '/');
 }
 
 /**
  * Execute the page callback associated with the current path.
  */
 function xcms_page_handler() {
+  global $base_path;
+
   $return = NULL;
 
   // Set front page / empty ?q=.
   $path = empty($_GET['q']) ? variable_get('site_front', 'nocontent') : $_GET['q'];
+
+  // remove base path from path for menu query
+  $path = trim(str_replace(trim($base_path, '/'), '', $path), '/');
 
   if ($menu_item = xcms_path_get($path)) {
 

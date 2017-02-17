@@ -16,31 +16,31 @@ function xcms_goto($url = NULL) {
 /**
  * Sets a persistent variable.
  */
-function variable_set($key, $value) {
+function variable_set($name, $value) {
   global $conf;
 
-  // Check for existing key.
-  $variable_exists = db_query('SELECT count(key) FROM variables WHERE key = :key', array(':key' => $key))->fetchColumn();
+  // Check for existing name.
+  $variable_exists = db_query('SELECT count(name) FROM variables WHERE name = :name', array(':name' => $name))->fetchColumn();
 
   // Key exists do update.
   if ($variable_exists) {
-    db_query('UPDATE variables SET value = :value WHERE key = :key', array(':value' => $value, ':key' => $key));
+    db_query('UPDATE variables SET value = :value WHERE name = :name', array(':value' => $value, ':name' => $name));
   }
   // Key does not exist do insert.
   else {
-    db_query('INSERT INTO variables (key, value) VALUES (:key, :value)', array(':value' => $value, ':key' => $key));
+    db_query('INSERT INTO variables (name, value) VALUES (:name, :value)', array(':value' => $value, ':name' => $name));
   }
 
   // Update global conf with new value.
-  $conf[$key] = $value;
+  $conf[$name] = $value;
 }
 
 /**
  * Return a persistent variable.
  */
-function variable_get($key, $default = NULL) {
+function variable_get($name, $default = NULL) {
   global $conf;
-  return issetor($conf[$key], $default);
+  return issetor($conf[$name], $default);
 }
 
 /**
@@ -73,7 +73,7 @@ function url($path = NULL) {
   }
   else {
     // Internal path.
-    return $conf['base_path'] . trim($path, '/');
+    return '/' . trim($conf['base_path'] . '/' . $path, '/');
   }
 }
 
