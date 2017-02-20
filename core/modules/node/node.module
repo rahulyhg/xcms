@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function node_menu() {
+
+  $items['node'] = array(
+    'title' => 'Node',
+    'callback' => 'node_page',
+    'file' => 'core/modules/node/node.pages.inc',
+    'access' => TRUE,
+  );
+
+  $items['node/add'] = array(
+    'title' => 'Add node',
+    'callback' => 'node_form_page',
+    'file' => 'core/modules/node/node.pages.inc',
+    'access' => 'user_is_logged_in',
+  );
+
+  // TODO - admin only edits other nodes.
+  $items['node/%/edit'] = array(
+    'title' => 'Edit node',
+    'callback' => 'node_form_page',
+    'file' => 'core/modules/node/node.pages.inc',
+    'access' => 'user_is_logged_in',
+  );
+
+  $items['admin/node'] = array(
+    'title' => 'Nodes',
+    'callback' => 'node_admin_page',
+    'file' => 'core/modules/node/node.admin.inc',
+    'access' => 'user_is_admin',
+  );
+
+  return $items;
+}
+
+/**
+ * Loads a node object.
+ */
+function node_load($nid) {
+  $node = db_query('SELECT * FROM node WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
+  if ($node) {
+    $node->data = unserialize($node->data);
+  }
+  return $node;
+}
+
+/**
+ * Save changes to a node or add a new node.
+ */
+function node_save(&$node) {
+
+  // TODO hook_node_save (fields addons?)
+
+  // TODO - ARGS: MAKE THIS A REUSABLE FUNCTION (nodes, users, variables?).
+  // TODO this is for update only
+
+  /*
+  $placeholders = array();
+  $args = array();
+  foreach ($node as $key => $value) {
+    $placeholders[] = $key . ' = :' . $key;
+    $args[':' . $key] = $value;
+  }
+
+  xsm(implode(', ', $placeholders));
+  xsm($args);
+
+  // add node mode
+  // TODO db_insert()
+  if (empty($node->nid)) {
+    // db_query('INSERT INTO node ' . implode(', ', $placeholders) . ' VALUES ()');
+    // db_query('INSERT INTO variables (name, value) VALUES (:name, :value)', array(':value' => $value, ':name' => $name));
+  }
+  else {
+
+    // $args[':nid'] = $node->nid;
+
+    // TODO db_update()
+    // db_query('UPDATE node SET ' . implode(', ', $placeholders) . ' WHERE nid = :nid', $args);
+  }
+  */
+
+  $args = array(':type' => 'page', ':title' => $node['title'], ':created' => time(), ':data' => serialize($node['data']));
+
+  if (empty($node['nid'])) {
+    db_query('INSERT INTO node (nid, type, title, created, data) VALUES (:nid, :type, :title, :created, :data)', $args);
+  }
+  else {
+    $args[':nid'] = $node['nid'];
+    db_query('UPDATE node SET title = :title, data = :data, WHERE nid = :nid', $args);
+  }
+}
+

@@ -92,14 +92,42 @@ function attributes($attributes) {
  * Arg().
  */
 function arg($index = 0, $path = NULL) {
+  global $base_path;
+
   if (empty($path)) {
-    $path = $_GET['q'];
+    // $path = $_GET['q'];
+    $path = current_path();
   }
+
+  // Remove base path from path for menu query.
+  /*
+  if ($base_path != '/') {
+    $path = xcms_strip_base_path($path);
+  }
+  */
 
   $args = explode('/', $path);
   if (array_key_exists($index, $args)) {
     return $args[$index];
   }
+}
+
+/**
+ * current_path().
+ */
+function current_path() {
+
+  global $base_path;
+  return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
+
+  // return ;
+
+  /**
+   * Xcms_strip_base_path().
+
+   function xcms_strip_base_path($path) {
+   }
+   */
 }
 
 /**
@@ -116,7 +144,7 @@ function xsm($input = NULL) {
  */
 function xcms_weight_sort($a, $b) {
   if ($a['weight'] < $b['weight']) {
-    return -1;
+    return - 1;
   }
   elseif ($a['weight'] > $b['weight']) {
     return 1;
@@ -201,3 +229,4 @@ function tz_options() {
   $tz = timezone_identifiers_list();
   return array_combine($tz, $tz);
 }
+

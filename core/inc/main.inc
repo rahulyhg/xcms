@@ -83,11 +83,12 @@ function xcms_page_handler() {
 
   $return = NULL;
 
-  // Set front page / empty ?q=.
-  $path = empty($_GET['q']) ? variable_get('site_front', 'nocontent') : $_GET['q'];
+  $path = current_path();
 
-  // remove base path from path for menu query
-  $path = trim(str_replace(trim($base_path, '/'), '', $path), '/');
+  // path is empty, display front page
+  if (empty($path)) {
+    $path = variable_get('site_front', 'nocontent');
+  }
 
   if ($menu_item = xcms_path_get($path)) {
 
@@ -335,7 +336,7 @@ function xcms_build_form($form_id, &$form_state) {
   // Form attributes.
   // TODO array_merge form attributes (overrides) from $form[].
   $attributes = array(
-    'action' => url($_GET['q']),
+    'action' => url(current_path()),
     'method' => 'post',
     'id' => strip_class($form_id),
   );
@@ -396,7 +397,7 @@ function xcms_build_form($form_id, &$form_state) {
     // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation.
     if (empty($form_errors)) {
       // Redirect to $form['redirect'] or self after submission.
-      xcms_goto(empty($form['redirect']) ? $_GET['q'] : $form['redirect']);
+      xcms_goto(empty($form['redirect']) ? current_path() : $form['redirect']);
     }
   }
 
