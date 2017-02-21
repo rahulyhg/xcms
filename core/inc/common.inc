@@ -47,10 +47,15 @@ function variable_get($name, $default = NULL) {
  * L().
  */
 function l($title, $path, $options = array()) {
+
+  if (isset($options['query'])) {
+    $path .= '?' . http_build_query($options['query']);
+  }
+
   $options['attributes']['href'] = url($path);
 
   // Set active class.
-  if ($path == $_GET['q']) {
+  if ($path == current_path()) {
     $options['attributes']['class'][] = 'active';
   }
 
@@ -92,19 +97,9 @@ function attributes($attributes) {
  * Arg().
  */
 function arg($index = 0, $path = NULL) {
-  global $base_path;
-
   if (empty($path)) {
-    // $path = $_GET['q'];
     $path = current_path();
   }
-
-  // Remove base path from path for menu query.
-  /*
-  if ($base_path != '/') {
-    $path = xcms_strip_base_path($path);
-  }
-  */
 
   $args = explode('/', $path);
   if (array_key_exists($index, $args)) {
@@ -113,21 +108,30 @@ function arg($index = 0, $path = NULL) {
 }
 
 /**
- * current_path().
+ * Current_path().
  */
 function current_path() {
+  return $_GET['q'];
+}
 
-  global $base_path;
-  return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
+/**
+ * Xcms_not_found().
+ */
+function xcms_not_found() {
+  header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+  exit;
 
-  // return ;
+  // header('HTTP/1.1 404 Not Found');
+  // xcms_set_title('404 Not Found');
+  // return 'The requested page could not be found.';.
+}
 
-  /**
-   * Xcms_strip_base_path().
-
-   function xcms_strip_base_path($path) {
-   }
-   */
+/**
+ * Xcms_access_denied().
+ */
+function xcms_access_denied() {
+  header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+  exit;
 }
 
 /**

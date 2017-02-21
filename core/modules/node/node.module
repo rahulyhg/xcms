@@ -16,6 +16,13 @@ function node_menu() {
     'access' => TRUE,
   );
 
+  $items['node/%'] = array(
+    'title' => 'View node',
+    'callback' => 'node_page',
+    'file' => 'core/modules/node/node.pages.inc',
+    'access' => TRUE,
+  );
+
   $items['node/add'] = array(
     'title' => 'Add node',
     'callback' => 'node_form_page',
@@ -57,45 +64,21 @@ function node_load($nid) {
  */
 function node_save(&$node) {
 
-  // TODO hook_node_save (fields addons?)
+  // TODO: hook_node_save() for modules to add data to blob via &$node.
 
-  // TODO - ARGS: MAKE THIS A REUSABLE FUNCTION (nodes, users, variables?).
-  // TODO this is for update only
+  $args = array(':title' => $node->title, ':data' => serialize($node->data));
 
-  /*
-  $placeholders = array();
-  $args = array();
-  foreach ($node as $key => $value) {
-    $placeholders[] = $key . ' = :' . $key;
-    $args[':' . $key] = $value;
-  }
-
-  xsm(implode(', ', $placeholders));
-  xsm($args);
-
-  // add node mode
-  // TODO db_insert()
+  // new node (INSERT)
   if (empty($node->nid)) {
-    // db_query('INSERT INTO node ' . implode(', ', $placeholders) . ' VALUES ()');
-    // db_query('INSERT INTO variables (name, value) VALUES (:name, :value)', array(':value' => $value, ':name' => $name));
+    $args[':type'] = $node->type;
+    $args[':created'] = time();
+    db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
   }
+  // edit node (UPDATE)
   else {
-
-    // $args[':nid'] = $node->nid;
-
-    // TODO db_update()
-    // db_query('UPDATE node SET ' . implode(', ', $placeholders) . ' WHERE nid = :nid', $args);
-  }
-  */
-
-  $args = array(':type' => 'page', ':title' => $node['title'], ':created' => time(), ':data' => serialize($node['data']));
-
-  if (empty($node['nid'])) {
-    db_query('INSERT INTO node (nid, type, title, created, data) VALUES (:nid, :type, :title, :created, :data)', $args);
-  }
-  else {
-    $args[':nid'] = $node['nid'];
-    db_query('UPDATE node SET title = :title, data = :data, WHERE nid = :nid', $args);
+    // xsm('update');
+    $args[':nid'] = $node->nid;
+    db_query('UPDATE node SET title = :title, data = :data WHERE nid = :nid', $args);
   }
 }
 

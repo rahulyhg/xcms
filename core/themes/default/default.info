@@ -1,1 +1,13 @@
 name = Default Theme
+
+; CSS
+stylesheets[] = base.css
+stylesheets[] = style.css
+
+; JS
+; scripts[] = js/jquery-1.12.1.min.js
+; scripts[] = js/site.js
+
+; Settings
+; settings[foo] = bar
+

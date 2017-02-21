@@ -8,7 +8,36 @@
  *
  */
 function node_page() {
-  return 'nodes list';
+  $output = '';
+
+  $node = node_load(arg(1));
+
+  if (empty($node)) {
+    xcms_not_found();
+  }
+
+  xcms_set_title($node->title);
+
+  // TODO tabs menu function?
+  // Node view/edit tabs.
+  if (user_is_admin()) {
+    $tabs = array(
+      'view' => array(
+        'title' => 'View',
+        'href' => 'node/' . $node->nid,
+      ),
+      'edit' => array(
+        'title' => 'Edit',
+        'href' => 'node/' . $node->nid . '/edit',
+      ),
+    );
+
+    $output .= theme('links', array('links' => $tabs, 'attributes' => array('class' => array('tabs', 'clearfix'))));
+  }
+
+  // TODO, foreach felds display field rendered / themed + weight?
+  $output .= $node->data['field_body'];
+  return $output;
 }
 
 /**
@@ -22,7 +51,25 @@ function node_form_page() {
  *
  */
 function node_form($form, &$form_state) {
-  $node = node_load(arg(1));
+
+  // Add mode, create new node object.
+  if (arg(1) == 'add' && arg(2)) {
+    $node = (object)array(
+      'type' => arg(2),
+    );
+  }
+  elseif (is_numeric(arg(1)) && arg(2) == 'edit') {
+    $node = node_load(arg(1));
+    if (empty($node)) {
+      xcms_not_found();
+    }
+  }
+  else {
+    xcms_not_found();
+  }
+
+  // Store node object in post.
+  $form_state['node'] = $node;
 
   $form['title'] = array(
     'type' => 'text',
@@ -31,11 +78,13 @@ function node_form($form, &$form_state) {
     'required' => TRUE,
   );
 
-  $form['body'] = array(
+  // TODO node form hook to load fields depending on the node type.
+  // TODO node type builder (no user interface - module hooks only)
+  // TODO, form body should be loaded via hook_node_form in node.module for "page type" and not required
+  $form['field_body'] = array(
     'type' => 'textarea',
     'title' => 'Body',
-    'default_value' => issetor($node->data['body']),
-    'required' => TRUE,
+    'default_value' => issetor($node->data['field_body']),
     'attributes' => array(
       'rows' => 10,
     ),
@@ -53,16 +102,10 @@ function node_form($form, &$form_state) {
  *
  */
 function node_form_submit($form, &$form_state) {
-
-  $node = node_load(arg(1));
-
-  $node = array(
-    'title' => $form_state['values']['title'],
-    'data' => $form_state['values'],
-  );
-
+  $node = $form_state['node'];
+  $node->title = $form_state['values']['title'];
+  $node->data = $form_state['values'];
   node_save($node);
-
-  xcms_set_message('The changes have been saved.');
+  xcms_set_message('This ' . $node->type . ' has been saved.');
 }
 

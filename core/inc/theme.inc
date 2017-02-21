@@ -20,19 +20,40 @@ function theme($hook, $vars = array()) {
  */
 function theme_page($vars) {
   global $conf;
-
   $directory = issetor($conf['current_theme'], 'core/themes/default');
-  // TODO load styles from styles[] theme.info file.
-  xcms_add_css($directory . '/base.css', array('weight' => -1));
-  xcms_add_css($directory . '/style.css');
-  xcms_add_js($directory . '/js/jquery-1.12.1.min.js', array('weight' => -1));
-  xcms_add_js($directory . '/js/site.js');
+
+  // Load info file (TODO make shared function for themes select list?)
+  $theme_realpath = realpath($directory);
+  $theme_name = basename($theme_realpath);
+  $theme_info = $theme_realpath . '/' . $theme_name . '.info';
+
+  if (file_exists($theme_info)) {
+    $info_array = parse_ini_file($theme_info);
+  }
+  else {
+    $info_array = array();
+  }
+
+  $info_array += array(
+    'name' => NULL,
+    'stylesheets' => array(),
+    'scripts' => array(),
+    'settings' => array(),
+  );
+
+  // Load stylesheets
+  foreach ($info_array['stylesheets'] as $key => $stylesheet) {
+    xcms_add_css($directory . '/' . $stylesheet, array('weight' => $key));
+  }
+
+  // Load scripts
+  foreach ($info_array['scripts'] as $key => $script) {
+    xcms_add_js($directory . '/' . $script, array('weight' => $key));
+  }
 
   $title = strip_tags(xcms_set_title());
-
   $vars += array(
     'title' => $title,
-    // 'directory' => 'core/themes/' . issetor($conf['current_theme'], 'default'),
     'directory' => $directory,
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
@@ -47,7 +68,6 @@ function theme_page($vars) {
 
   // TODO $tabs
   // $tabs = theme_links(menu_get_local_tasks());
-
   // 1st attempt at a theme hook
   // TODO this should go into a function
   if (file_exists($vars['directory'] . '/template.php')) {
@@ -56,12 +76,11 @@ function theme_page($vars) {
       call_user_func_array($conf['current_theme'] . '_preprocess_page', array(&$vars));
     }
   }
-
   // Extract $vars.
   extract($vars);
-
+  // Set body classes
+  $body_classes[] = current_path() == $conf['site_front'] ? 'front' : 'not-front';
   $body_classes = implode(' ', $body_classes);
-
   require_once $directory . '/page.tpl.php';
 }
 
@@ -69,7 +88,6 @@ function theme_page($vars) {
  * Theme_list().
  */
 function theme_list($vars) {
-
   $vars += array(
     'items' => array(),
     'options' => array(),
@@ -77,18 +95,14 @@ function theme_list($vars) {
     'attributes' => array(),
     'root' => TRUE,
   );
-
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
-
   foreach ($vars['items'] as $key => $item) {
     // TODO: first / last class?
-
     // Use the $key as class name if it's set and not numeric
     $li_attributes = array();
     if (!is_numeric($key)) {
       $li_attributes['class'] = $key;
     }
-
     // Iterate over items build a HTML compliant nested list
     if (next($vars['items'])) {
       $next_item = current($vars['items']);
@@ -103,17 +117,14 @@ function theme_list($vars) {
       $output .= '<li' . attributes($li_attributes) . '>' . $item . '</li>';
     }
   }
-
   $output .= $vars['root'] ? '</' . $vars['type'] . '>' : NULL;
-
   return $output;
 }
 
 /**
- * Theme_links().
+ * Theme links.
  */
 function theme_links($vars) {
-
   $vars += array(
     'links' => array(),
     'attributes' => array(
@@ -123,14 +134,13 @@ function theme_links($vars) {
 
   $items = array();
   foreach ($vars['links'] as $key => $link) {
-    $items[$key] = l($link['title'], $link['href']);
+    $items[$key] = l($link['title'], $link['href'], issetor($link['options'], array()));
   }
-
   return theme('list', array('items' => $items, 'attributes' => $vars['attributes']));
 }
 
 /**
- * Theme_form_element().
+ * Theme form element.
  */
 function theme_form_element($vars) {
   $output = '';
@@ -143,7 +153,6 @@ function theme_form_element($vars) {
   if ($vars['required']) {
     $attributes['class'][] = 'form-required';
   }
-
   $output .= '<div' . attributes($attributes) . '>';
 
   // Set type and class on form item.
@@ -174,7 +183,6 @@ function theme_form_element($vars) {
   if ($vars['description']) {
     $output .= '<div class="description">' . $vars['description'] . '</div>';
   }
-
   $output .= '</div>';
   return $output;
 }
@@ -198,21 +206,21 @@ function form_element_defaults() {
 }
 
 /**
- * Theme_form_item().
+ * Theme form item.
  */
 function theme_form_markup($vars) {
   return '<div' . attributes($vars['attributes']) . '>' . $vars['markup'] . '</div>';
 }
 
 /**
- * Theme_form_input().
+ * Theme form input.
  */
 function theme_form_input($vars) {
   return '<input' . attributes($vars['attributes']) . ' />';
 }
 
 /**
- * Theme_form_submit().
+ * Theme form submit.
  */
 function theme_form_submit($vars) {
   $vars['attributes']['value'] = $vars['value'];
@@ -220,7 +228,7 @@ function theme_form_submit($vars) {
 }
 
 /**
- * Theme_form_textarea().
+ * Theme form textarea.
  */
 function theme_form_textarea($vars) {
   $text = $vars['attributes']['value'];
@@ -229,7 +237,7 @@ function theme_form_textarea($vars) {
 }
 
 /**
- * Theme_form_select().
+ * Theme form select.
  */
 function theme_form_select($vars) {
   $options = '';
@@ -246,23 +254,20 @@ function theme_form_select($vars) {
 }
 
 /**
- * Theme_table().
+ * Theme table.
  */
 function theme_table($vars) {
-
   $vars += array(
     'header' => array(),
     'rows' => array(),
     'attributes' => array(),
   );
-
   $output = '<table' . attributes($vars['attributes']) . '>';
   $output .= '<thead><tr>';
   foreach ($vars['header'] as $th) {
     $output .= '<th>' . $th . '</th>';
   }
   $output .= '</thead></tr>';
-
   foreach ($vars['rows'] as $row) {
     $output .= '<tr><tbody>';
     foreach ($row as $td) {
@@ -270,7 +275,6 @@ function theme_table($vars) {
     }
     $output .= '</tr></tbody>';
   }
-
   $output .= '</table>';
   return $output;
 }
@@ -287,7 +291,6 @@ function xcms_add_css($data = NULL, $options = array()) {
     );
     $css[$data] = $options;
   }
-
   return $css;
 }
 
@@ -298,17 +301,15 @@ function xcms_get_css() {
   $styles = array();
   $css = xcms_add_css();
   uasort($css, 'xcms_weight_sort');
-
   foreach ($css as $path => $options) {
     $attributes = array(
       'type' => 'text/css',
       'rel' => 'stylesheet',
-      'href' => url($path),
+      'href' => url($path) . '?' . variable_get('cache_timestamp'),
       'media' => $options['media'],
     );
     $styles[] = '<link' . attributes($attributes) . ' />';
   }
-
   return implode("\n", $styles);
 }
 
@@ -335,11 +336,10 @@ function xcms_get_js() {
   $scripts = array();
   $js = xcms_add_js();
   uasort($js, 'xcms_weight_sort');
-
   foreach ($js as $path => $options) {
     $attributes = array(
       'type' => 'text/javascript',
-      'src' => url($path),
+      'src' => url($path) . '?' . variable_get('cache_timestamp'),
     );
     $scripts[] = '<script' . attributes($attributes) . '></script>';
   }

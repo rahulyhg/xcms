@@ -16,6 +16,13 @@ function admin_menu() {
     'access' => 'user_is_admin',
   );
 
+  $items['admin/cache'] = array(
+    'title' => 'Flush Cache',
+    'callback' => 'admin_cache_page',
+    'file' => 'core/modules/admin/admin.admin.inc',
+    'access' => 'user_is_admin',
+  );
+
   $items['admin/status'] = array(
     'title' => 'Status',
     'callback' => 'admin_status_page',

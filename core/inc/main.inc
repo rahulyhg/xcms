@@ -31,11 +31,14 @@ function xcms_init() {
   require ROOT_DIR . '/core/inc/theme.inc';
 
   // Connect to database.
-  // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');
+  // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');.
   require ROOT_DIR . '/sites/default/settings.php';
 
   $db = $settings_database;
   $xcms_db = new PDO('mysql:host=' . $db['host'] . ';dbname=' . $db['database'], $db['username'], $db['password']);
+
+  // Display PDO errors to screen via (_xcms_error_handler).
+  $xcms_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
   // Load site variables.
   xcms_conf_read();
@@ -83,13 +86,19 @@ function xcms_page_handler() {
 
   $return = NULL;
 
-  $path = current_path();
+  // Initialize the $_GET['q'] variable to the proper normal path.
+  $request_path = request_path();
 
-  // path is empty, display front page
-  if (empty($path)) {
-    $path = variable_get('site_front', 'nocontent');
+  if (!empty($request_path)) {
+    $path = xcms_normal_path($request_path);
+  }
+  else {
+    $path = xcms_normal_path(variable_get('site_front', 'nocontent'));
   }
 
+  $_GET['q'] = $path;
+
+  // Get the menu item and process request
   if ($menu_item = xcms_path_get($path)) {
 
     // Inc file arg requires full path.
@@ -102,15 +111,29 @@ function xcms_page_handler() {
       return call_user_func($menu_item['callback']);
     }
     else {
-      header('HTTP/1.1 403 Forbidden');
-      xcms_set_title('403 Forbidden');
-      return 'You are not allowed to access this page.';
+      xcms_access_denied();
     }
   }
 
-  header('HTTP/1.1 404 Not Found');
-  xcms_set_title('404 Not Found');
-  return 'The requested page could not be found.';
+  xcms_not_found();
+}
+
+/**
+ * The requested URL path.
+ */
+function request_path() {
+  global $base_path;
+  return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
+}
+
+/**
+ * Given a path alias, return the internal path it represents.
+ */
+function xcms_normal_path($path) {
+  global $base_path;
+
+  // TODO: translate path alias here.
+  return $path;
 }
 
 /**
@@ -129,7 +152,6 @@ function xcms_check_access($access) {
 function xcms_path_get($path) {
   global $_menu;
   $menu = $_menu;
-
   // TODO Tabs functions.
   $defaults = array(
     'title' => '',
@@ -138,7 +160,6 @@ function xcms_path_get($path) {
     'file' => '',
     // 'type' => MENU_ITEM,.
   );
-
   // Translate placeholder menu % as args (current page).
   foreach ($menu as $link => $value) {
     if (strpos($link, '%')) {
@@ -153,17 +174,14 @@ function xcms_path_get($path) {
       unset($menu[$link]);
     }
   }
-
   // Work backwards to search for a valid menu path.
   while ($path && !array_key_exists($path, $menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
-
   // No suitable path found return NULL.
   if (!array_key_exists($path, $menu)) {
     return;
   }
-
   xcms_set_title(issetor($menu[$path]['title']));
   return array_merge($defaults, $menu[$path]);
 }
@@ -183,22 +201,17 @@ function xcms_menu_get() {
  */
 function xcms_modules_list() {
   $modules = &xcms_static(__FUNCTION__);
-
   if (!isset($modules)) {
-
-    // TODO include those from multisite: sites/*/modules
+    // TODO include those from multisite: sites/*/modules.
     $directories = array(
       'core/modules',
       'sites/all/modules',
     );
-
     $regex = '#(?<!/)\.module$|^[^\.]*$#i';
-
     $files = new AppendIterator();
     foreach ($directories as $directory) {
       $files->append(new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($directory), $regex)));
     }
-
     foreach ($files as $file) {
       $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
       $modules[$module] = $file->getPathname();
@@ -240,22 +253,17 @@ function xcms_modules_invoke($hook) {
  */
 function xcms_themes_list() {
   $themes = &xcms_static(__FUNCTION__);
-
   if (!isset($themes)) {
-
-    // TODO include those from multisite: sites/*/themes
+    // TODO include those from multisite: sites/*/themes.
     $directories = array(
       'core/themes',
       'sites/all/themes',
     );
-
     $regex = '#(?<!/)\.info$|^[^\.]*$#i';
-
     $files = new AppendIterator();
     foreach ($directories as $directory) {
       $files->append(new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($directory), $regex)));
     }
-
     foreach ($files as $file) {
       $theme = pathinfo($file->getPathname(), PATHINFO_FILENAME);
       $themes[$file->getPath()] = $theme;
@@ -269,11 +277,9 @@ function xcms_themes_list() {
  */
 function xcms_set_title($title = NULL) {
   $stored_title = &xcms_static(__FUNCTION__);
-
   if (isset($title)) {
     $stored_title = $title;
   }
-
   return $stored_title;
 }
 
@@ -327,54 +333,43 @@ function xcms_get_form($form_id) {
  */
 function xcms_build_form($form_id, &$form_state) {
   $output = '';
-
   // Set $form_state defaults.
   $form_state += array(
     'values' => issetor($_POST, array()),
   );
-
   // Form attributes.
   // TODO array_merge form attributes (overrides) from $form[].
   $attributes = array(
-    'action' => url(current_path()),
+    // 'action' => url(current_path()),
     'method' => 'post',
     'id' => strip_class($form_id),
   );
-
   // Get form array.
   $form = call_user_func_array($form_id, array(array(), &$form_state));
-
   // Check for default validate and submit handlers.
   $form['validate_callbacks'][] = $form_id . '_validate';
   $form['submit_callbacks'][] = $form_id . '_submit';
-
   // Form has been submitted, process it.
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
     // Check form elements for missing required fields.
     foreach ($form as $name => $element) {
-
       // Set element value from post.
       if (isset($form_state['values'][$name])) {
         $form[$name]['value'] = $form_state['values'][$name];
         unset($form[$name]['default_value']);
       }
-
       if (isset($element['required']) && empty($form_state['values'][$name])) {
         form_set_error($name, $element['title'] . ' field is required.');
-
         // Don't process validate callbacks if form required empty.
         $form['validate_callbacks'] = array();
       }
     }
-
     // Validation callbacks.
     foreach ($form['validate_callbacks'] as $callback) {
       if (function_exists($callback)) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
-
     // Check for form errors. Set by form_set_error()
     $form_errors = xcms_static('form_set_error');
     if (!empty($form_errors)) {
@@ -382,34 +377,38 @@ function xcms_build_form($form_id, &$form_state) {
         xcms_set_message($message, 'error');
         $form[$name]['attributes']['class'][] = 'error';
       }
-
       // Don't process submit callbacks if form has errors.
       $form['submit_callbacks'] = array();
     }
-
     // Submit callbacks.
     foreach ($form['submit_callbacks'] as $callback) {
       if (function_exists($callback)) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
-
     // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation.
     if (empty($form_errors)) {
       // Redirect to $form['redirect'] or self after submission.
-      xcms_goto(empty($form['redirect']) ? current_path() : $form['redirect']);
+      if (isset($_GET['destination'])) {
+        xcms_goto($_GET['destination']);
+      }
+      if (!empty($form['redirect'])) {
+        xcms_goto($form['redirect']);
+      }
+      /*
+      else {
+        xcms_goto(empty($form['redirect']) ? current_path() : $form['redirect']);
+      }
+      */
     }
   }
-
   // Print form html.
   $output .= '<form' . attributes($attributes) . '>';
-
   // Render the form elements.
   foreach ($form as $name => $element) {
     $element['name'] = $name;
     $output .= theme_form_element($element);
   }
-
   $output .= '</form>';
   return $output;
 }

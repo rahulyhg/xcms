@@ -75,6 +75,15 @@ function admin_conf_form_validate($form, &$form_state) {
 }
 
 /**
+ * Reset cache link.
+ */
+function admin_cache_page() {
+  variable_set('cache_timestamp', time()); 
+  xcms_set_message('Flushed all caches.');
+  xcms_goto('admin/conf');
+}
+
+/**
  * Submit handler for admin_conf_form().
  */
 /*
