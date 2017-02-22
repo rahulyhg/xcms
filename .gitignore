@@ -1,5 +1,6 @@
-site/*
-
+site/modules/*
+site/themes/*
+site/files/*
 *.swp
 *.swo
 *.tgz
