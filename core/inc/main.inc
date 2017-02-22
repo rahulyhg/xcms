@@ -9,10 +9,15 @@
  * Contants
  *  MENU_*
  *  MENU_CALLBACK: hidden.
+ *  MENU_DEFAULT_LOCAL_TASK: tab active
+ *  MENU_LOCAL_TASK: tab inactive
+ *  MENU_LOCAL_ACTION: action link.
  */
 define('XCMS_VERSION', '1.x-dev');
-// define('MENU_CALLBACK', 0);
-// define('MENU_NORMAL', 1);.
+define('MENU_NORMAL', 0);
+define('MENU_CALLBACK', 1);
+define('MENU_LOCAL_TASK', 2);
+define('MENU_LOCAL_ACTION', 3);
 
 /**
  * Bootstrap and load system includes.
@@ -32,7 +37,7 @@ function xcms_init() {
 
   // Connect to database.
   // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');.
-  require ROOT_DIR . '/sites/default/settings.php';
+  require ROOT_DIR . '/site/settings.php';
 
   $db = $settings_database;
   $xcms_db = new PDO('mysql:host=' . $db['host'] . ';dbname=' . $db['database'], $db['username'], $db['password']);
@@ -95,10 +100,9 @@ function xcms_page_handler() {
   else {
     $path = xcms_normal_path(variable_get('site_front', 'nocontent'));
   }
-
   $_GET['q'] = $path;
 
-  // Get the menu item and process request
+  // Get the menu item and process request.
   if ($menu_item = xcms_path_get($path)) {
 
     // Inc file arg requires full path.
@@ -108,13 +112,13 @@ function xcms_page_handler() {
 
     // Check access and page callback.
     if (xcms_check_access($menu_item['access'])) {
+      xcms_set_title(issetor($menu_item['title']));
       return call_user_func($menu_item['callback']);
     }
     else {
       xcms_access_denied();
     }
   }
-
   xcms_not_found();
 }
 
@@ -131,7 +135,6 @@ function request_path() {
  */
 function xcms_normal_path($path) {
   global $base_path;
-
   // TODO: translate path alias here.
   return $path;
 }
@@ -150,18 +153,21 @@ function xcms_check_access($access) {
  * Xcms_path_get().
  */
 function xcms_path_get($path) {
-  global $_menu;
+  global $_menu, $_local_tasks;
   $menu = $_menu;
-  // TODO Tabs functions.
+  $_local_tasks = array();
+  $local_parent = $path;
+
   $defaults = array(
     'title' => '',
     'weight' => 0,
     'access' => FALSE,
     'file' => '',
-    // 'type' => MENU_ITEM,.
+    'type' => MENU_NORMAL,
   );
+
   // Translate placeholder menu % as args (current page).
-  foreach ($menu as $link => $value) {
+  foreach ($menu as $link => $menu_item) {
     if (strpos($link, '%')) {
       $parts = explode('/', $link);
       for ($i = 0; $i < count($parts); $i++) {
@@ -173,16 +179,36 @@ function xcms_path_get($path) {
       $menu[$translated] = $menu[$link];
       unset($menu[$link]);
     }
+
+    // If current page is tab add to local tasks.
+    if (isset($_menu[$link]['type']) && $_menu[$link]['type'] == MENU_LOCAL_TASK) {
+      $_local_tasks[$translated] = $menu[$translated];
+    }
   }
+
+  // Work backwards to find parent (default) local path.
+  while ($local_parent && array_key_exists($local_parent, $_local_tasks)) {
+    // TODO: this is not quite right, needs to return local_parent is returning parent of local parent.
+    $local_parent = substr($local_parent, 0, strrpos($local_parent, '/'));
+  }
+
+  // Remove tabs from local tasks that are not for current menu route.
+  foreach ($_local_tasks as $key => $value) {
+    if (strpos($key, $local_parent) !== 0) {
+      unset($_local_tasks[$key]);
+    }
+  }
+
   // Work backwards to search for a valid menu path.
   while ($path && !array_key_exists($path, $menu)) {
     $path = substr($path, 0, strrpos($path, '/'));
   }
+
   // No suitable path found return NULL.
   if (!array_key_exists($path, $menu)) {
     return;
   }
-  xcms_set_title(issetor($menu[$path]['title']));
+
   return array_merge($defaults, $menu[$path]);
 }
 
@@ -202,10 +228,10 @@ function xcms_menu_get() {
 function xcms_modules_list() {
   $modules = &xcms_static(__FUNCTION__);
   if (!isset($modules)) {
-    // TODO include those from multisite: sites/*/modules.
+
     $directories = array(
       'core/modules',
-      'sites/all/modules',
+      'site/modules',
     );
     $regex = '#(?<!/)\.module$|^[^\.]*$#i';
     $files = new AppendIterator();
@@ -254,10 +280,9 @@ function xcms_modules_invoke($hook) {
 function xcms_themes_list() {
   $themes = &xcms_static(__FUNCTION__);
   if (!isset($themes)) {
-    // TODO include those from multisite: sites/*/themes.
     $directories = array(
       'core/themes',
-      'sites/all/themes',
+      'site/themes',
     );
     $regex = '#(?<!/)\.info$|^[^\.]*$#i';
     $files = new AppendIterator();
@@ -395,11 +420,6 @@ function xcms_build_form($form_id, &$form_state) {
       if (!empty($form['redirect'])) {
         xcms_goto($form['redirect']);
       }
-      /*
-      else {
-        xcms_goto(empty($form['redirect']) ? current_path() : $form['redirect']);
-      }
-      */
     }
   }
   // Print form html.

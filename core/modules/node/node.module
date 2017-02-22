@@ -17,22 +17,23 @@ function node_menu() {
   );
 
   $items['node/%'] = array(
-    'title' => 'View node',
+    'title' => 'View',
     'callback' => 'node_page',
     'file' => 'core/modules/node/node.pages.inc',
     'access' => TRUE,
+    'type' => MENU_LOCAL_TASK,
   );
 
-  $items['node/add'] = array(
-    'title' => 'Add node',
+  $items['node/%/edit'] = array(
+    'title' => 'Edit',
     'callback' => 'node_form_page',
     'file' => 'core/modules/node/node.pages.inc',
     'access' => 'user_is_logged_in',
+    'type' => MENU_LOCAL_TASK,
   );
 
-  // TODO - admin only edits other nodes.
-  $items['node/%/edit'] = array(
-    'title' => 'Edit node',
+  $items['node/add/%'] = array(
+    'title' => 'Add node',
     'callback' => 'node_form_page',
     'file' => 'core/modules/node/node.pages.inc',
     'access' => 'user_is_logged_in',

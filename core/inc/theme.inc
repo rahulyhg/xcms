@@ -41,15 +41,17 @@ function theme_page($vars) {
     'settings' => array(),
   );
 
-  // Load stylesheets
+  // Load stylesheets.
   foreach ($info_array['stylesheets'] as $key => $stylesheet) {
     xcms_add_css($directory . '/' . $stylesheet, array('weight' => $key));
   }
 
-  // Load scripts
+  // Load scripts.
   foreach ($info_array['scripts'] as $key => $script) {
     xcms_add_js($directory . '/' . $script, array('weight' => $key));
   }
+
+  $tabs = xcms_get_local_tasks();
 
   $title = strip_tags(xcms_set_title());
   $vars += array(
@@ -66,10 +68,7 @@ function theme_page($vars) {
   $vars['styles'] = xcms_get_css();
   $vars['scripts'] = xcms_get_js();
 
-  // TODO $tabs
-  // $tabs = theme_links(menu_get_local_tasks());
-  // 1st attempt at a theme hook
-  // TODO this should go into a function
+  // TODO this should go into a function.
   if (file_exists($vars['directory'] . '/template.php')) {
     require_once $vars['directory'] . '/template.php';
     if (function_exists($conf['current_theme'] . '_preprocess_page')) {
@@ -78,10 +77,34 @@ function theme_page($vars) {
   }
   // Extract $vars.
   extract($vars);
-  // Set body classes
+  // Set body classes.
   $body_classes[] = current_path() == $conf['site_front'] ? 'front' : 'not-front';
   $body_classes = implode(' ', $body_classes);
   require_once $directory . '/page.tpl.php';
+}
+
+/**
+ * Xcms_get_local_tasks().
+ */
+function xcms_get_local_tasks() {
+  global $_local_tasks;
+  $local_task_links = array();
+
+  foreach ($_local_tasks as $href => $menu_item) {
+    if (xcms_check_access($menu_item['access'])) {
+      $local_task_links[] = array(
+        'title' => $menu_item['title'],
+        'href' => $href,
+      );
+    }
+  }
+
+  // Only show tabs if more than 1 tab.
+  if (count($local_task_links) > 1) {
+    return theme('links', array('links' => $local_task_links, 'attributes' => array('class' => array('tabs', 'clearfix'))));
+  }
+
+  return NULL;
 }
 
 /**
@@ -98,12 +121,12 @@ function theme_list($vars) {
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
   foreach ($vars['items'] as $key => $item) {
     // TODO: first / last class?
-    // Use the $key as class name if it's set and not numeric
+    // Use the $key as class name if it's set and not numeric.
     $li_attributes = array();
     if (!is_numeric($key)) {
       $li_attributes['class'] = $key;
     }
-    // Iterate over items build a HTML compliant nested list
+    // Iterate over items build a HTML compliant nested list.
     if (next($vars['items'])) {
       $next_item = current($vars['items']);
     }
@@ -131,7 +154,6 @@ function theme_links($vars) {
       'class' => array('links'),
     ),
   );
-
   $items = array();
   foreach ($vars['links'] as $key => $link) {
     $items[$key] = l($link['title'], $link['href'], issetor($link['options'], array()));
@@ -145,7 +167,6 @@ function theme_links($vars) {
 function theme_form_element($vars) {
   $output = '';
   $vars += form_element_defaults();
-
   // Element wrapper.
   $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
@@ -154,22 +175,18 @@ function theme_form_element($vars) {
     $attributes['class'][] = 'form-required';
   }
   $output .= '<div' . attributes($attributes) . '>';
-
   // Set type and class on form item.
   $vars['attributes']['type'] = $vars['type'];
   $vars['attributes']['name'] = $vars['name'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
   $vars['attributes']['value'] = empty($vars['value']) ? $vars['default_value'] : $vars['value'];
-
   // HTML5 "required" validation.
   if ($vars['required']) {
     // $vars['attributes']['required'] = TRUE;.
   }
-
   if ($vars['title']) {
     $output .= '<label>' . $vars['title'] . '</label>';
   }
-
   // Check if there is a special function for the element.
   $function = 'theme_form_' . $vars['type'];
   if (function_exists($function)) {
@@ -179,7 +196,6 @@ function theme_form_element($vars) {
     // Default form element function.
     $output .= theme_form_input($vars);
   }
-
   if ($vars['description']) {
     $output .= '<div class="description">' . $vars['description'] . '</div>';
   }

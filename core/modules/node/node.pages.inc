@@ -18,23 +18,6 @@ function node_page() {
 
   xcms_set_title($node->title);
 
-  // TODO tabs menu function?
-  // Node view/edit tabs.
-  if (user_is_admin()) {
-    $tabs = array(
-      'view' => array(
-        'title' => 'View',
-        'href' => 'node/' . $node->nid,
-      ),
-      'edit' => array(
-        'title' => 'Edit',
-        'href' => 'node/' . $node->nid . '/edit',
-      ),
-    );
-
-    $output .= theme('links', array('links' => $tabs, 'attributes' => array('class' => array('tabs', 'clearfix'))));
-  }
-
   // TODO, foreach felds display field rendered / themed + weight?
   $output .= $node->data['field_body'];
   return $output;
@@ -88,6 +71,12 @@ function node_form($form, &$form_state) {
     'attributes' => array(
       'rows' => 10,
     ),
+  );
+
+  $form['path'] = array(
+    'type' => 'text',
+    'title' => 'Path',
+    'default_value' => issetor($node->data['path']),
   );
 
   $form['submit'] = array(

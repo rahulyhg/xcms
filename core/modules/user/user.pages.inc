@@ -8,11 +8,9 @@ function user_page() {
 
   if (user_is_logged_in()) {
     $output = '';
-    $output .= l('View', 'user') . ' | ' . l('Edit', 'user/' . $user->uid . '/edit');
     $output .= '<h3>History</h3>';
     $output .= '<p><strong>Member since</strong></p>';
     $output .= '<p>' . date('d/m/Y', $user->created) . '</p>';
-    $output .= '<pre>' . print_r($user, TRUE) . '</pre>';
     return $output;
   }
   else {
@@ -84,7 +82,6 @@ function user_login_form_submit($form, &$form_state) {
 function user_account_page() {
   global $user;
   $output = '';
-  $output .= l('View', 'user') . ' | ' . l('Edit', 'user/' . $user->uid . '/edit');
   $output .= xcms_get_form('user_account_form');
   return $output;
 }
