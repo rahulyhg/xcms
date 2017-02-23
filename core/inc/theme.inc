@@ -43,20 +43,21 @@ function theme_page($vars) {
   $theme_info = xcms_get_theme_info($directory);
 
   // Load stylesheets.
-  foreach ($theme_info['stylesheets'] as $key => $stylesheet) {
-    xcms_add_css($directory . '/' . $stylesheet, array('weight' => $key));
+  foreach ($theme_info['stylesheets'] as $weight => $stylesheet) {
+    xcms_add_css($directory . '/' . $stylesheet, array('weight' => $weight));
   }
 
   // Load scripts.
-  foreach ($theme_info['scripts'] as $key => $script) {
-    xcms_add_js($directory . '/' . $script, array('weight' => $key));
+  foreach ($theme_info['scripts'] as $weight => $script) {
+    xcms_add_js($directory . '/' . $script, array('weight' => $weight));
   }
 
+  // System variables, can't be changed by vars / hook.
   $tabs = xcms_get_local_tasks();
-
   $title = strip_tags(xcms_set_title());
   $is_front = current_path() == variable_get('site_front');
 
+  // Common variables, can be changed in preprocess.
   $vars += array(
     'title' => $title,
     'head_title' => variable_get('site_name', 'XCMS') . ' | ' . $title,
