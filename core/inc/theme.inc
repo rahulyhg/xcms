@@ -16,6 +16,25 @@ function theme($hook, $vars = array()) {
 }
 
 /**
+ * L().
+ */
+function l($title, $path, $options = array()) {
+
+  if (isset($options['query'])) {
+    $path .= '?' . http_build_query($options['query']);
+  }
+
+  $options['attributes']['href'] = url($path);
+
+  // Set active class.
+  if ($path == current_path()) {
+    $options['attributes']['class'][] = 'active';
+  }
+
+  return '<a' . attributes($options['attributes']) . '>' . $title . '</a>';
+}
+
+/**
  * Theme page.
  */
 function theme_page($vars) {
@@ -364,5 +383,21 @@ function xcms_get_js() {
     }
   }
   return implode("\n", $scripts);
+}
+
+/**
+ * Return array of timezones for form select options.
+ */
+function tz_options() {
+  $tz = timezone_identifiers_list();
+  return array_combine($tz, $tz);
+}
+
+/**
+ *
+ */
+function format_date($timestamp) {
+  // TODO add user / site time zone - currently only local.
+  return date(variable_get('date_format', 'Y-m-d h:i'), $timestamp);
 }
 

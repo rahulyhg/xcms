@@ -32,7 +32,7 @@ function xcms_init() {
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
-  require ROOT_DIR . '/core/inc/common.inc';
+  // require ROOT_DIR . '/core/inc/common.inc';
   require ROOT_DIR . '/core/inc/theme.inc';
 
   // Connect to database.
@@ -288,6 +288,7 @@ function xcms_themes_list() {
       $themes[$file->getPath()] = $theme;
     }
   }
+  xsm($themes);
   return $themes;
 }
 
@@ -443,5 +444,247 @@ function form_set_error($name = NULL, $message) {
  */
 function _xcms_error_handler($error_level, $message, $filename, $line, $context) {
   xcms_set_message('<i>' . $message . '</i>' . ' in <strong>' . $filename . '</strong> on line ' . $line, 'error');
+}
+
+/**
+ * Xcms_goto().
+ */
+function xcms_goto($url = NULL) {
+  header('Location: ' . url($url));
+  exit;
+}
+
+/**
+ * Sets a persistent variable.
+ */
+function variable_set($name, $value) {
+  global $conf;
+
+  // Check for existing name.
+  $variable_exists = db_query('SELECT count(name) FROM variables WHERE name = :name', array(':name' => $name))->fetchColumn();
+
+  // Key exists do update.
+  if ($variable_exists) {
+    db_query('UPDATE variables SET value = :value WHERE name = :name', array(':value' => $value, ':name' => $name));
+  }
+  // Key does not exist do insert.
+  else {
+    db_query('INSERT INTO variables (name, value) VALUES (:name, :value)', array(':value' => $value, ':name' => $name));
+  }
+
+  // Update global conf with new value.
+  $conf[$name] = $value;
+}
+
+/**
+ * Return a persistent variable.
+ */
+function variable_get($name, $default = NULL) {
+  global $conf;
+  return issetor($conf[$name], $default);
+}
+
+/**
+ * Url().
+ */
+function url($path = NULL) {
+  global $conf;
+
+  if ($path == '<front>') {
+    $path = NULL;
+  }
+
+  // External url.
+  if (strpos($path, ':') !== FALSE) {
+    return $path;
+  }
+
+  // Internal path.
+  else {
+    $request = parse_url($path);
+
+    // Path alias.
+    $path = xcms_path_alias($request['path']);
+
+    if (isset($request['query'])) {
+      $path .= '?' . $request['query'];
+    }
+
+    return '/' . trim($conf['base_path'] . '/' . $path, '/');
+  }
+}
+
+/**
+ * Attributes().
+ */
+function attributes($attributes) {
+  foreach ($attributes as $attribute => & $data) {
+    $data = implode(' ', (array) $data);
+    $data = $attribute . '="' . check_plain($data) . '"';
+  }
+  return $attributes ? ' ' . implode(' ', $attributes) : '';
+}
+
+/**
+ * Arg().
+ */
+function arg($index = 0, $path = NULL) {
+  if (empty($path)) {
+    $path = current_path();
+  }
+
+  $args = explode('/', $path);
+  if (array_key_exists($index, $args)) {
+    return $args[$index];
+  }
+}
+
+/**
+ * Current_path().
+ */
+function current_path() {
+  return $_GET['q'];
+}
+
+/**
+ * Given a path alias, return the internal path it represents.
+ */
+function xcms_path_normal($path) {
+  return xcms_path_lookup($path, 'normal');
+}
+
+/**
+ * Given a internal path, return the path alias (opposite of xcms_normal_path).
+ */
+function xcms_path_alias($path) {
+  return xcms_path_lookup($path, 'alias');
+}
+
+/**
+ * Either a system path, an aliased path, or FALSE if no path was found.
+ */
+function xcms_path_lookup($path, $type = 'normal') {
+  $paths = &xcms_static(__FUNCTION__);
+  if (!isset($paths)) {
+    $paths = db_query('SELECT alias, path FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
+  }
+
+  if ($type == 'alias') {
+    $paths = array_flip($paths);
+  }
+
+  if (isset($paths[$path])) {
+    return $paths[$path];
+  }
+
+  return $path;
+}
+
+/**
+ * Xcms_not_found().
+ */
+function xcms_not_found() {
+  header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+  exit;
+
+  // header('HTTP/1.1 404 Not Found');
+  // xcms_set_title('404 Not Found');
+  // return 'The requested page could not be found.';.
+}
+
+/**
+ * Xcms_access_denied().
+ */
+function xcms_access_denied() {
+  header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+  exit;
+}
+
+/**
+ * Show debug information.
+ */
+function xsm($input = NULL) {
+  xcms_set_message('<pre>' . print_r($input, TRUE) . '</pre>');
+}
+
+/**
+ * Sorts arrays with weight, eg. Menu, CSS and JavaScript resources.
+ *
+ * @usage uasort($css, 'xcms_weight_sort');
+ */
+function xcms_weight_sort($a, $b) {
+  if ($a['weight'] < $b['weight']) {
+    return - 1;
+  }
+  elseif ($a['weight'] > $b['weight']) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+/**
+ * Encode special characters in plain-text.
+ */
+function check_plain($text) {
+  return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Create a css class safe string.
+ */
+function strip_class($text) {
+
+  // Lower case everything.
+  $text = strtolower($text);
+
+  // Make alphanumeric (removes all other characters).
+  $text = preg_replace('/[^a-z0-9_\s-]/', '', $text);
+
+  // Clean up multiple dashes or whitespaces.
+  $text = preg_replace('/[\s-]+/', ' ', $text);
+
+  // Convert whitespaces and underscore to dash.
+  $text = preg_replace('/[\s_]/', '-', $text);
+  return $text;
+}
+
+/**
+ * Verifies the syntax of the given e-mail address.
+ */
+function valid_email_address($mail) {
+  return (bool) filter_var($mail, FILTER_VALIDATE_EMAIL);
+}
+
+/**
+ * Executes an arbitrary query string against the active database.
+ *
+ * Fetch next (or a single) row as a stdClass object.
+ * $record = $result->fetchObject();
+ *
+ * Retrieve a 2-column result set as an associative array of field 1 => field 2.
+ * $record = $result->fetchAll(PDO::FETCH_KEY_PAIR);
+ *
+ * Fetch data from specific column from next row
+ * Defaults to first column if not specified as argument
+ * Grabs the title from the next row
+ * $data = $result->fetchColumn(1);
+ *
+ * Retrieve all records into an indexed array of stdClass objects.
+ * $result->fetchAll(PDO::FETCH_OBJ);
+ *
+ * Retrieve all records into an indexed associative array.
+ * $result->fetchAll(PDO::FETCH_ASSOC);
+ */
+function db_query($sql, $args = array()) {
+  global $xcms_db;
+  $query = $xcms_db->prepare($sql);
+  $query->execute($args);
+
+  if (strpos('INSERT', $sql) !== FALSE) {
+    return $xcms_db->lastInsertId();
+  }
+  return $query;
 }
 
