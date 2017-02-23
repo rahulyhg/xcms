@@ -284,12 +284,35 @@ function xcms_themes_list() {
       $files->append(new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($directory), $regex)));
     }
     foreach ($files as $file) {
-      $theme = pathinfo($file->getPathname(), PATHINFO_FILENAME);
-      $themes[$file->getPath()] = $theme;
+      $theme_info = xcms_get_theme_info($file->getPath());
+      $themes[$file->getPath()] = $theme_info['name'];
     }
   }
-  xsm($themes);
   return $themes;
+}
+
+/**
+ * Get information on a theme.
+ *
+ * @return array of information from theme.info file.
+ */
+function xcms_get_theme_info($directory) {
+  $info_array = array();
+  $theme_realpath = realpath($directory);
+  $theme_infofile = $theme_realpath . '/' . basename($directory) . '.info';
+
+  if (file_exists($theme_infofile)) {
+    $info_array = parse_ini_file($theme_infofile);
+  }
+
+  $info_array += array(
+    'name' => NULL,
+    'stylesheets' => array(),
+    'scripts' => array(),
+    'settings' => array(),
+  );
+
+  return $info_array;
 }
 
 /**

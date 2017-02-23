@@ -40,33 +40,15 @@ function l($title, $path, $options = array()) {
 function theme_page($vars) {
   global $conf;
   $directory = issetor($conf['current_theme'], 'core/themes/default');
-
-  // Load info file (TODO make shared function for themes select list on admin conf page?) get_theme_info();
-  $theme_realpath = realpath($directory);
-  $theme_name = basename($theme_realpath);
-  $theme_info = $theme_realpath . '/' . $theme_name . '.info';
-
-  if (file_exists($theme_info)) {
-    $info_array = parse_ini_file($theme_info);
-  }
-  else {
-    $info_array = array();
-  }
-
-  $info_array += array(
-    'name' => NULL,
-    'stylesheets' => array(),
-    'scripts' => array(),
-    'settings' => array(),
-  );
+  $theme_info = xcms_get_theme_info($directory);
 
   // Load stylesheets.
-  foreach ($info_array['stylesheets'] as $key => $stylesheet) {
+  foreach ($theme_info['stylesheets'] as $key => $stylesheet) {
     xcms_add_css($directory . '/' . $stylesheet, array('weight' => $key));
   }
 
   // Load scripts.
-  foreach ($info_array['scripts'] as $key => $script) {
+  foreach ($theme_info['scripts'] as $key => $script) {
     xcms_add_js($directory . '/' . $script, array('weight' => $key));
   }
 
@@ -76,21 +58,22 @@ function theme_page($vars) {
   $vars += array(
     'title' => $title,
     'directory' => $directory,
-    'head_title' => $conf['site_name'] . ' | ' . $title,
+    'head_title' => variable_get('site_name', 'XCMS') . ' | ' . $title,
     'front_url' => url('<front>'),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
+    // TODO $is_front variable, fix below is broken.
     'body_classes' => $conf['site_front'] ? 'front' : 'not-front',
   );
 
   $vars['styles'] = xcms_get_css();
   $vars['scripts'] = xcms_get_js();
 
-  // TODO this should go into a function.
-  if (file_exists($vars['directory'] . '/template.php')) {
-    require_once $vars['directory'] . '/template.php';
-    if (function_exists($theme_name . '_preprocess_page')) {
-      call_user_func_array($theme_name . '_preprocess_page', array(&$vars));
+  // Load page preprocess function.
+  if (file_exists($directory . '/template.php')) {
+    require_once $directory . '/template.php';
+    if (function_exists(basename($directory) . '_preprocess_page')) {
+      call_user_func_array(basename($directory) . '_preprocess_page', array(&$vars));
     }
   }
 

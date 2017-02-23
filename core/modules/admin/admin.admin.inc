@@ -48,8 +48,6 @@ function admin_settings_form($form, &$form_state) {
     'title' => 'Default front page',
     'description' => 'Optionally, specify a relative URL to display as the front page.',
   );
-  // TODO scan theme directory for other themes
-  // build options list themes_available()??
   $form['current_theme'] = array(
     'type' => 'select',
     'title' => 'Current theme',
