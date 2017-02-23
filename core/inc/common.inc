@@ -72,12 +72,22 @@ function url($path = NULL) {
     $path = NULL;
   }
 
+  // External url.
   if (strpos($path, ':') !== FALSE) {
-    // External url.
     return $path;
   }
+
+  // Internal path.
   else {
-    // Internal path.
+    $request = parse_url($path);
+
+    // Path alias.
+    $path = xcms_path_alias($request['path']);
+
+    if (isset($request['query'])) {
+      $path .= '?' . $request['query'];
+    }
+
     return '/' . trim($conf['base_path'] . '/' . $path, '/');
   }
 }
@@ -112,6 +122,40 @@ function arg($index = 0, $path = NULL) {
  */
 function current_path() {
   return $_GET['q'];
+}
+
+/**
+ * Given a path alias, return the internal path it represents.
+ */
+function xcms_path_normal($path) {
+  return xcms_path_lookup($path, 'normal');
+}
+
+/**
+ * Given a internal path, return the path alias (opposite of xcms_normal_path).
+ */
+function xcms_path_alias($path) {
+  return xcms_path_lookup($path, 'alias');
+}
+
+/**
+ * Either a system path, an aliased path, or FALSE if no path was found.
+ */
+function xcms_path_lookup($path, $type = 'normal') {
+  $paths = &xcms_static(__FUNCTION__);
+  if (!isset($paths)) {
+    $paths = db_query('SELECT alias, path FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
+  }
+
+  if ($type == 'alias') {
+    $paths = array_flip($paths);
+  }
+
+  if (isset($paths[$path])) {
+    return $paths[$path];
+  }
+
+  return $path;
 }
 
 /**

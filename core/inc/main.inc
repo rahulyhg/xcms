@@ -95,10 +95,10 @@ function xcms_page_handler() {
   $request_path = request_path();
 
   if (!empty($request_path)) {
-    $path = xcms_normal_path($request_path);
+    $path = xcms_path_normal($request_path);
   }
   else {
-    $path = xcms_normal_path(variable_get('site_front', 'nocontent'));
+    $path = xcms_path_normal(variable_get('site_front', 'nocontent'));
   }
   $_GET['q'] = $path;
 
@@ -119,6 +119,7 @@ function xcms_page_handler() {
       xcms_access_denied();
     }
   }
+  return ' ';
   xcms_not_found();
 }
 
@@ -128,15 +129,6 @@ function xcms_page_handler() {
 function request_path() {
   global $base_path;
   return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
-}
-
-/**
- * Given a path alias, return the internal path it represents.
- */
-function xcms_normal_path($path) {
-  global $base_path;
-  // TODO: translate path alias here.
-  return $path;
 }
 
 /**

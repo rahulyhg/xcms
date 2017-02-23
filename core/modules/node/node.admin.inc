@@ -29,6 +29,7 @@ function node_admin_page() {
         'view' => array(
           'title' => 'View',
           'href' => 'node/' . $node->nid,
+          // 'options' => $options,
         ),
         'edit' => array(
           'title' => 'Edit',
