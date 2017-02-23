@@ -9,14 +9,21 @@
  */
 function admin_menu() {
 
-  $items['admin/conf'] = array(
+  $items['admin/config'] = array(
     'title' => 'Configuration',
-    'callback' => 'admin_conf_page',
+    'callback' => 'admin_overview_page',
     'file' => 'core/modules/admin/admin.admin.inc',
     'access' => 'user_is_admin',
   );
 
-  $items['admin/cache'] = array(
+  $items['admin/config/settings'] = array(
+    'title' => 'Settings',
+    'callback' => 'admin_settings_page',
+    'file' => 'core/modules/admin/admin.admin.inc',
+    'access' => 'user_is_admin',
+  );
+
+  $items['admin/config/cache'] = array(
     'title' => 'Flush Cache',
     'callback' => 'admin_cache_page',
     'file' => 'core/modules/admin/admin.admin.inc',
@@ -55,7 +62,6 @@ function admin_footer() {
       }
     }
     $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
-
     return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
   }
 }

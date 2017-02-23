@@ -5,23 +5,36 @@
  */
 
 /**
- * Page callback for admin_conf_form().
+ * Admin overview page.
  */
-function admin_conf_page() {
-  return xcms_get_form('admin_conf_form');
+function admin_overview_page() {
+  global $_menu;
+  $links = array();
+  foreach ($_menu as $path => $menu_item) {
+    if (strpos($path, current_path()) !== FALSE && $path != current_path() && xcms_check_access($menu_item['access'])) {
+      $links[] = array('title' => $menu_item['title'], 'href' => $path);
+    }
+  }
+  return theme('links', array('links' => $links, 'attributes' => array('class' => array('admin-overview'))));
+}
+
+/**
+ * Page callback for admin_settings_form().
+ */
+function admin_settings_page() {
+  return xcms_get_form('admin_settings_form');
 }
 
 /**
  * Admin configuration settings form.
  */
-function admin_conf_form($form, &$form_state) {
+function admin_settings_form($form, &$form_state) {
   $form['site_name'] = array(
     'type' => 'text',
     'title' => 'Site name',
     'default_value' => variable_get('site_name'),
     'required' => TRUE,
   );
-
   $form['site_mail'] = array(
     'type' => 'text',
     'title' => 'E-mail address',
@@ -29,31 +42,26 @@ function admin_conf_form($form, &$form_state) {
     'description' => 'The From address in automated e-mails sent from other notifications.',
     'required' => TRUE,
   );
-
   $form['site_front'] = array(
     'type' => 'text',
     'default_value' => variable_get('site_front'),
     'title' => 'Default front page',
     'description' => 'Optionally, specify a relative URL to display as the front page.',
   );
-
   // TODO scan theme directory for other themes
   // build options list themes_available()??
   $form['current_theme'] = array(
     'type' => 'select',
     'title' => 'Current theme',
     'default_value' => variable_get('current_theme'),
-    // 'options' => array('default' => 'default', 'nothing' => 'nothing'),
     'options' => xcms_themes_list(),
   );
-
   $form['date_format'] = array(
     'type' => 'text',
     'default_value' => variable_get('date_format'),
     'title' => 'Date format',
     'description' => 'Date format eg: "d/m/Y H:i". see ' . l('PHP date()', 'http://php.net/manual/en/function.date.php'),
   );
-
   $form['timezone'] = array(
     'type' => 'select',
     'title' => 'Default time zone',
@@ -61,7 +69,6 @@ function admin_conf_form($form, &$form_state) {
     'options' => tz_options(),
     'default_value' => variable_get('timezone'),
   );
-
   return system_settings_form($form);
 }
 
@@ -78,22 +85,10 @@ function admin_conf_form_validate($form, &$form_state) {
  * Reset cache link.
  */
 function admin_cache_page() {
-  variable_set('cache_timestamp', time()); 
+  variable_set('cache_timestamp', time());
   xcms_set_message('Flushed all caches.');
-  xcms_goto('admin/conf');
+  xcms_goto('admin/config');
 }
-
-/**
- * Submit handler for admin_conf_form().
- */
-/*
-function admin_conf_form_submit($form, &$form_state) {
-  foreach ($form_state['values'] as $key => $value) {
-    variable_set($key, $value);
-  }
-  xcms_set_message('The configuration options have been saved.');
-}
-*/
 
 /**
  * Admin Status page.

@@ -16,13 +16,13 @@ function theme($hook, $vars = array()) {
 }
 
 /**
- * Theme_page().
+ * Theme page.
  */
 function theme_page($vars) {
   global $conf;
   $directory = issetor($conf['current_theme'], 'core/themes/default');
 
-  // Load info file (TODO make shared function for themes select list?)
+  // Load info file (TODO make shared function for themes select list on admin conf page?) get_theme_info();
   $theme_realpath = realpath($directory);
   $theme_name = basename($theme_realpath);
   $theme_info = $theme_realpath . '/' . $theme_name . '.info';
@@ -69,7 +69,6 @@ function theme_page($vars) {
 
   // TODO this should go into a function.
   if (file_exists($vars['directory'] . '/template.php')) {
-
     require_once $vars['directory'] . '/template.php';
     if (function_exists($theme_name . '_preprocess_page')) {
       call_user_func_array($theme_name . '_preprocess_page', array(&$vars));
@@ -86,7 +85,7 @@ function theme_page($vars) {
 }
 
 /**
- * Xcms_get_local_tasks().
+ * Get local tasks.
  */
 function xcms_get_local_tasks() {
   global $_local_tasks;
