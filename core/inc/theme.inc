@@ -55,15 +55,15 @@ function theme_page($vars) {
   $tabs = xcms_get_local_tasks();
 
   $title = strip_tags(xcms_set_title());
+  $is_front = current_path() == variable_get('site_front');
+
   $vars += array(
     'title' => $title,
-    'directory' => $directory,
     'head_title' => variable_get('site_name', 'XCMS') . ' | ' . $title,
     'front_url' => url('<front>'),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
-    // TODO $is_front variable, fix below is broken.
-    'body_classes' => $conf['site_front'] ? 'front' : 'not-front',
+    'body_classes' => $is_front ? 'front' : 'not-front',
   );
 
   $vars['styles'] = xcms_get_css();
