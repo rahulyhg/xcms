@@ -12,6 +12,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="<?php print url($directory); ?>/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="canonical" href="<?php print $canonical; ?>" />
+    <link rel='shortlink' href="<?php print $shortlink; ?>" />
+
     <?php print $scripts; ?>
     <?php print $styles; ?>
   </head>
