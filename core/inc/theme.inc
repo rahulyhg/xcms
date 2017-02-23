@@ -62,6 +62,8 @@ function theme_page($vars) {
     'title' => $title,
     'head_title' => variable_get('site_name', 'XCMS') . ' | ' . $title,
     'front_url' => url('<front>'),
+    'shortlink' => url(xcms_path_normal(current_path()), array('absolute' => TRUE)),
+    'canonical' => url(xcms_path_alias($is_front ? '' : current_path()), array('absolute' => TRUE)),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
     'body_classes' => $is_front ? 'front' : 'not-front',

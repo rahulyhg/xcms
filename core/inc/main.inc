@@ -23,7 +23,7 @@ define('MENU_LOCAL_ACTION', 3);
  * Bootstrap and load system includes.
  */
 function xcms_init() {
-  global $xcms_db, $conf, $_menu, $base_path;
+  global $xcms_db;
 
   // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
@@ -87,8 +87,6 @@ function xcms_conf_read() {
  * Execute the page callback associated with the current path.
  */
 function xcms_page_handler() {
-  global $base_path;
-
   $return = NULL;
 
   // Initialize the $_GET['q'] variable to the proper normal path.
@@ -129,6 +127,15 @@ function xcms_page_handler() {
 function request_path() {
   global $base_path;
   return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
+}
+
+/**
+ * The base URL for this site.
+ */
+function base_url() {
+  $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
+  $http_protocol = $is_https ? 'https' : 'http';
+  return $http_protocol . '://' . $_SERVER['HTTP_HOST'];
 }
 
 /**
@@ -508,10 +515,9 @@ function variable_get($name, $default = NULL) {
 }
 
 /**
- * Url().
+ * Url.
  */
-function url($path = NULL) {
-  global $conf;
+function url($path = NULL, $options = array()) {
 
   if ($path == '<front>') {
     $path = NULL;
@@ -533,7 +539,14 @@ function url($path = NULL) {
       $path .= '?' . $request['query'];
     }
 
-    return '/' . trim($conf['base_path'] . '/' . $path, '/');
+    $url = '/' . trim(variable_get('base_path') . '/' . $path, '/');
+
+    if (empty($options['absolute'])) {
+      return $url;
+    }
+
+    // Return absolute.
+    return base_url() . $url;
   }
 }
 
