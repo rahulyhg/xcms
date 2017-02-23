@@ -61,7 +61,7 @@ function theme_page($vars) {
     'front_url' => url('<front>'),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
-    'body_classes' => array(),
+    'body_classes' => $conf['site_front'] ? 'front' : 'not-front',
   );
 
   $vars['styles'] = xcms_get_css();
@@ -75,10 +75,6 @@ function theme_page($vars) {
       call_user_func_array($theme_name . '_preprocess_page', array(&$vars));
     }
   }
-
-  // Set body classes.
-  $body_classes[] = current_path() == $conf['site_front'] ? 'front' : 'not-front';
-  $body_classes = implode(' ', $body_classes);
 
   // Execute messages right at the end so we can debug.
   $vars['messages'] = xcms_set_message();
