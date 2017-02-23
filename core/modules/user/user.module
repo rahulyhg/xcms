@@ -24,33 +24,37 @@ function user_menu() {
     'access' => TRUE,
   );
 
-  $items['user/%'] = array(
-    'title' => 'Account',
-    'callback' => 'user_page',
-    'file' => 'core/modules/user/user.pages.inc',
-    'access' => TRUE,
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  $items['user/%/edit'] = array(
-    'title' => 'Edit',
-    'callback' => 'user_account_page',
-    'file' => 'core/modules/user/user.pages.inc',
-    'access' => 'user_is_logged_in',
-    'type' => MENU_LOCAL_TASK,
-  );
-
   $items['user/login'] = array(
     'title' => 'Login',
     'callback' => 'user_login_page',
     'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_anonymous',
+    //    'type' => MENU_LOCAL_TASK,
   );
 
   $items['user/logout'] = array(
     'callback' => 'user_logout_page',
     'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_logged_in',
+    //    'type' => MENU_LOCAL_TASK,
+  );
+
+  /*
+  $items['user/%'] = array(
+    'title' => 'Account',
+    'callback' => 'user_page',
+    'file' => 'core/modules/user/user.pages.inc',
+    'access' => TRUE,
+    //    'type' => MENU_LOCAL_TASK,
+  );
+  */
+
+  $items['user/%/edit'] = array(
+    'title' => 'Edit',
+    'callback' => 'user_account_page',
+    'file' => 'core/modules/user/user.pages.inc',
+    'access' => 'user_is_logged_in',
+    //    'type' => MENU_LOCAL_TASK,
   );
 
   $items['admin/user'] = array(

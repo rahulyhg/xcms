@@ -94,6 +94,8 @@ function node_form_submit($form, &$form_state) {
   $node = $form_state['node'];
   $node->title = $form_state['values']['title'];
   $node->data = $form_state['values'];
+
+  // TODO: node save hook
   node_save($node);
   xcms_set_message('This ' . $node->type . ' has been saved.');
 }

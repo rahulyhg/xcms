@@ -267,6 +267,10 @@ function db_query($sql, $args = array()) {
   global $xcms_db;
   $query = $xcms_db->prepare($sql);
   $query->execute($args);
+
+  if (strpos('INSERT', $sql) !== FALSE) {
+    return $xcms_db->lastInsertId();
+  }
   return $query;
 }
 

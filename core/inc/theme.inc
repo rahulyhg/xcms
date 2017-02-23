@@ -59,7 +59,6 @@ function theme_page($vars) {
     'directory' => $directory,
     'head_title' => $conf['site_name'] . ' | ' . $title,
     'front_url' => url('<front>'),
-    'messages' => xcms_set_message(),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
     'body_classes' => array(),
@@ -70,16 +69,23 @@ function theme_page($vars) {
 
   // TODO this should go into a function.
   if (file_exists($vars['directory'] . '/template.php')) {
+
     require_once $vars['directory'] . '/template.php';
-    if (function_exists($conf['current_theme'] . '_preprocess_page')) {
-      call_user_func_array($conf['current_theme'] . '_preprocess_page', array(&$vars));
+    if (function_exists($theme_name . '_preprocess_page')) {
+      call_user_func_array($theme_name . '_preprocess_page', array(&$vars));
     }
   }
-  // Extract $vars.
-  extract($vars);
+
   // Set body classes.
   $body_classes[] = current_path() == $conf['site_front'] ? 'front' : 'not-front';
   $body_classes = implode(' ', $body_classes);
+
+  // Execute messages right at the end so we can debug.
+  $vars['messages'] = xcms_set_message();
+
+  // Extract $vars.
+  extract($vars);
+
   require_once $directory . '/page.tpl.php';
 }
 
@@ -340,6 +346,7 @@ function xcms_add_js($data = NULL, $options = array()) {
     );
     $js[$data] = $options;
   }
+
   return $js;
 }
 
@@ -351,13 +358,15 @@ function xcms_add_js($data = NULL, $options = array()) {
 function xcms_get_js() {
   $scripts = array();
   $js = xcms_add_js();
-  uasort($js, 'xcms_weight_sort');
-  foreach ($js as $path => $options) {
-    $attributes = array(
-      'type' => 'text/javascript',
-      'src' => url($path) . '?' . variable_get('cache_timestamp'),
-    );
-    $scripts[] = '<script' . attributes($attributes) . '></script>';
+  if (is_array($js)) {
+    uasort($js, 'xcms_weight_sort');
+    foreach ($js as $path => $options) {
+      $attributes = array(
+        'type' => 'text/javascript',
+        'src' => url($path) . '?' . variable_get('cache_timestamp'),
+      );
+      $scripts[] = '<script' . attributes($attributes) . '></script>';
+    }
   }
   return implode("\n", $scripts);
 }

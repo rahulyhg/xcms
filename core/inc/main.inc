@@ -252,10 +252,12 @@ function xcms_modules_load() {
  */
 function xcms_modules_invoke($hook) {
   $return = array();
+  $args = func_get_args();
+  unset($args[0]);
   foreach (xcms_modules_list() as $module => $path) {
     $function = $module . '_' . $hook;
     if (function_exists($function)) {
-      $result = call_user_func($function);
+      $result = call_user_func_array($function, $args);
       if (is_array($result)) {
         $return = array_merge($return, $result);
       }

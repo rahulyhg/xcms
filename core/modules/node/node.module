@@ -65,21 +65,32 @@ function node_load($nid) {
  */
 function node_save(&$node) {
 
-  // TODO: hook_node_save() for modules to add data to blob via &$node.
-
   $args = array(':title' => $node->title, ':data' => serialize($node->data));
 
-  // new node (INSERT)
+  // new node (INSERT) get a nid
   if (empty($node->nid)) {
     $args[':type'] = $node->type;
     $args[':created'] = time();
-    db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
+    $node->nid = db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
   }
+
   // edit node (UPDATE)
   else {
-    // xsm('update');
     $args[':nid'] = $node->nid;
     db_query('UPDATE node SET title = :title, data = :data WHERE nid = :nid', $args);
+  }
+
+  xcms_modules_invoke('node_save', $node);
+}
+
+/**
+ * Implements hook_node_save().
+ */
+function node_node_save($node) {
+  // Update path alias.
+  db_query('DELETE FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid));
+  if (!empty($node->data['path'])) {
+    db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', array(':path' => 'node/' . $node->nid, ':alias' => $node->data['path']));
   }
 }
 
