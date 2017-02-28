@@ -40,10 +40,11 @@ function node_menu() {
   );
 
   $items['admin/node'] = array(
-    'title' => 'Nodes',
+    'title' => 'Content',
     'callback' => 'node_admin_page',
     'file' => 'core/modules/node/node.admin.inc',
     'access' => 'user_is_admin',
+    'weight' => -1,
   );
 
   return $items;
@@ -56,8 +57,11 @@ function node_load($nid) {
   $node = db_query('SELECT * FROM node WHERE nid = :nid', array(':nid' => $nid))->fetchObject();
   if ($node) {
     $node->data = unserialize($node->data);
+    xcms_modules_invoke('node_load', $node);
+    // xsm($node);
+    return $node;
   }
-  return $node;
+  return FALSE;
 }
 
 /**
@@ -84,13 +88,30 @@ function node_save(&$node) {
 }
 
 /**
+ * Implements node_node_load().
+ */
+function node_node_load($node) {
+  $node->data['path'] = db_query('SELECT alias FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid))->fetchColumn();
+}
+
+/**
  * Implements hook_node_save().
  */
 function node_node_save($node) {
   // Update path alias.
-  db_query('DELETE FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid));
-  if (!empty($node->data['path'])) {
-    db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', array(':path' => 'node/' . $node->nid, ':alias' => $node->data['path']));
+  if (empty($node->data['path'])) {
+    db_query('DELETE FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid));
+  }
+  else {
+    // Check for existing path.
+    $result = db_query('SELECT count(alias) FROM paths WHERE alias = :alias', array(':alias' => $node->data['path']))->fetchColumn();
+    $args = array(':path' => 'node/' . $node->nid, ':alias' => $node->data['path']);
+    if ($result) {
+      db_query('UPDATE paths SET alias = :alias WHERE path = :path', $args);
+    }
+    else {
+      db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', $args);
+    }
   }
 }
 
