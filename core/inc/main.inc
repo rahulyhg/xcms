@@ -229,7 +229,10 @@ function xcms_modules_list() {
     }
     foreach ($files as $file) {
       $module = pathinfo($file->getPathname(), PATHINFO_FILENAME);
-      $modules[$module] = $file->getPathname();
+      // Check that the parent dir name is the same as the module info.
+      if ($module == basename(pathinfo($file->getPathname(), PATHINFO_DIRNAME))) {
+        $modules[$module] = $file->getPathname();
+      }
     }
   }
   return $modules;
