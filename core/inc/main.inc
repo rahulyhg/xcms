@@ -23,7 +23,7 @@ define('MENU_LOCAL_ACTION', 3);
  * Bootstrap and load system includes.
  */
 function xcms_init() {
-  global $xcms_db;
+  global $xcms_db, $base_path;
 
   // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
@@ -518,6 +518,7 @@ function variable_get($name, $default = NULL) {
  * Url.
  */
 function url($path = NULL, $options = array()) {
+  global $base_path;
 
   if ($path == '<front>') {
     $path = NULL;
@@ -539,7 +540,7 @@ function url($path = NULL, $options = array()) {
       $path .= '?' . $request['query'];
     }
 
-    $url = '/' . trim(variable_get('base_path') . '/' . $path, '/');
+    $url = '/' . trim($base_path . '/' . $path, '/');
 
     if (empty($options['absolute'])) {
       return $url;
