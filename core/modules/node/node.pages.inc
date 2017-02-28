@@ -21,16 +21,7 @@ function node_page() {
   // TODO, foreach felds display field rendered / themed + weight?
   $output .= $node->data['field_body'];
 
-  // TODO: this hack fixes empty content issue.
-  $output .= ' ';
   return $output;
-}
-
-/**
- * Node_form_page().
- */
-function node_form_page() {
-  return xcms_get_form('node_form');
 }
 
 /**

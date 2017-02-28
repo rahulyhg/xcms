@@ -26,7 +26,8 @@ function node_menu() {
 
   $items['node/%/edit'] = array(
     'title' => 'Edit',
-    'callback' => 'node_form_page',
+    'callback' => 'xcms_get_form',
+    'arguments' => array('node_form'),
     'file' => 'core/modules/node/node.pages.inc',
     'access' => 'user_is_logged_in',
     'type' => MENU_LOCAL_TASK,
@@ -34,7 +35,8 @@ function node_menu() {
 
   $items['node/add/%'] = array(
     'title' => 'Add node',
-    'callback' => 'node_form_page',
+    'callback' => 'xcms_get_form',
+    'arguments' => array('node_form'),
     'file' => 'core/modules/node/node.pages.inc',
     'access' => 'user_is_logged_in',
   );

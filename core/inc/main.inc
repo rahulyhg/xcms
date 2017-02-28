@@ -57,8 +57,9 @@ function xcms_init() {
   // Get menu.
   xcms_menu_get();
 
-  if ($return = xcms_page_handler()) {
-    print theme_page(array('content' => $return));
+  // Print page output.
+  if ($content = xcms_page_handler()) {
+    print theme_page(array('content' => $content));
   }
 
   // TODO where to put this??
@@ -100,7 +101,8 @@ function xcms_page_handler() {
     // Check access and page callback.
     if (xcms_check_access($menu_item['access'])) {
       xcms_set_title(issetor($menu_item['title']));
-      return call_user_func($menu_item['callback']);
+      return call_user_func_array($menu_item['callback'], $menu_item['arguments']);
+      // return call_user_func($menu_item['callback']);
     }
     else {
       xcms_access_denied();
@@ -148,6 +150,9 @@ function xcms_path_get($path) {
   $defaults = array(
     'title' => '',
     'weight' => 0,
+    'access' => FALSE,
+    'callback' => NULL,
+    'arguments' => array(),
     'access' => FALSE,
     'file' => '',
     'type' => MENU_NORMAL,

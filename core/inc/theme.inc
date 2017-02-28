@@ -67,7 +67,7 @@ function theme_page($vars) {
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
     'body_classes' => $is_front ? 'front' : 'not-front',
-    'content' => empty($content) ? ' ' : $content,
+    // 'content' => empty($content) ? ' ' : $content,
   );
 
   $vars['styles'] = xcms_get_css();
@@ -115,7 +115,7 @@ function xcms_get_local_tasks() {
 }
 
 /**
- * Theme_list().
+ * Theme list.
  */
 function theme_list($vars) {
   $vars += array(
@@ -127,16 +127,17 @@ function theme_list($vars) {
   );
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
   foreach ($vars['items'] as $key => $item) {
-    // TODO: first / last class?
-    // Use the $key as class name if it's set and not numeric.
+
     $li_attributes = array();
     if (!is_numeric($key)) {
       $li_attributes['class'] = $key;
     }
+
     // Iterate over items build a HTML compliant nested list.
     if (next($vars['items'])) {
       $next_item = current($vars['items']);
     }
+
     if (is_array($item)) {
       $output .= '<ul>' . theme_list(array('items' => $item, 'root' => FALSE)) . '</ul></li>';
     }
@@ -174,28 +175,36 @@ function theme_links($vars) {
 function theme_form_element($vars) {
   $output = '';
   $vars += form_element_defaults();
+
   // Element wrapper.
   $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
   $attributes['class'][] = 'form-type-' . $vars['type'];
+
   if ($vars['required']) {
     $attributes['class'][] = 'form-required';
   }
+
   $output .= '<div' . attributes($attributes) . '>';
+
   // Set type and class on form item.
   $vars['attributes']['type'] = $vars['type'];
   $vars['attributes']['name'] = $vars['name'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
   $vars['attributes']['value'] = empty($vars['value']) ? $vars['default_value'] : $vars['value'];
+
   // HTML5 "required" validation.
   if ($vars['required']) {
     // $vars['attributes']['required'] = TRUE;.
   }
+
   if ($vars['title']) {
     $output .= '<label>' . $vars['title'] . '</label>';
   }
+
   // Check if there is a special function for the element.
   $function = 'theme_form_' . $vars['type'];
+
   if (function_exists($function)) {
     $output .= call_user_func($function, $vars);
   }
@@ -203,9 +212,11 @@ function theme_form_element($vars) {
     // Default form element function.
     $output .= theme_form_input($vars);
   }
+
   if ($vars['description']) {
     $output .= '<div class="description">' . $vars['description'] . '</div>';
   }
+
   $output .= '</div>';
   return $output;
 }
@@ -353,8 +364,6 @@ function xcms_add_js($data = NULL, $options = array()) {
 
 /**
  * Returns a themed presentation of all JavaScript code for the current page.
- *
- * TODO, loads all on every page, should be optimised to load only on page if needed?
  */
 function xcms_get_js() {
   $scripts = array();
