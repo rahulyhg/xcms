@@ -67,6 +67,7 @@ function theme_page($vars) {
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
     'body_classes' => $is_front ? 'front' : 'not-front',
+    'content' => empty($content) ? ' ' : $content,
   );
 
   $vars['styles'] = xcms_get_css();

@@ -23,7 +23,7 @@ define('MENU_LOCAL_ACTION', 3);
  * Bootstrap and load system includes.
  */
 function xcms_init() {
-  global $xcms_db, $base_path;
+  global $xcms_db, $conf, $base_path;
 
   // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
@@ -36,17 +36,17 @@ function xcms_init() {
   require ROOT_DIR . '/core/inc/theme.inc';
 
   // Connect to database.
-  // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');.
   require ROOT_DIR . '/site/settings.php';
-
   $db = $settings_database;
+  // TODO; if is_array($db), use mysql, else use sqlite
+  // $xcms_db = new PDO('sqlite:sites/default/files/.ht.sqlite3');.
   $xcms_db = new PDO('mysql:host=' . $db['host'] . ';dbname=' . $db['database'], $db['username'], $db['password']);
 
   // Display PDO errors to screen via (_xcms_error_handler).
   $xcms_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
   // Load site variables.
-  xcms_conf_read();
+  $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
 
   // Load all enabled modules.
   xcms_modules_load();
@@ -70,17 +70,6 @@ function xcms_init() {
  */
 function xcms_version() {
   return XCMS_VERSION;
-}
-
-/**
- * Read site configuration from file.
- */
-function xcms_conf_read() {
-  global $conf, $base_path;
-  $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
-
-  // TODO get and merge predefined conf settings / extras from file - load conf settings.php? needed for mysql in future too.
-  $conf['base_path'] = issetor($base_path, '/');
 }
 
 /**
@@ -226,7 +215,6 @@ function xcms_menu_get() {
 function xcms_modules_list() {
   $modules = &xcms_static(__FUNCTION__);
   if (!isset($modules)) {
-
     $directories = array(
       'core/modules',
       'site/modules',
