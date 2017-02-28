@@ -32,7 +32,6 @@ function xcms_init() {
   // Set error handler.
   set_error_handler('_xcms_error_handler');
 
-  // require ROOT_DIR . '/core/inc/common.inc';
   require ROOT_DIR . '/core/inc/theme.inc';
 
   // Connect to database.
@@ -102,7 +101,6 @@ function xcms_page_handler() {
     if (xcms_check_access($menu_item['access'])) {
       xcms_set_title(issetor($menu_item['title']));
       return call_user_func_array($menu_item['callback'], $menu_item['arguments']);
-      // return call_user_func($menu_item['callback']);
     }
     else {
       xcms_access_denied();
