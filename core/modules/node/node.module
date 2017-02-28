@@ -67,23 +67,18 @@ function node_load($nid) {
  * Save changes to a node or add a new node.
  */
 function node_save(&$node) {
+  global $xcms_db;
   $args = array(':title' => $node->title, ':data' => serialize($node->data));
-
-  // new node (INSERT) get a nid
   if (empty($node->nid)) {
-    global $xcms_db;
     $args[':type'] = $node->type;
     $args[':created'] = time();
     db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
     $node->nid = $xcms_db->lastInsertId();
   }
-
-  // edit node (UPDATE)
   else {
     $args[':nid'] = $node->nid;
     db_query('UPDATE node SET title = :title, data = :data WHERE nid = :nid', $args);
   }
-
   xcms_modules_invoke('node_save', $node);
 }
 
@@ -91,7 +86,7 @@ function node_save(&$node) {
  * Implements node_node_load().
  */
 function node_node_load($node) {
-  $node->data['path'] = db_query('SELECT alias FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid))->fetchColumn();
+  $node->path = db_query('SELECT alias FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid))->fetchColumn();
 }
 
 /**
@@ -99,14 +94,13 @@ function node_node_load($node) {
  */
 function node_node_save($node) {
   // Update path alias.
-  if (empty($node->data['path'])) {
+  if (empty($node->path)) {
     db_query('DELETE FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid));
   }
   else {
     // Check for existing path.
-    $result = db_query('SELECT count(alias) FROM paths WHERE alias = :alias', array(':alias' => $node->data['path']))->fetchColumn();
-
-    $args = array(':path' => 'node/' . $node->nid, ':alias' => $node->data['path']);
+    $result = db_query('SELECT count(alias) FROM paths WHERE alias = :alias', array(':alias' => $node->path))->fetchColumn();
+    $args = array(':path' => 'node/' . $node->nid, ':alias' => $node->path);
 
     if ($result) {
       db_query('UPDATE paths SET alias = :alias WHERE path = :path', $args);
@@ -115,5 +109,8 @@ function node_node_save($node) {
       db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', $args);
     }
   }
+
+  // Update field_*
+  // TODO store field data in table, node type info etc.
 }
 

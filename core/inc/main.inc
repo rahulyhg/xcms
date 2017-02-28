@@ -434,12 +434,12 @@ function xcms_build_form($form_id, &$form_state) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
-    xsm($form);
 
     if (empty($form_errors)) {
       if (!empty($_GET['destination'])) {
         xcms_goto($_GET['destination']);
       }
+
       if (!empty($form_state['redirect'])) {
         xcms_goto($form_state['redirect']);
       }

@@ -42,6 +42,7 @@ function node_form($form, &$form_state) {
   if (arg(1) == 'add' && arg(2)) {
     $node = (object)array(
       'type' => arg(2),
+      'path' => NULL,
     );
   }
   elseif (is_numeric(arg(1)) && arg(2) == 'edit') {
@@ -80,7 +81,7 @@ function node_form($form, &$form_state) {
   $form['path'] = array(
     'type' => 'text',
     'title' => 'Path',
-    'default_value' => issetor($node->data['path']),
+    'default_value' => $node->path,
   );
 
   $form['submit'] = array(
@@ -97,7 +98,10 @@ function node_form($form, &$form_state) {
 function node_form_submit($form, &$form_state) {
   $node = $form_state['node'];
   $node->title = $form_state['values']['title'];
-  $node->data = $form_state['values'];
+
+  // TODO move to fields table, use node save hook
+  $node->data['field_body'] = $form_state['values']['field_body'];
+
   node_save($node);
   xcms_set_message('The ' . $node->type . ' has been saved.');
   $form_state['redirect'] = 'node/' . $node->nid . '/edit';
