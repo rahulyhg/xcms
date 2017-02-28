@@ -20,6 +20,9 @@ function node_page() {
 
   // TODO, foreach felds display field rendered / themed + weight?
   $output .= $node->data['field_body'];
+
+  // TODO: this hack fixes empty content issue.
+  $output .= ' ';
   return $output;
 }
 
@@ -70,6 +73,7 @@ function node_form($form, &$form_state) {
     'default_value' => issetor($node->data['field_body']),
     'attributes' => array(
       'rows' => 10,
+      'class' => array('ckeditor'),
     ),
   );
 
@@ -95,6 +99,7 @@ function node_form_submit($form, &$form_state) {
   $node->title = $form_state['values']['title'];
   $node->data = $form_state['values'];
   node_save($node);
-  xcms_set_message($node->type . ' has been saved.');
+  xcms_set_message('The ' . $node->type . ' has been saved.');
+  $form_state['redirect'] = 'node/' . $node->nid . '/edit';
 }
 

@@ -58,7 +58,6 @@ function node_load($nid) {
   if ($node) {
     $node->data = unserialize($node->data);
     xcms_modules_invoke('node_load', $node);
-    // xsm($node);
     return $node;
   }
   return FALSE;
@@ -68,14 +67,15 @@ function node_load($nid) {
  * Save changes to a node or add a new node.
  */
 function node_save(&$node) {
-
   $args = array(':title' => $node->title, ':data' => serialize($node->data));
 
   // new node (INSERT) get a nid
   if (empty($node->nid)) {
+    global $xcms_db;
     $args[':type'] = $node->type;
     $args[':created'] = time();
-    $node->nid = db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
+    db_query('INSERT INTO node (type, title, created, data) VALUES (:type, :title, :created, :data)', $args);
+    $node->nid = $xcms_db->lastInsertId();
   }
 
   // edit node (UPDATE)
@@ -105,7 +105,9 @@ function node_node_save($node) {
   else {
     // Check for existing path.
     $result = db_query('SELECT count(alias) FROM paths WHERE alias = :alias', array(':alias' => $node->data['path']))->fetchColumn();
+
     $args = array(':path' => 'node/' . $node->nid, ':alias' => $node->data['path']);
+
     if ($result) {
       db_query('UPDATE paths SET alias = :alias WHERE path = :path', $args);
     }

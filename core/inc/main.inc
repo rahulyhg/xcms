@@ -117,7 +117,6 @@ function xcms_page_handler() {
       xcms_access_denied();
     }
   }
-  return ' ';
   xcms_not_found();
 }
 
@@ -390,7 +389,6 @@ function xcms_build_form($form_id, &$form_state) {
   // Form attributes.
   // TODO array_merge form attributes (overrides) from $form[].
   $attributes = array(
-    // 'action' => url(current_path()),
     'method' => 'post',
     'id' => strip_class($form_id),
   );
@@ -436,14 +434,14 @@ function xcms_build_form($form_id, &$form_state) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
-    // TODO this flow is bad, somehow break the foreach to stop submission and redirect if no validation.
+    xsm($form);
+
     if (empty($form_errors)) {
-      // Redirect to $form['redirect'] or self after submission.
-      if (isset($_GET['destination'])) {
+      if (!empty($_GET['destination'])) {
         xcms_goto($_GET['destination']);
       }
-      if (!empty($form['redirect'])) {
-        xcms_goto($form['redirect']);
+      if (!empty($form_state['redirect'])) {
+        xcms_goto($form_state['redirect']);
       }
     }
   }
@@ -618,19 +616,15 @@ function xcms_path_lookup($path, $type = 'normal') {
 }
 
 /**
- * Xcms_not_found().
+ * Xcms not found.
  */
 function xcms_not_found() {
   header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
   exit;
-
-  // header('HTTP/1.1 404 Not Found');
-  // xcms_set_title('404 Not Found');
-  // return 'The requested page could not be found.';.
 }
 
 /**
- * Xcms_access_denied().
+ * Xcms access denied.
  */
 function xcms_access_denied() {
   header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
@@ -718,10 +712,6 @@ function db_query($sql, $args = array()) {
   global $xcms_db;
   $query = $xcms_db->prepare($sql);
   $query->execute($args);
-
-  if (strpos('INSERT', $sql) !== FALSE) {
-    return $xcms_db->lastInsertId();
-  }
   return $query;
 }
 
