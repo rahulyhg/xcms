@@ -57,10 +57,11 @@ function xcms_init() {
   xcms_menu_get();
 
   // Set javascript variables.
-  // TODO test js inline if it works
   $js_settings = array(
     'basePath' => $base_path,
     'theme' => variable_get('site_theme', 'core/themes/default'),
+    'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
+    'cacheTimestamp' => variable_get('cache_timestamp'),
   );
   xcms_add_js($js_settings, array('type' => 'setting'));
 

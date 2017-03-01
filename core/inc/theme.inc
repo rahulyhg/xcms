@@ -384,11 +384,6 @@ function xcms_get_js() {
       switch ($options['type']) {
         case 'setting':
           $settings += $options['data'];
-          /*
-          foreach ($options['data'] as $key => $value) {
-            $settings[$key] = $value;
-          }
-          */
           break;
 
         case 'inline':
@@ -401,7 +396,7 @@ function xcms_get_js() {
       $scripts[] = '<script' . attributes($attributes) . '>' . $data . '</script>';
     }
 
-    $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object)array('settings' => $settings)) . '</script>';
+    $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object) $settings) . '</script>';
   }
 
   return implode("\n", $scripts);
