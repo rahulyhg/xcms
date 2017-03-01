@@ -177,7 +177,7 @@ function theme_form_element($vars) {
   $vars += form_element_defaults();
 
   // Element wrapper.
-  $attributes['id'] = 'edit-' . strip_class($vars['name']);
+  // $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
   $attributes['class'][] = 'form-type-' . $vars['type'];
 
@@ -188,6 +188,7 @@ function theme_form_element($vars) {
   $output .= '<div' . attributes($attributes) . '>';
 
   // Set type and class on form item.
+  $vars['attributes']['id'] = 'edit-' . strip_class($vars['name']);
   $vars['attributes']['type'] = $vars['type'];
   $vars['attributes']['name'] = $vars['name'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
@@ -355,6 +356,7 @@ function xcms_add_js($data = NULL, $options = array()) {
   if (isset($data)) {
     $options += array(
       'weight' => 0,
+      'type' => 'file',
     );
     $js[$data] = $options;
   }
@@ -370,14 +372,23 @@ function xcms_get_js() {
   $js = xcms_add_js();
   if (is_array($js)) {
     uasort($js, 'xcms_weight_sort');
-    foreach ($js as $path => $options) {
+    foreach ($js as $key => $options) {
+      $data = NULL;
       $attributes = array(
         'type' => 'text/javascript',
-        'src' => url($path) . '?' . variable_get('cache_timestamp'),
       );
-      $scripts[] = '<script' . attributes($attributes) . '></script>';
+
+      if ($options['type'] == 'inline') {
+        $data = $key;
+      }
+      else {
+        $attributes['src'] = url($key) . '?' . variable_get('cache_timestamp');
+      }
+
+      $scripts[] = '<script' . attributes($attributes) . '>' . $data . '</script>';
     }
   }
+
   return implode("\n", $scripts);
 }
 

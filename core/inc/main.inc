@@ -56,6 +56,10 @@ function xcms_init() {
   // Get menu.
   xcms_menu_get();
 
+  // Set javascript variables.
+  // TODO - add settings to global variable before printing. so modules can add to it.
+  xcms_add_js('var XCMS = {"settings": ' . json_encode($conf) . '}', array('type' => 'inline'));
+
   // Print page output.
   if ($content = xcms_page_handler()) {
     print theme_page(array('content' => $content));
@@ -607,6 +611,18 @@ function xcms_path_lookup($path, $type = 'normal') {
   }
 
   return $path;
+}
+
+/**
+ * Returns the path to a system item (module, theme, etc.).
+ */
+function xcms_get_path($type, $name) {
+  $function = 'xcms_' . $type . 's_list';
+  if (function_exists($function)) {
+    $list = call_user_func($function);
+    return array_key_exists($name, $list) ? dirname($list[$name]) : FALSE;
+  }
+  return FALSE;
 }
 
 /**

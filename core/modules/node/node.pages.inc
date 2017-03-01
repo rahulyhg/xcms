@@ -65,7 +65,7 @@ function node_form($form, &$form_state) {
     'default_value' => issetor($node->data['field_body']),
     'attributes' => array(
       'rows' => 10,
-      'class' => array('ckeditor'),
+      'class' => array('cke'),
     ),
   );
 
