@@ -56,15 +56,6 @@ function xcms_init() {
   // Get menu.
   xcms_menu_get();
 
-  // Set javascript variables.
-  $js_settings = array(
-    'basePath' => $base_path,
-    'theme' => variable_get('site_theme', 'core/themes/default'),
-    'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
-    'cacheTimestamp' => variable_get('cache_timestamp'),
-  );
-  xcms_add_js($js_settings, array('type' => 'setting'));
-
   // Print page output.
   if ($content = xcms_page_handler()) {
     print theme_page(array('content' => $content));

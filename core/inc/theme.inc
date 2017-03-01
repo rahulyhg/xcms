@@ -16,7 +16,7 @@ function theme($hook, $vars = array()) {
 }
 
 /**
- * L().
+ * L.
  */
 function l($title, $path, $options = array()) {
 
@@ -367,12 +367,12 @@ function xcms_add_js($data = NULL, $options = array()) {
  * Returns a themed presentation of all JavaScript code for the current page.
  */
 function xcms_get_js() {
+  global $base_path;
   $scripts = array();
-  $js = xcms_add_js();
   $settings = array();
+  $js = xcms_add_js();
 
   if (is_array($js)) {
-
     uasort($js, 'xcms_weight_sort');
 
     foreach ($js as $options) {
@@ -395,9 +395,16 @@ function xcms_get_js() {
       }
       $scripts[] = '<script' . attributes($attributes) . '>' . $data . '</script>';
     }
-
-    $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object) $settings) . '</script>';
   }
+
+  // Merge default javascript variables.
+  $settings += array(
+    'basePath' => $base_path,
+    'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
+    'cacheTimestamp' => variable_get('cache_timestamp'),
+  );
+
+  $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object) $settings) . '</script>';
 
   return implode("\n", $scripts);
 }
