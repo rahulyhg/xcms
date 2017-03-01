@@ -57,8 +57,12 @@ function xcms_init() {
   xcms_menu_get();
 
   // Set javascript variables.
-  // TODO - add settings to global variable before printing. so modules can add to it.
-  xcms_add_js('var XCMS = {"settings": ' . json_encode($conf) . '}', array('type' => 'inline'));
+  // TODO test js inline if it works
+  $js_settings = array(
+    'basePath' => $base_path,
+    'theme' => variable_get('site_theme', 'core/themes/default'),
+  );
+  xcms_add_js($js_settings, array('type' => 'setting'));
 
   // Print page output.
   if ($content = xcms_page_handler()) {

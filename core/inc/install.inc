@@ -14,7 +14,7 @@ function xcms_install($conf_file, $options = array()) {
   $options += array(
     'base_path' => rtrim(dirname($_SERVER['PHP_SELF']), '/') . '/',
     'site_name' => 'XCMS',
-    'current_theme' => 'default',
+    'site_theme' => 'default',
   );
 
   if (is_writable($conf_file)) {

@@ -38,8 +38,7 @@ function l($title, $path, $options = array()) {
  * Theme page.
  */
 function theme_page($vars) {
-  global $conf;
-  $directory = issetor($conf['current_theme'], 'core/themes/default');
+  $directory = variable_get('site_theme', 'core/themes/default');
   $theme_info = xcms_get_theme_info($directory);
 
   // Load stylesheets.
@@ -355,12 +354,12 @@ function xcms_add_js($data = NULL, $options = array()) {
   $js = &xcms_static(__FUNCTION__);
   if (isset($data)) {
     $options += array(
-      'weight' => 0,
+      'weight' => count($js) / 100,
       'type' => 'file',
+      'data' => $data,
     );
-    $js[$data] = $options;
+    $js[] = $options;
   }
-
   return $js;
 }
 
@@ -370,23 +369,39 @@ function xcms_add_js($data = NULL, $options = array()) {
 function xcms_get_js() {
   $scripts = array();
   $js = xcms_add_js();
+  $settings = array();
+
   if (is_array($js)) {
+
     uasort($js, 'xcms_weight_sort');
-    foreach ($js as $key => $options) {
+
+    foreach ($js as $options) {
       $data = NULL;
       $attributes = array(
         'type' => 'text/javascript',
       );
 
-      if ($options['type'] == 'inline') {
-        $data = $key;
-      }
-      else {
-        $attributes['src'] = url($key) . '?' . variable_get('cache_timestamp');
-      }
+      switch ($options['type']) {
+        case 'setting':
+          $settings += $options['data'];
+          /*
+          foreach ($options['data'] as $key => $value) {
+            $settings[$key] = $value;
+          }
+          */
+          break;
 
+        case 'inline':
+          $data = $options['data'];
+          break;
+
+        default:
+          $attributes['src'] = url($options['data']) . '?' . variable_get('cache_timestamp');
+      }
       $scripts[] = '<script' . attributes($attributes) . '>' . $data . '</script>';
     }
+
+    $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object)array('settings' => $settings)) . '</script>';
   }
 
   return implode("\n", $scripts);

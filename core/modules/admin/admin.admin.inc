@@ -48,10 +48,10 @@ function admin_settings_form($form, &$form_state) {
     'title' => 'Default front page',
     'description' => 'Optionally, specify a relative URL to display as the front page.',
   );
-  $form['current_theme'] = array(
+  $form['site_theme'] = array(
     'type' => 'select',
     'title' => 'Current theme',
-    'default_value' => variable_get('current_theme'),
+    'default_value' => variable_get('site_theme'),
     'options' => xcms_themes_list(),
   );
   $form['date_format'] = array(
