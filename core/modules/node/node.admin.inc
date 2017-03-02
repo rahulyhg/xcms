@@ -22,7 +22,7 @@ function node_admin_page() {
 
   $header = array('Title', 'Type', 'Created', 'Operations');
   $rows = array();
-  $nodes = db_query('SELECT * FROM node ORDER BY nid')->fetchAll(PDO::FETCH_OBJ);
+  $nodes = db_query('SELECT * FROM node ORDER BY nid DESC')->fetchAll(PDO::FETCH_OBJ);
 
   foreach ($nodes as $node) {
     $options = array('query' => array('destination' => 'admin/node'));
