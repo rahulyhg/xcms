@@ -20,7 +20,7 @@ function node_admin_page() {
 
   $output .= theme('links', array('links' => $add_links));
 
-  $header = array('NID', 'Title', 'Created', 'Operations');
+  $header = array('Title', 'Type', 'Created', 'Operations');
   $rows = array();
   $nodes = db_query('SELECT * FROM node ORDER BY nid')->fetchAll(PDO::FETCH_OBJ);
 
@@ -28,10 +28,6 @@ function node_admin_page() {
     $options = array('query' => array('destination' => 'admin/node'));
 
     $op_links = array(
-      'view' => array(
-        'title' => 'View',
-        'href' => 'node/' . $node->nid,
-      ),
       'edit' => array(
         'title' => 'Edit',
         'href' => 'node/' . $node->nid . '/edit',
@@ -44,9 +40,11 @@ function node_admin_page() {
       ),
     );
 
-    $rows[] = array($node->nid, $node->title, format_date($node->created), theme('links', array('links' => $op_links)));
+    $node_type = node_get_type_structure($type);
+    $rows[] = array(l($node->title, 'node/' . $node->nid), $node_type['title'], format_date($node->created), theme('links', array('links' => $op_links)));
   }
-    $output .= theme('table', array('header' => $header, 'rows' => $rows));
-    return $output;
+
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  return $output;
 }
 

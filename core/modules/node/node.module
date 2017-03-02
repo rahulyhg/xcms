@@ -62,13 +62,12 @@ function node_get_types() {
     $node_types = xcms_modules_invoke('node_types');
   }
 
-  $node_type_defaults = array(
-    'title' => '',
-    'weight' => 0,
-    'fields' => array(),
-  );
-
   foreach ($node_types as $type => $structure) {
+    $node_type_defaults = array(
+      'title' => $type,
+      'weight' => 0,
+      'fields' => array(),
+    );
     $node_types[$type] += $node_type_defaults;
   }
 
