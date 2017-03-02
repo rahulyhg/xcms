@@ -388,15 +388,16 @@ function xcms_build_form($form_id, &$form_state) {
     'values' => issetor($_POST, array()),
   );
 
-  // Form attributes.
-  // TODO array_merge form attributes (overrides) from $form[].
-  $attributes = array(
+  // Get form array.
+  $form = call_user_func_array($form_id, array(array(), &$form_state));
+
+  // Form default attributes.
+  $default_attributes = array(
     'method' => 'post',
     'id' => strip_class($form_id),
   );
 
-  // Get form array.
-  $form = call_user_func_array($form_id, array(array(), &$form_state));
+  $form['attributes'] += $default_attributes;
 
   // Check for default validate and submit handlers.
   $form['validate_callbacks'][] = $form_id . '_validate';
@@ -460,7 +461,7 @@ function xcms_build_form($form_id, &$form_state) {
   }
 
   // Print form html.
-  $output .= '<form' . attributes($attributes) . '>';
+  $output .= '<form' . attributes($form['attributes']) . '>';
 
   // Render the form elements.
   foreach ($form as $name => $element) {
