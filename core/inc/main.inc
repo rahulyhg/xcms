@@ -81,11 +81,11 @@ function xcms_page_handler() {
   // Initialize the $_GET['q'] variable to the proper normal path.
   $request_path = request_path();
 
-  if (!empty($request_path)) {
-    $path = xcms_path_normal($request_path);
+  if (empty($request_path)) {
+    $path = xcms_path_normal(variable_get('site_front', 'nocontent'));
   }
   else {
-    $path = xcms_path_normal(variable_get('site_front', 'nocontent'));
+    $path = xcms_path_normal($request_path);
   }
   $_GET['q'] = $path;
 
@@ -538,7 +538,7 @@ function url($path = NULL, $options = array()) {
       return $url;
     }
 
-    // Return absolute.
+    // Return absolute URL.
     return base_url() . $url;
   }
 }
@@ -595,18 +595,17 @@ function xcms_path_alias($path) {
 function xcms_path_lookup($path, $type = 'normal') {
   $paths = &xcms_static(__FUNCTION__);
   if (!isset($paths)) {
-    $paths = db_query('SELECT alias, path FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
+    $paths = db_query('SELECT path, alias FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
   }
 
-  if ($type == 'alias') {
-    $paths = array_flip($paths);
+  // Create a new variable, so array flip won't destroy the static variable.
+  $path_list = $paths;
+
+  if ($type == 'normal') {
+    $path_list = array_flip($path_list);
   }
 
-  if (isset($paths[$path])) {
-    return $paths[$path];
-  }
-
-  return $path;
+  return isset($path_list[$path]) ? $path_list[$path] : $path;
 }
 
 /**
