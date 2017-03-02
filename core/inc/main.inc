@@ -191,7 +191,7 @@ function xcms_path_get($path) {
 }
 
 /**
- * Xcms_menu_get().
+ * Get entire menu router.
  */
 function xcms_menu_get() {
   global $_menu;
@@ -531,7 +531,7 @@ function url($path = NULL, $options = array()) {
   else {
     $request = parse_url($path);
 
-    // Path alias.
+    // Path alias if there is one.
     $path = xcms_path_alias($request['path']);
 
     if (isset($request['query'])) {
