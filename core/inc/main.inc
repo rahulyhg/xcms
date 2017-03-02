@@ -391,13 +391,11 @@ function xcms_build_form($form_id, &$form_state) {
   // Get form array.
   $form = call_user_func_array($form_id, array(array(), &$form_state));
 
-  // Form default attributes.
-  $default_attributes = array(
+  // Merge form default attributes.
+  $form['attributes'] += array(
     'method' => 'post',
     'id' => strip_class($form_id),
   );
-
-  $form['attributes'] += $default_attributes;
 
   // Check for default validate and submit handlers.
   $form['validate_callbacks'][] = $form_id . '_validate';
@@ -673,7 +671,7 @@ function xsm($input = NULL) {
  */
 function xcms_weight_sort($a, $b) {
   if ($a['weight'] < $b['weight']) {
-    return - 1;
+    return -1;
   }
   elseif ($a['weight'] > $b['weight']) {
     return 1;
@@ -742,4 +740,3 @@ function db_query($sql, $args = array()) {
   $query->execute($args);
   return $query;
 }
-

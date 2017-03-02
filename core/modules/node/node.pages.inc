@@ -46,10 +46,6 @@ function node_form($form, &$form_state) {
     xcms_not_found();
   }
 
-  $form['attributes'] = array(
-    'class' => array('node-form'),
-  );
-
   // Store node object in post.
   $form_state['node'] = $node;
 
