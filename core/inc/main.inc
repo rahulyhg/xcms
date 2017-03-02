@@ -122,8 +122,7 @@ function request_path() {
  */
 function base_url() {
   $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
-  $http_protocol = $is_https ? 'https' : 'http';
-  return $http_protocol . '://' . $_SERVER['HTTP_HOST'];
+  return $is_https ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
 }
 
 /**
@@ -144,17 +143,6 @@ function xcms_path_get($path) {
   $menu = $_menu;
   $_local_tasks = array();
   $local_parent = $path;
-
-  $defaults = array(
-    'title' => '',
-    'weight' => 0,
-    'access' => FALSE,
-    'callback' => NULL,
-    'arguments' => array(),
-    'access' => FALSE,
-    'file' => '',
-    'type' => MENU_NORMAL,
-  );
 
   // Translate placeholder menu % as args (current page).
   foreach ($menu as $link => $menu_item) {
@@ -199,7 +187,7 @@ function xcms_path_get($path) {
     return;
   }
 
-  return array_merge($defaults, $menu[$path]);
+  return $menu[$path];
 }
 
 /**
@@ -207,7 +195,25 @@ function xcms_path_get($path) {
  */
 function xcms_menu_get() {
   global $_menu;
+
+  $menu_item_defaults = array(
+    'title' => '',
+    'weight' => 0,
+    'access' => FALSE,
+    'callback' => NULL,
+    'arguments' => array(),
+    'access' => FALSE,
+    'file' => '',
+    'type' => MENU_NORMAL,
+  );
+
   $_menu = xcms_modules_invoke('menu');
+
+  foreach ($_menu as $path => $menu_item) {
+    $_menu[$path] += $menu_item_defaults;
+  }
+
+  uasort($_menu, 'xcms_weight_sort');
 }
 
 /**
