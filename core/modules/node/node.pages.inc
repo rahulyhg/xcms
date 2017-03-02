@@ -18,8 +18,10 @@ function node_page() {
 
   xcms_set_title($node->title);
 
+    xsm($node);
+
   // TODO, foreach felds display field rendered / themed + weight?
-  $output .= $node->data['field_body'];
+  // $output .= $node->data['field_body'];
 
   return $output;
 }

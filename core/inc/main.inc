@@ -392,6 +392,7 @@ function xcms_build_form($form_id, &$form_state) {
   $form = call_user_func_array($form_id, array(array(), &$form_state));
 
   // Merge form default attributes.
+  $form['attributes'] = issetor($form['attributes'], array());
   $form['attributes'] += array(
     'method' => 'post',
     'id' => strip_class($form_id),
@@ -671,7 +672,7 @@ function xsm($input = NULL) {
  */
 function xcms_weight_sort($a, $b) {
   if ($a['weight'] < $b['weight']) {
-    return -1;
+    return - 1;
   }
   elseif ($a['weight'] > $b['weight']) {
     return 1;
@@ -740,3 +741,4 @@ function db_query($sql, $args = array()) {
   $query->execute($args);
   return $query;
 }
+
