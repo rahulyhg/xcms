@@ -89,6 +89,7 @@ function node_form($form, &$form_state) {
 function node_form_submit($form, &$form_state) {
   $node = $form_state['node'];
   $node->title = $form_state['values']['title'];
+  $node->path = $form_state['values']['path'];
 
   // TODO move to fields table, use node save hook
   $node->data['field_body'] = $form_state['values']['field_body'];

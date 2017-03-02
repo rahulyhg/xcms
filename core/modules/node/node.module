@@ -95,13 +95,15 @@ function node_node_load($node) {
  * Implements hook_node_save().
  */
 function node_node_save($node) {
+  $node->path = trim($node->path);
+
   // Update path alias.
   if (empty($node->path)) {
     db_query('DELETE FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid));
   }
   else {
     // Check for existing path.
-    $result = db_query('SELECT count(alias) FROM paths WHERE alias = :alias', array(':alias' => $node->path))->fetchColumn();
+    $result = db_query('SELECT count(path) FROM paths WHERE path = :path', array(':path' => 'node/' . $node->nid))->fetchColumn();
     $args = array(':path' => 'node/' . $node->nid, ':alias' => $node->path);
 
     if ($result) {
