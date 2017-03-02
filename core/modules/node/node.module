@@ -22,6 +22,7 @@ function node_menu() {
     'file' => 'core/modules/node/node.pages.inc',
     'access' => TRUE,
     'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
   );
 
   $items['node/%/edit'] = array(
@@ -46,7 +47,7 @@ function node_menu() {
     'callback' => 'node_admin_page',
     'file' => 'core/modules/node/node.admin.inc',
     'access' => 'user_is_admin',
-    'weight' => -1,
+    'weight' => -10,
   );
 
   return $items;
@@ -181,8 +182,5 @@ function node_node_save($node) {
       db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', $args);
     }
   }
-
-  // Update field_*
-  // TODO store field data in table, node type info etc.
 }
 

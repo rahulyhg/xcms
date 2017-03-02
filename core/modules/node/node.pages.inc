@@ -5,7 +5,10 @@
  */
 
 /**
- *
+ * Render node page.
+ * TODO: theme include node.tpl.php (DEFAULT)
+ * TODO: theme include node--1-tpl.php
+ * TODO: theme include node--page-tpl.php
  */
 function node_page() {
   $output = '';
@@ -18,10 +21,11 @@ function node_page() {
 
   xcms_set_title($node->title);
 
-    xsm($node);
-
-  // TODO, foreach felds display field rendered / themed + weight?
-  // $output .= $node->data['field_body'];
+  foreach ($node->data as $key => $value) {
+    if (strpos($key, 'field_') !== FALSE) {
+      $output .= '<div class="' . strip_class($key) . '">' . $node->data[$key] . '</div>';
+    }
+  }
 
   return $output;
 }
@@ -86,7 +90,7 @@ function node_form_submit($form, &$form_state) {
   $node->title = $form_state['values']['title'];
   $node->path = $form_state['values']['path'];
 
-  // Save fields to node object and data column.
+  // Set fields, node object and data column.
   $data = array();
   foreach ($form_state['values'] as $key => $value) {
     if (strpos($key, 'field_') !== FALSE) {
@@ -95,6 +99,7 @@ function node_form_submit($form, &$form_state) {
   }
   $node->data = $data;
 
+  // Save the node.
   node_save($node);
   xcms_set_message('The ' . $node->type . ' has been saved.');
   $form_state['redirect'] = 'node/' . $node->nid . '/edit';
