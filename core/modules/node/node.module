@@ -53,6 +53,29 @@ function node_menu() {
 }
 
 /**
+ * Loads a list of node types.
+ */
+function node_get_types() {
+  $node_types = &xcms_static(__FUNCTION__);
+  if (!isset($node_types)) {
+    $node_types = xcms_modules_invoke('node_types');
+  }
+  return $node_types;
+}
+
+/**
+ * Implements hook_node_types().
+ */
+function node_node_types() {
+  return array(
+    'page' => array(
+      'title' => 'Page',
+      'fields' => array('field_body'),
+    ),
+  );
+}
+
+/**
  * Loads a node object.
  */
 function node_load($nid) {
