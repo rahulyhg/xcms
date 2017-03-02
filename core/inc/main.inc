@@ -382,42 +382,53 @@ function xcms_get_form($form_id) {
  */
 function xcms_build_form($form_id, &$form_state) {
   $output = '';
+
   // Set $form_state defaults.
   $form_state += array(
     'values' => issetor($_POST, array()),
   );
+
   // Form attributes.
   // TODO array_merge form attributes (overrides) from $form[].
   $attributes = array(
     'method' => 'post',
     'id' => strip_class($form_id),
   );
+
   // Get form array.
   $form = call_user_func_array($form_id, array(array(), &$form_state));
+
   // Check for default validate and submit handlers.
   $form['validate_callbacks'][] = $form_id . '_validate';
   $form['submit_callbacks'][] = $form_id . '_submit';
+
   // Form has been submitted, process it.
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     // Check form elements for missing required fields.
     foreach ($form as $name => $element) {
+
       // Set element value from post.
       if (isset($form_state['values'][$name])) {
         $form[$name]['value'] = $form_state['values'][$name];
         unset($form[$name]['default_value']);
       }
+
       if (isset($element['required']) && empty($form_state['values'][$name])) {
         form_set_error($name, $element['title'] . ' field is required.');
+
         // Don't process validate callbacks if form required empty.
         $form['validate_callbacks'] = array();
       }
     }
+
     // Validation callbacks.
     foreach ($form['validate_callbacks'] as $callback) {
       if (function_exists($callback)) {
         call_user_func_array($callback, array($form, &$form_state));
       }
     }
+
     // Check for form errors. Set by form_set_error()
     $form_errors = xcms_static('form_set_error');
     if (!empty($form_errors)) {
@@ -425,9 +436,11 @@ function xcms_build_form($form_id, &$form_state) {
         xcms_set_message($message, 'error');
         $form[$name]['attributes']['class'][] = 'error';
       }
+
       // Don't process submit callbacks if form has errors.
       $form['submit_callbacks'] = array();
     }
+
     // Submit callbacks.
     foreach ($form['submit_callbacks'] as $callback) {
       if (function_exists($callback)) {
@@ -445,13 +458,16 @@ function xcms_build_form($form_id, &$form_state) {
       }
     }
   }
+
   // Print form html.
   $output .= '<form' . attributes($attributes) . '>';
+
   // Render the form elements.
   foreach ($form as $name => $element) {
     $element['name'] = $name;
     $output .= theme_form_element($element);
   }
+
   $output .= '</form>';
   return $output;
 }

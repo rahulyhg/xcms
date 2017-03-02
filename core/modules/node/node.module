@@ -108,7 +108,7 @@ function node_node_types() {
  * Implements hook_field_*().
  */
 function node_field_body($node) {
-  $form['field_body'] = array(
+  $element['field_body'] = array(
     'type' => 'textarea',
     'title' => 'Body',
     'default_value' => issetor($node->data['field_body']),
@@ -117,7 +117,7 @@ function node_field_body($node) {
       'class' => array('cke'),
     ),
   );
-  return $form;
+  return $element;
 }
 
 /**
