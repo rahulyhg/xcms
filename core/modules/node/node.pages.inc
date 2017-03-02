@@ -84,8 +84,14 @@ function node_form_submit($form, &$form_state) {
   $node->title = $form_state['values']['title'];
   $node->path = $form_state['values']['path'];
 
-  // TODO move to fields table, use node save hook
-  $node->data['field_body'] = $form_state['values']['field_body'];
+  // Save fields to node object and data column.
+  $data = array();
+  foreach ($form_state['values'] as $key => $value) {
+    if (strpos($key, 'field_') !== FALSE) {
+      $data[$key] = $value;
+    }
+  }
+  $node->data = $data;
 
   node_save($node);
   xcms_set_message('The ' . $node->type . ' has been saved.');
