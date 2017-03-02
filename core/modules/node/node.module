@@ -34,7 +34,7 @@ function node_menu() {
   );
 
   $items['node/add/%'] = array(
-    'title' => 'Add node',
+    'title' => 'Add',
     'callback' => 'xcms_get_form',
     'arguments' => array('node_form'),
     'file' => 'core/modules/node/node.pages.inc',
@@ -77,6 +77,22 @@ function node_get_types() {
 }
 
 /**
+ * Get the structure of a node type.
+ */
+function node_get_type_structure($type) {
+  $node_types = node_get_types();
+  return isset($node_types[$type]) ? $node_types[$type] : FALSE;
+}
+
+/**
+ * Get the structure of a node type.
+ */
+function node_get_type_fields($type) {
+  $structure = node_get_type_structure($type);
+  return $structure['fields'];
+}
+
+/**
  * Implements hook_node_types().
  */
 function node_node_types() {
@@ -86,6 +102,22 @@ function node_node_types() {
       'fields' => array('field_body'),
     ),
   );
+}
+
+/**
+ * Implements hook_field_*().
+ */
+function node_field_body($node) {
+  $form['field_body'] = array(
+    'type' => 'textarea',
+    'title' => 'Body',
+    'default_value' => issetor($node->data['field_body']),
+    'attributes' => array(
+      'rows' => 10,
+      'class' => array('cke'),
+    ),
+  );
+  return $form;
 }
 
 /**

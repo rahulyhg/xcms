@@ -35,14 +35,14 @@ function node_form($form, &$form_state) {
       'type' => arg(2),
       'path' => NULL,
     );
+    xcms_set_title('Add ' . $node->type);
   }
   elseif (is_numeric(arg(1)) && arg(2) == 'edit') {
     $node = node_load(arg(1));
-    if (empty($node)) {
-      xcms_not_found();
-    }
+    xcms_set_title('Edit ' . $node->type);
   }
-  else {
+
+  if (empty($node)) {
     xcms_not_found();
   }
 
@@ -56,18 +56,11 @@ function node_form($form, &$form_state) {
     'required' => TRUE,
   );
 
-  // TODO node form hook to load fields depending on the node type.
-  // TODO node type builder (no user interface - module hooks only)
-  // TODO, form body should be loaded via hook_node_form in node.module for "page type" and not required
-  $form['field_body'] = array(
-    'type' => 'textarea',
-    'title' => 'Body',
-    'default_value' => issetor($node->data['field_body']),
-    'attributes' => array(
-      'rows' => 10,
-      'class' => array('cke'),
-    ),
-  );
+  // Load node hook fields from Field API.
+  $fields = node_get_type_fields($node->type);
+  foreach ($fields as $field) {
+    $form += xcms_modules_invoke($field, $node);
+  }
 
   $form['path'] = array(
     'type' => 'text',

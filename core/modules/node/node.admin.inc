@@ -12,7 +12,6 @@ function node_admin_page() {
   $output = '';
 
   foreach (node_get_types() as $type => $structure) {
-    // xsm($structure);
     $add_links[$type] = array(
       'title' => 'Add ' . $structure['title'],
       'href' => 'node/add/' . $type,
