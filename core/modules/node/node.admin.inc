@@ -11,11 +11,11 @@
 function node_admin_page() {
   $output = '';
 
-  foreach (node_get_types() as $key => $node_type) {
-    xsm($node_type);
-    $add_links[$key] = array(
-      'title' => 'Add ' . $node_type['title'],
-      'href' => 'node/add/' . $key,
+  foreach (node_get_types() as $type => $structure) {
+    // xsm($structure);
+    $add_links[$type] = array(
+      'title' => 'Add ' . $structure['title'],
+      'href' => 'node/add/' . $type,
     );
   }
 
