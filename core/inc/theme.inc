@@ -116,8 +116,6 @@ function xcms_get_local_tasks() {
 /**
  * Theme list.
  */
-
-/*
 function theme_list($vars) {
   $vars += array(
     'items' => array(),
@@ -153,7 +151,6 @@ function theme_list($vars) {
   $output .= $vars['root'] ? '</' . $vars['type'] . '>' : NULL;
   return $output;
 }
-*/
 
 /**
  * Theme links.
