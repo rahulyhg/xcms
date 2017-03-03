@@ -116,6 +116,8 @@ function xcms_get_local_tasks() {
 /**
  * Theme list.
  */
+
+/*
 function theme_list($vars) {
   $vars += array(
     'items' => array(),
@@ -125,6 +127,7 @@ function theme_list($vars) {
     'root' => TRUE,
   );
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
+
   foreach ($vars['items'] as $key => $item) {
 
     $li_attributes = array();
@@ -150,22 +153,61 @@ function theme_list($vars) {
   $output .= $vars['root'] ? '</' . $vars['type'] . '>' : NULL;
   return $output;
 }
+*/
 
 /**
  * Theme links.
  */
 function theme_links($vars) {
+
+  // Merge defaults that we're using.
   $vars += array(
+    'type' => 'ul',
     'links' => array(),
     'attributes' => array(
       'class' => array('links'),
     ),
   );
-  $items = array();
-  foreach ($vars['links'] as $key => $link) {
-    $items[$key] = l($link['title'], $link['href'], issetor($link['options'], array()));
+
+  return '<' . $vars['type'] . attributes($vars['attributes']) . '>' . _build_links($vars['links']) . '</' . $vars['type'] . '>';
+}
+
+function _build_links($links) {
+  $output = '';
+  foreach ($links as $key => $link) {
+
+    // Merge defaults that we're using.
+    $link += array(
+      'title' => NULL,
+      'href' => NULL,
+      'options' => array(
+        'attributes' => array(
+          'class' => array(),
+        ),
+      ),
+    );
+
+    // List item has children, add "expanded" class.
+    $li_attributes = array();
+    if (array_key_exists('children', $link)) {
+      $li_attributes = array('class' => array('expanded'));
+    }
+
+    $output .= '<li' . attributes($li_attributes) . '>';
+
+    if (!is_numeric($key)) {
+      $link['options']['attributes']['class'][] = $key;
+    }
+
+    $output .= l($link['title'], $link['href'], $link['options']);
+
+    // Add children, via recursion.
+    if (array_key_exists('children', $link)) {
+      $output .= theme('links', array('links' => $link['children']));
+    }
+    $output .= '</li>';
   }
-  return theme('list', array('items' => $items, 'attributes' => $vars['attributes']));
+  return $output;
 }
 
 /**
@@ -174,37 +216,29 @@ function theme_links($vars) {
 function theme_form_element($vars) {
   $output = '';
   $vars += form_element_defaults();
-
   // Element wrapper.
   // $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
   $attributes['class'][] = 'form-type-' . $vars['type'];
-
   if ($vars['required']) {
     $attributes['class'][] = 'form-required';
   }
-
   $output .= '<div' . attributes($attributes) . '>';
-
   // Set type and class on form item.
   $vars['attributes']['id'] = 'edit-' . strip_class($vars['name']);
   $vars['attributes']['type'] = $vars['type'];
   $vars['attributes']['name'] = $vars['name'];
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
   $vars['attributes']['value'] = empty($vars['value']) ? $vars['default_value'] : $vars['value'];
-
   // HTML5 "required" validation.
   if ($vars['required']) {
     // $vars['attributes']['required'] = TRUE;.
   }
-
   if ($vars['title']) {
     $output .= '<label>' . $vars['title'] . '</label>';
   }
-
   // Check if there is a special function for the element.
   $function = 'theme_form_' . $vars['type'];
-
   if (function_exists($function)) {
     $output .= call_user_func($function, $vars);
   }
@@ -212,11 +246,9 @@ function theme_form_element($vars) {
     // Default form element function.
     $output .= theme_form_input($vars);
   }
-
   if ($vars['description']) {
     $output .= '<div class="description">' . $vars['description'] . '</div>';
   }
-
   $output .= '</div>';
   return $output;
 }
@@ -371,16 +403,13 @@ function xcms_get_js() {
   $scripts = array();
   $settings = array();
   $js = xcms_add_js();
-
   if (is_array($js)) {
     uasort($js, 'xcms_weight_sort');
-
     foreach ($js as $options) {
       $data = NULL;
       $attributes = array(
         'type' => 'text/javascript',
       );
-
       switch ($options['type']) {
         case 'setting':
           $settings += $options['data'];
@@ -396,16 +425,13 @@ function xcms_get_js() {
       $scripts[] = '<script' . attributes($attributes) . '>' . $data . '</script>';
     }
   }
-
   // Merge default javascript variables.
   $settings += array(
     'basePath' => $base_path,
     'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
     'cacheTimestamp' => variable_get('cache_timestamp'),
   );
-
   $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object) $settings) . '</script>';
-
   return implode("\n", $scripts);
 }
 

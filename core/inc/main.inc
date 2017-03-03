@@ -698,13 +698,13 @@ function strip_class($text) {
   $text = strtolower($text);
 
   // Make alphanumeric (removes all other characters).
-  $text = preg_replace('/[^a-z0-9_\s-]/', '', $text);
+  $text = preg_replace('/[^a-z0-9_\/\s-]/', '', $text);
 
   // Clean up multiple dashes or whitespaces.
-  $text = preg_replace('/[\s-]+/', ' ', $text);
+  $text = preg_replace('/[\s-\/]+/', ' ', $text);
 
-  // Convert whitespaces and underscore to dash.
-  $text = preg_replace('/[\s_]/', '-', $text);
+  // Convert whitespaces, underscore and forward slashes to dash.
+  $text = preg_replace('/[\s_\/]/', '-', $text);
   return $text;
 }
 

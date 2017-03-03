@@ -55,13 +55,24 @@ function admin_footer() {
 
     // Load top level admin items for menu.
     global $_menu;
-    $admin_items = array('home' => l('Home', ''));
+
+    // Add home link to menu
+    $admin_items = array(
+      'home' => array(
+        'title' => 'Home',
+        'href' => '<front>',
+      ),
+    );
+
     foreach ($_menu as $path => $item) {
       if (arg(0, $path) == 'admin' && empty(arg(2, $path))) {
-        $admin_items[] = l($item['title'], $path);
+        $admin_items[strip_class($path)] = array(
+          'title' => $item['title'],
+          'href' => $path,
+        );
       }
     }
-    $links = theme_list(array('items' => $admin_items, 'attributes' => array('class' => 'toolbar-menu')));
+    $links = theme('links', array('links' => $admin_items, array('attributes' => array('class' => 'toolbar-menu'))));
     return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
   }
 }
