@@ -65,7 +65,7 @@ function theme_page($vars) {
     'shortlink' => url(xcms_path_normal(current_path()), array('absolute' => TRUE)),
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
-    'body_classes' => $is_front ? 'front' : 'not-front',
+    'body_classes' => ($is_front ? 'front' : 'not-front') . ' page-' . arg(0),
     // 'content' => empty($content) ? ' ' : $content,
   );
 
