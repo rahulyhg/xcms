@@ -68,6 +68,17 @@ function node_get_types() {
       'weight' => 0,
       'fields' => array(),
     );
+
+    /*
+    xsm($structure);
+
+    // All fields display default to TRUE
+    foreach ($structure['fields'] as $field => $settings) {
+    $node_type_defaults['fields'][$field]['display'] = TRUE;
+    }
+    xsm($node_type_defaults);
+     */
+
     $node_types[$type] += $node_type_defaults;
   }
 
@@ -99,7 +110,11 @@ function node_node_types() {
   return array(
     'page' => array(
       'title' => 'Page',
-      'fields' => array('field_body'),
+      'fields' => array(
+        'field_body' => array(
+          'hide' => FALSE,
+        ),
+      ),
     ),
   );
 }
@@ -138,6 +153,7 @@ function node_load($nid) {
  */
 function node_save(&$node) {
   global $xcms_db;
+
   $args = array(':title' => $node->title, ':data' => serialize($node->data));
   if (empty($node->nid)) {
     $args[':type'] = $node->type;

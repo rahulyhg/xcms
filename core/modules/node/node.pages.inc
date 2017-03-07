@@ -6,13 +6,12 @@
 
 /**
  * Render node page.
+ * TODO: print from tpl is not working
  * TODO: theme include node.tpl.php (DEFAULT)
- * TODO: theme include node--1-tpl.php
- * TODO: theme include node--page-tpl.php
+ * TODO: theme include node--page-tpl.php.
  */
 function node_page() {
   $output = '';
-
   $node = node_load(arg(1));
 
   if (empty($node)) {
@@ -21,13 +20,27 @@ function node_page() {
 
   xcms_set_title($node->title);
 
-  foreach ($node->data as $key => $value) {
-    if (strpos($key, 'field_') !== FALSE) {
-      $output .= '<div class="' . strip_class($key) . '">' . $node->data[$key] . '</div>';
+  $directory = variable_get('site_theme', 'core/themes/default');
+
+  // Theme include node--1-tpl.php.
+  $node_nid_include = $directory . '/node--' . $node->nid . '.tpl.php';
+  if (file_exists($node_nid_include)) {
+    require_once $node_nid_include;
+  }
+  else {
+
+    foreach ($node->data as $key => $value) {
+      if (strpos($key, 'field_') !== FALSE) {
+        $structure = node_get_type_structure($node->type);
+        if (empty($structure['fields'][$key]['hide'])) {
+          $output .= '<div class="' . strip_class($key) . '">' . $node->data[$key] . '</div>';
+        }
+      }
     }
   }
 
-  return $output;
+  // TODO fix missing content hack.
+  return $output . ' ';
 }
 
 /**
@@ -37,7 +50,7 @@ function node_form($form, &$form_state) {
 
   // Add mode, create new node object.
   if (arg(1) == 'add' && arg(2)) {
-    $node = (object)array(
+    $node = (object) array(
       'type' => arg(2),
       'path' => NULL,
     );
@@ -64,7 +77,7 @@ function node_form($form, &$form_state) {
 
   // Load node hook fields from Field API.
   $fields = node_get_type_fields($node->type);
-  foreach ($fields as $field) {
+  foreach ($fields as $field => $settings) {
     $form += xcms_modules_invoke($field, $node);
   }
 
@@ -106,4 +119,3 @@ function node_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'node/' . $node->nid;
 }
-
