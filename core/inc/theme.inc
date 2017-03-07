@@ -22,7 +22,7 @@ function l($title, $path, $options = array()) {
 
   // html => TRUE
   if (empty($options['html'])) {
-    $title = htmlentities($title);
+    $title = check_plain($title);
   }
 
   if (isset($options['query'])) {
