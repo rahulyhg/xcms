@@ -163,6 +163,7 @@ function node_node_load($node) {
  * Implements hook_node_save().
  */
 function node_node_save($node) {
+
   $node->path = trim($node->path);
 
   // Update path alias.
@@ -181,5 +182,9 @@ function node_node_save($node) {
       db_query('INSERT INTO paths (path, alias) VALUES (:path, :alias)', $args);
     }
   }
+
+  // Reload aliases so form redirect works.
+  $paths = &xcms_static('xcms_path_lookup');
+  $paths = db_query('SELECT path, alias FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
 }
 

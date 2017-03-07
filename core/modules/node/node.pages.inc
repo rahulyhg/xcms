@@ -101,7 +101,9 @@ function node_form_submit($form, &$form_state) {
 
   // Save the node.
   node_save($node);
+
   xcms_set_message('The <em>' . $node->type . '</em> has been saved.');
+
   $form_state['redirect'] = 'node/' . $node->nid;
 }
 

@@ -491,10 +491,10 @@ function _xcms_error_handler($error_level, $message, $filename, $line, $context)
 }
 
 /**
- * Xcms_goto().
+ * Xcms goto.
  */
 function xcms_goto($url = NULL) {
-  header('Location: ' . url($url));
+  header('Location: ' . url($url, array('absolute' => TRUE)));
   exit;
 }
 
