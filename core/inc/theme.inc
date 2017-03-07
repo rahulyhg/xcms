@@ -58,13 +58,13 @@ function theme_page($vars) {
 
   // System variables, can't be changed by vars / hook.
   $tabs = xcms_get_local_tasks();
-  $title = strip_tags(xcms_set_title());
+  $title = check_plain(xcms_set_title());
   $is_front = current_path() == variable_get('site_front');
 
   // Common variables, can be changed in preprocess.
   $vars += array(
     'title' => $title,
-    'head_title' => variable_get('site_name', 'XCMS') . ' | ' . $title,
+    'head_title' => check_plain(variable_get('site_name', 'XCMS')) . ' | ' . $title,
     'front_url' => url('<front>'),
     'canonical' => url($is_front ? '' : current_path(), array('absolute' => TRUE)),
     'shortlink' => url(xcms_path_normal(current_path()), array('absolute' => TRUE)),
