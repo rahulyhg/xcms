@@ -20,6 +20,11 @@ function theme($hook, $vars = array()) {
  */
 function l($title, $path, $options = array()) {
 
+  // html => TRUE
+  if (empty($options['html'])) {
+    $title = htmlentities($title);
+  }
+
   if (isset($options['query'])) {
     $path .= '?' . http_build_query($options['query']);
   }
