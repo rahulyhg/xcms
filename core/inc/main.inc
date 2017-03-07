@@ -616,7 +616,7 @@ function xcms_path_alias($path) {
  */
 function xcms_path_lookup($path, $type = 'normal') {
   $paths = &xcms_static(__FUNCTION__);
-  if (!isset($paths)) {
+  if (!isset($paths) || $type == 'refresh') {
     $paths = db_query('SELECT path, alias FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
   }
 

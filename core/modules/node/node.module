@@ -183,8 +183,6 @@ function node_node_save($node) {
     }
   }
 
-  // Reload aliases so form redirect works.
-  $paths = &xcms_static('xcms_path_lookup');
-  $paths = db_query('SELECT path, alias FROM paths')->fetchAll(PDO::FETCH_KEY_PAIR);
+  xcms_path_lookup(NULL, 'refresh');
 }
 
