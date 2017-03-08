@@ -29,23 +29,22 @@ function user_menu() {
     'callback' => 'user_login_page',
     'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_anonymous',
-    //    'type' => MENU_LOCAL_TASK,
   );
 
   $items['user/logout'] = array(
     'callback' => 'user_logout_page',
     'file' => 'core/modules/user/user.pages.inc',
     'access' => 'user_is_logged_in',
-    //    'type' => MENU_LOCAL_TASK,
   );
 
   /*
   $items['user/%'] = array(
-    'title' => 'Account',
+    'title' => 'View',
     'callback' => 'user_page',
     'file' => 'core/modules/user/user.pages.inc',
-    'access' => TRUE,
-    //    'type' => MENU_LOCAL_TASK,
+    'access' => 'user_is_logged_in',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
   );
   */
 
@@ -53,8 +52,8 @@ function user_menu() {
     'title' => 'Edit',
     'callback' => 'user_account_page',
     'file' => 'core/modules/user/user.pages.inc',
-    'access' => 'user_is_logged_in',
-    //    'type' => MENU_LOCAL_TASK,
+    'access' => 'user_is_admin',
+    'type' => MENU_LOCAL_TASK,
   );
 
   $items['admin/user'] = array(
@@ -73,13 +72,6 @@ function user_menu() {
 function user_logout() {
   setcookie('name', '', strtotime('-1 month'), '/');
   // session_destroy();
-}
-
-/**
- * TODO - this is not needed!
- */
-function user_load_all() {
-  return db_query('SELECT * FROM users ORDER BY uid')->fetchAll(PDO::FETCH_OBJ);
 }
 
 /**
@@ -129,7 +121,6 @@ function user_authenticate($name, $pass) {
  *
  */
 function user_session($name) {
-  // session_start();
   setcookie('name', $name, strtotime('+1 month'), '/');
 }
 

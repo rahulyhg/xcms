@@ -25,7 +25,6 @@ define('MENU_LOCAL_ACTION', 3);
 function xcms_init() {
   global $xcms_db, $conf, $base_path;
 
-  // TODO where to put this? also no session_destroy() is in place!!
   // Start session.
   session_start();
 
@@ -60,9 +59,6 @@ function xcms_init() {
   if ($content = xcms_page_handler()) {
     print theme_page(array('content' => $content));
   }
-
-  // TODO where to put this??
-  session_destroy();
 }
 
 /**

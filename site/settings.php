@@ -12,4 +12,4 @@ $settings_database = array(
   'port' => '',
 );
 
-$base_path = '/newsite';
+$base_path = '/';

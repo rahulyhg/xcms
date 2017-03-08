@@ -7,6 +7,8 @@ function user_page() {
   global $user;
 
   if (user_is_logged_in()) {
+    // TODO change to account->name from arg(1)
+    xcms_set_title($user->name);
     $output = '';
     $output .= '<h3>History</h3>';
     $output .= '<p><strong>Member since</strong></p>';
@@ -14,7 +16,7 @@ function user_page() {
     return $output;
   }
   else {
-    // xcms_goto('user/login');
+    xcms_goto('user/login');
   }
 }
 
@@ -73,8 +75,7 @@ function user_login_form_validate($form, &$form_state) {
  */
 function user_login_form_submit($form, &$form_state) {
   user_session($form_state['values']['name']);
-  // Todo use redirect callback for goto. - set GET-destination=variable from form?
-  xcms_goto();
+  $form_state['redirect'] = 'user';
 }
 
 /**
@@ -101,8 +102,6 @@ function user_account_form($form, &$form_state) {
     'required' => TRUE,
   );
 
-  // TODO password match pure javascript html client side
-  // http://codepen.io/diegoleme/pen/surIK
   $form['pass'] = array(
     'type' => 'password',
     'title' => 'Password',

@@ -10,10 +10,12 @@
  */
 function user_admin_page() {
 
-  $header = array('UID', 'Username', 'E-mail', 'Created', 'Operations');
+  $header = array('Username', 'E-mail', 'Created', 'Operations');
   $rows = array();
 
-  foreach (user_load_all() as $account) {
+  $accounts = db_query('SELECT * FROM users ORDER BY uid')->fetchAll(PDO::FETCH_OBJ);
+
+  foreach ($accounts as $account) {
     $account = (object) $account;
     if ($account->uid) {
 
@@ -29,7 +31,7 @@ function user_admin_page() {
       );
 
       $ops = theme('links', array('links' => $links));
-      $rows[] = array($account->uid, $account->name, $account->mail, format_date($account->created), $ops);
+      $rows[] = array(l($account->name, 'user/' . $account->uid), $account->mail, format_date($account->created), $ops);
     }
   }
 
