@@ -452,6 +452,9 @@ function xcms_build_form($form_id, &$form_state) {
       if (!empty($form_state['redirect'])) {
         xcms_goto($form_state['redirect']);
       }
+
+      // Refresh page to avoid re-post.
+      xcms_goto(current_path());
     }
   }
 
