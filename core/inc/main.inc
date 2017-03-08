@@ -500,6 +500,9 @@ function xcms_goto($url = NULL) {
 function variable_set($name, $value) {
   global $conf;
 
+  // Update global conf with new value.
+  $conf[$name] = $value;
+
   // Check for existing name.
   $variable_exists = db_query('SELECT count(name) FROM variables WHERE name = :name', array(':name' => $name))->fetchColumn();
 
@@ -511,9 +514,6 @@ function variable_set($name, $value) {
   else {
     db_query('INSERT INTO variables (name, value) VALUES (:name, :value)', array(':value' => $value, ':name' => $name));
   }
-
-  // Update global conf with new value.
-  $conf[$name] = $value;
 }
 
 /**
