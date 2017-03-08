@@ -453,3 +453,16 @@ function format_date($timestamp) {
   return date(variable_get('date_format', 'Y-m-d h:i'), $timestamp);
 }
 
+/**
+ * Renders a system default template, which is essentially a PHP template.
+ */
+function render_template($template_file, $vars) {
+  extract($vars, EXTR_SKIP);
+  ob_start();
+  if (file_exists($template_file . '.tpl.php')) {
+    include $template_file . '.tpl.php';
+  }
+
+  return ob_get_clean();
+}
+

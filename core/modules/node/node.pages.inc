@@ -6,12 +6,8 @@
 
 /**
  * Render node page.
- * TODO: print from tpl is not working
- * TODO: theme include node.tpl.php (DEFAULT)
- * TODO: theme include node--page-tpl.php.
  */
 function node_page() {
-  $output = '';
   $node = node_load(arg(1));
 
   if (empty($node)) {
@@ -21,26 +17,38 @@ function node_page() {
   xcms_set_title($node->title);
 
   $directory = variable_get('site_theme', 'core/themes/default');
+  $content = '';
 
-  // Theme include node--1-tpl.php.
-  $node_nid_include = $directory . '/node--' . $node->nid . '.tpl.php';
-  if (file_exists($node_nid_include)) {
-    require_once $node_nid_include;
-  }
-  else {
-
-    foreach ($node->data as $key => $value) {
-      if (strpos($key, 'field_') !== FALSE) {
-        $structure = node_get_type_structure($node->type);
-        if (empty($structure['fields'][$key]['hide'])) {
-          $output .= '<div class="' . strip_class($key) . '">' . $node->data[$key] . '</div>';
-        }
+  // Load field_*
+  foreach ($node->data as $key => $value) {
+    if (strpos($key, 'field_') !== FALSE) {
+      $structure = node_get_type_structure($node->type);
+      if (empty($structure['fields'][$key]['hide'])) {
+        $content .= '<div class="' . strip_class($key) . '">' . $node->data[$key] . '</div>';
       }
     }
   }
 
-  // TODO fix missing content hack.
-  return $output . ' ';
+  // TODO fix missing content hack. if empty content is returned it wont render theme page
+  $content .= ' ';
+
+  // Templates in order of preference.
+  $templates = array(
+    $directory . '/node--' . $node->nid,
+    $directory . '/node--' . $node->type,
+    // May want these in future.
+    // $directory . '/node',
+    // 'core/node/node.tpl.php',
+  );
+
+  foreach ($templates as $template) {
+    $render = render_template($directory . '/node--' . $node->nid, array('content' => $content, 'node' => $node));
+    if (!empty($render)) {
+      return $render;
+    }
+  }
+
+  return $content;
 }
 
 /**
@@ -50,7 +58,7 @@ function node_form($form, &$form_state) {
 
   // Add mode, create new node object.
   if (arg(1) == 'add' && arg(2)) {
-    $node = (object) array(
+    $node = (object)array(
       'type' => arg(2),
       'path' => NULL,
     );
@@ -119,3 +127,4 @@ function node_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'node/' . $node->nid;
 }
+
