@@ -65,7 +65,9 @@ function admin_footer() {
     );
 
     foreach ($_menu as $path => $item) {
-      if (arg(0, $path) == 'admin' && empty(arg(2, $path))) {
+      $arg_0 = arg(0, $path);
+      $arg_2 = arg(2, $path);
+      if ($arg_0 == 'admin' && empty($arg_2)) {
         $admin_items[strip_class($path)] = array(
           'title' => $item['title'],
           'href' => $path,
