@@ -31,6 +31,7 @@ function user_admin_page() {
       );
 
       $ops = theme('links', array('links' => $links));
+
       $rows[] = array(l($account->name, 'user/' . $account->uid), $account->mail, format_date($account->created), $ops);
     }
   }

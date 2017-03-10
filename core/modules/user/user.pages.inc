@@ -130,6 +130,15 @@ function user_account_form($form, &$form_state) {
     'default_value' => $account->timezone,
   );
 
+  if (user_is_admin()) {
+    $form['is_admin'] = array(
+      'type' => 'checkbox',
+      'title' => 'User is admin',
+      'description' => 'Grant administrative rights to this user.',
+      'default_value' => $account->is_admin,
+    );
+  }
+
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Save',
