@@ -119,7 +119,7 @@ function request_path() {
  */
 function base_url() {
   $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
-  return $is_https ? 'https' : 'http' . '://' . $_SERVER['HTTP_HOST'];
+  return ($is_https ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 }
 
 /**
