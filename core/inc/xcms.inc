@@ -801,7 +801,7 @@ function theme_page($vars) {
   // Common variables, can be changed in preprocess.
   $vars += array(
     'title' => $title,
-    'head_title' => check_plain(variable_get('site_name', 'XCMS')) . ' | ' . $title,
+    'head_title' => $title . ' | ' . check_plain(variable_get('site_name', 'XCMS')),
     'front_url' => url('<front>'),
     'canonical' => url($is_front ? '' : current_path(), array('absolute' => TRUE)),
     'shortlink' => url(xcms_path_normal(current_path()), array('absolute' => TRUE)),
