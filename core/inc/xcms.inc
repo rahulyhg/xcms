@@ -337,7 +337,7 @@ function issetor(&$var, $default = NULL) {
 }
 
 /**
- * Sets a message to display to the user.
+ * Sets a message to display to the visitor.
  */
 function xcms_set_message($message = NULL, $type = 'status') {
   if ($message) {
@@ -1186,7 +1186,6 @@ function tz_options() {
  *
  */
 function format_date($timestamp) {
-  // TODO add user / site time zone - currently only local.
   return date(variable_get('date_format', 'Y-m-d h:i'), $timestamp);
 }
 

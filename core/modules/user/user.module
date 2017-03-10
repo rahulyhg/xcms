@@ -9,7 +9,8 @@
  */
 function user_init() {
   global $user;
-  $user = user_load_by_name(issetor($_COOKIE['name']));
+
+  $user = user_load(issetor($_COOKIE['xcms_uid'], 0));
 }
 
 /**
@@ -70,8 +71,8 @@ function user_menu() {
  *
  */
 function user_logout() {
-  setcookie('name', '', strtotime('-1 month'), '/');
-  // session_destroy();
+  unset($_COOKIE['xcms_uid']);
+  setcookie('xcms_uid', '', strtotime('-1 month'), '/');
 }
 
 /**
@@ -86,7 +87,6 @@ function user_load($uid) {
  */
 function user_save($account, $edit = array()) {
 
-  // TODO - make this a reusable function.
   $placeholders = array();
   $args = array();
   foreach ($edit as $key => $value) {
@@ -96,7 +96,6 @@ function user_save($account, $edit = array()) {
 
   // TODO - if no uid / uid=0. query next id from users-uid (need user_save to create new users)
   $args[':uid'] = $account->uid;
-
   db_query('UPDATE users SET ' . implode(', ', $placeholders) . ' WHERE uid = :uid', $args);
 }
 
@@ -104,7 +103,8 @@ function user_save($account, $edit = array()) {
  * Fetch a user object by account name.
  */
 function user_load_by_name($name) {
-  return db_query('SELECT * FROM users WHERE name = :name', array(':name' => $name))->fetchObject();
+  $uid = db_query('SELECT uid FROM users WHERE name = :name', array(':name' => $name))->fetchColumn();
+  return user_load($uid);
 }
 
 /**
@@ -120,22 +120,22 @@ function user_authenticate($name, $pass) {
 /**
  *
  */
-function user_session($name) {
-  setcookie('name', $name, strtotime('+1 month'), '/');
+function user_session($user) {
+  setcookie('xcms_uid', $user->uid, strtotime('+1 month'), '/');
 }
 
 /**
  * Determines if the current user is logged in.
  */
 function user_is_logged_in() {
-  return isset($_COOKIE['name']);
+  return (isset($_COOKIE['xcms_uid']) && $_COOKIE['xcms_uid'] > 0);
 }
 
 /**
  * Determines if the current user is anonymous.
  */
 function user_is_anonymous() {
-  return !user_is_logged_in();
+  return empty($_COOKIE['xcms_uid']);
 }
 
 /**

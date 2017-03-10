@@ -74,7 +74,7 @@ function user_login_form_validate($form, &$form_state) {
  *
  */
 function user_login_form_submit($form, &$form_state) {
-  user_session($form_state['values']['name']);
+  user_session(user_load_by_name($form_state['values']['name']));
   $form_state['redirect'] = 'user';
 }
 
@@ -155,6 +155,7 @@ function user_account_form_submit($form, &$form_state) {
     'name' => $form_state['values']['name'],
     'mail' => $form_state['values']['mail'],
     'timezone' => $form_state['values']['timezone'],
+    'is_admin' => $form_state['values']['is_admin'],
   );
   user_save($account, $edit);
   xcms_set_message('The changes have been saved.');
