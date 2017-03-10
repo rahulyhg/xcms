@@ -110,7 +110,8 @@ function xcms_page_handler() {
  */
 function request_path() {
   global $base_path;
-  return trim(str_replace(trim($base_path, '/'), '', $_GET['q']), '/');
+  $get_q = issetor($_GET['q']);
+  return trim(str_replace(trim($base_path, '/'), '', $get_q), '/');
 }
 
 /**
