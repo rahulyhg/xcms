@@ -143,8 +143,6 @@ function user_is_anonymous() {
  */
 function user_is_admin() {
   global $user;
-  if (issetor($user->uid, 0) == 1) {
-    return TRUE;
-  }
+  return $user->is_admin;
 }
 
