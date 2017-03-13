@@ -1096,7 +1096,7 @@ function xcms_add_css($data = NULL, $options = array()) {
     );
     $css[$data] = $options;
   }
-  return $css;
+  return empty($css) ? array() : $css;
 }
 
 /**
@@ -1131,7 +1131,7 @@ function xcms_add_js($data = NULL, $options = array()) {
     );
     $js[] = $options;
   }
-  return $js;
+  return empty($js) ? array() : $js;
 }
 
 /**
