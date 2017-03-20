@@ -46,6 +46,9 @@ function xcms_init() {
   // Load site variables.
   $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
 
+  // Set default timezone
+  date_default_timezone_set(variable_get('timezone', 'Australia/Brisbane'));
+
   // Load all enabled modules.
   xcms_modules_load();
 
