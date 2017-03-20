@@ -1169,6 +1169,7 @@ function xcms_get_js() {
     'basePath' => $base_path,
     'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
     'cacheTimestamp' => variable_get('cache_timestamp'),
+    'args' => explode('/', current_path()),
   );
   $scripts[] = '<script type="text/javascript">var XCMS = ' . json_encode((object) $settings) . '</script>';
   return implode("\n", $scripts);
