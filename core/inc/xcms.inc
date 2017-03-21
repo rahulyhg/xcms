@@ -1168,6 +1168,7 @@ function xcms_get_js() {
     }
   }
   // Merge default javascript variables.
+  // TODO move from here to elsewhere. xcms_add_js($settings, array('type' => 'setting'));
   $settings += array(
     'basePath' => $base_path,
     'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),
