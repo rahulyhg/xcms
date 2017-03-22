@@ -811,7 +811,6 @@ function theme_page($vars) {
     'page_top' => implode("\n", xcms_modules_invoke('header')),
     'page_bottom' => implode("\n", xcms_modules_invoke('footer')),
     'body_classes' => ($is_front ? 'front' : 'not-front') . ' page-' . arg(0),
-    // 'content' => empty($content) ? ' ' : $content,
   );
 
   $vars['styles'] = xcms_get_css();
@@ -872,8 +871,8 @@ function theme_list($vars) {
   $output = $vars['root'] ? '<' . $vars['type'] . attributes($vars['attributes']) . '>' : NULL;
 
   foreach ($vars['items'] as $key => $item) {
-
     $li_attributes = array();
+
     if (!is_numeric($key)) {
       $li_attributes['class'] = $key;
     }
@@ -1205,5 +1204,34 @@ function render_template($template_file, $vars) {
   }
 
   return ob_get_clean();
+}
+
+/**
+ * Send an email helper/wrapper function.
+ */
+function xcms_mail($to, $subject, $message, $options = array()) {
+
+  $default_from = variable_get('site_name') . ' <' . variable_get('site_mail') . '>';
+
+  // Sender and Return-Path headers should be on SMTP domain, prevent spam.
+  $options += array(
+    'headers' => array(
+      'MIME-Version' => '1.0',
+      'From' => $default_from,
+      'Sender' => $default_from,
+      'Return-Path' => $default_from,
+    ),
+  );
+
+  if (isset($options['html'])) {
+    $options['headers']['Content-Type'] = 'text/html; charset=iso-8859-1';
+  }
+
+  $headers = '';
+  foreach ($options['headers'] as $key => $value) {
+    $headers .= $key . ': ' . $value . "\r\n";
+  }
+
+  return mail($to, $subject, $message, $headers);
 }
 
