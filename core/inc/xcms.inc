@@ -1214,7 +1214,7 @@ function xcms_mail($to, $subject, $message, $options = array()) {
   $default_from = variable_get('site_name') . ' <' . variable_get('site_mail') . '>';
 
   // Sender and Return-Path headers should be on SMTP domain, prevent spam.
-  $options += array(
+  $default_options = array(
     'headers' => array(
       'MIME-Version' => '1.0',
       'From' => $default_from,
@@ -1222,6 +1222,8 @@ function xcms_mail($to, $subject, $message, $options = array()) {
       'Return-Path' => $default_from,
     ),
   );
+
+  $options = array_merge_recursive($default_options, $options);
 
   if (isset($options['html'])) {
     $options['headers']['Content-Type'] = 'text/html; charset=iso-8859-1';
