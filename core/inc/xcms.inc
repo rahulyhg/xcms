@@ -1229,6 +1229,8 @@ function xcms_mail($to, $subject, $message, $options = array()) {
     $options['headers']['Content-Type'] = 'text/html; charset=iso-8859-1';
   }
 
+  xcms_modules_invoke('mail', $to, $subject, $message, $options);
+
   $headers = '';
   foreach ($options['headers'] as $key => $value) {
     $headers .= $key . ': ' . $value . "\r\n";
