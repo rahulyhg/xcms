@@ -693,6 +693,13 @@ function check_plain($text) {
 }
 
 /**
+ * Truncates a string to a number of characters.
+ */
+function truncate($string, $length = 50) {
+  return mb_strimwidth($string, 0, $length, '...');
+}
+
+/**
  * Create a css class safe string.
  */
 function strip_class($text) {
