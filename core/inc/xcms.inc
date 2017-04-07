@@ -772,12 +772,12 @@ function l($title, $path, $options = array()) {
     $title = check_plain($title);
   }
 
-  if ($path == current_path()) {
-    $options['attributes']['class'][] = 'active';
-  }
-
   if (isset($options['query'])) {
     $path .= '?' . http_build_query($options['query']);
+  }
+
+  if ($path == trim($_SERVER['REQUEST_URI'], '/')) {
+    $options['attributes']['class'][] = 'active';
   }
 
   $options['attributes']['href'] = url($path);
