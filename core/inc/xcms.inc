@@ -772,16 +772,15 @@ function l($title, $path, $options = array()) {
     $title = check_plain($title);
   }
 
+  if ($path == current_path()) {
+    $options['attributes']['class'][] = 'active';
+  }
+
   if (isset($options['query'])) {
     $path .= '?' . http_build_query($options['query']);
   }
 
   $options['attributes']['href'] = url($path);
-
-  // Set active class.
-  if ($path == current_path()) {
-    $options['attributes']['class'][] = 'active';
-  }
 
   return '<a' . attributes($options['attributes']) . '>' . $title . '</a>';
 }
@@ -1100,14 +1099,14 @@ function theme_pager($vars = array()) {
   global $pager;
   $items = array();
 
-  // TODO center pager, eg. limit number or pages in list.
+  // TODO center pager, eg. limit number or pages in list. ... 5 6 7 8 ...
 
   if ($pager['current'] > 1) {
     $items['prev'] = l('«', current_path(), array('query' => array('page' => $pager['current'] - 1)));
   }
 
   for ($i = 1; $i <= $pager['pages']; $i++) {
-    $items['item-' . $i] = l($i, current_path(), array('query' => array('page' => $i)));
+    $items[] = l($i, current_path(), array('query' => array('page' => $i)));
   }
 
   if ($pager['current'] < $pager['pages']) {
