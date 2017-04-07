@@ -1094,6 +1094,56 @@ function theme_table($vars) {
 }
 
 /**
+ * Theme pager.
+ */
+function theme_pager($vars = array()) {
+  global $pager;
+  $items = array();
+
+  // TODO center pager, eg. limit number or pages in list.
+
+  if ($pager['current'] > 1) {
+    $items['prev'] = l('«', current_path(), array('query' => array('page' => $pager['current'] - 1)));
+  }
+
+  for ($i = 1; $i <= $pager['pages']; $i++) {
+    $items['item-' . $i] = l($i, current_path(), array('query' => array('page' => $i)));
+  }
+
+  if ($pager['current'] < $pager['pages']) {
+    $items['next'] = l('»', current_path(), array('query' => array('page' => $pager['current'] + 1)));
+  }
+
+  if (count($items) > 1) {
+    return theme('list', array('items' => $items, 'attributes' => array('class' => array('pager'))));
+  }
+}
+
+/**
+ * Initialize pager.
+ */
+function initialize_pager($query, $limit = 50) {
+  global $xcms_db, $pager;
+  $xcms_db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+
+  $total = db_query($query)->fetchColumn();
+  $current = issetor($_GET['page'], 1);
+
+  $pager = array(
+    'current' => $current,
+    'pages' => ceil($total / $limit),
+    'total' => $total,
+    'offset' => ($current - 1) * $limit,
+    'limit' => $limit,
+  );
+
+  return array(
+    ':offset' => $pager['offset'],
+    ':limit' => $pager['limit'],
+  );
+}
+
+/**
  * Adds a cascading stylesheet to the stylesheet queue.
  */
 function xcms_add_css($data = NULL, $options = array()) {
