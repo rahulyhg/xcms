@@ -767,7 +767,6 @@ function theme($hook, $vars = array()) {
  */
 function l($title, $path, $options = array()) {
 
-  // html => TRUE
   if (empty($options['html'])) {
     $title = check_plain($title);
   }
@@ -1104,15 +1103,14 @@ function theme_pager($vars = array()) {
   }
 
   if ($pager['pages'] > 1 && $pager['current'] <= $pager['pages']) {
-    $items[] = l('1', current_path(), array('query' => array('page' => '1')));
-
-    $i = max(2, $pager['current'] - 2);
+    $items[] = l('1', current_path(), array('query' => array('page' => '1'), 'attributes' => array('class' => $pager['current'] == 1 ? array('active') : array())));
+    $i = max(2, $pager['current'] - floor($pager['max'] / 2));
 
     if ($i > 2) {
       $items[] = '…';
     }
 
-    for (; $i < min($pager['current'] + 3, $pager['pages']); $i++) {
+    for (; $i < min($pager['current'] + ceil($pager['max'] / 2), $pager['pages']); $i++) {
       $items[] = l($i, current_path(), array('query' => array('page' => $i)));
     }
 
@@ -1133,7 +1131,7 @@ function theme_pager($vars = array()) {
 /**
  * Initialize pager.
  */
-function initialize_pager($query, $limit = 50, $max = 6) {
+function initialize_pager($query, $limit = 50, $max = 5) {
   global $xcms_db, $pager;
   $xcms_db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 
