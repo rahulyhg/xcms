@@ -1104,6 +1104,7 @@ function theme_pager($vars = array()) {
 
   if ($pager['pages'] > 1 && $pager['current'] <= $pager['pages']) {
     $items[] = l('1', current_path(), array('query' => array('page' => '1'), 'attributes' => array('class' => $pager['current'] == 1 ? array('active') : array())));
+
     $i = max(2, $pager['current'] - floor($pager['max'] / 2));
 
     if ($i > 2) {
