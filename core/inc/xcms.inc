@@ -1099,29 +1099,41 @@ function theme_pager($vars = array()) {
   global $pager;
   $items = array();
 
-  // TODO center pager, eg. limit number or pages in list. ... 5 6 7 8 ...
-
-  if ($pager['current'] > 1) {
+  if ($pager['current'] > 1 && $pager['pages'] > 1) {
     $items['prev'] = l('«', current_path(), array('query' => array('page' => $pager['current'] - 1)));
   }
 
-  for ($i = 1; $i <= $pager['pages']; $i++) {
-    $items[] = l($i, current_path(), array('query' => array('page' => $i)));
+  if ($pager['pages'] > 1 && $pager['current'] <= $pager['pages']) {
+    $items[] = l('1', current_path(), array('query' => array('page' => '1')));
+
+    $i = max(2, $pager['current'] - 2);
+
+    if ($i > 2) {
+      $items[] = '…';
+    }
+
+    for (; $i < min($pager['current'] + 3, $pager['pages']); $i++) {
+      $items[] = l($i, current_path(), array('query' => array('page' => $i)));
+    }
+
+    if ($i != $pager['pages']) {
+      $items[] = '…';
+    }
+
+    $items[] = l($pager['pages'], current_path(), array('query' => array('page' => $pager['pages'])));
   }
 
   if ($pager['current'] < $pager['pages']) {
     $items['next'] = l('»', current_path(), array('query' => array('page' => $pager['current'] + 1)));
   }
 
-  if (count($items) > 1) {
-    return theme('list', array('items' => $items, 'attributes' => array('class' => array('pager'))));
-  }
+  return theme('list', array('items' => $items, 'attributes' => array('class' => array('pager'))));
 }
 
 /**
  * Initialize pager.
  */
-function initialize_pager($query, $limit = 50) {
+function initialize_pager($query, $limit = 50, $max = 6) {
   global $xcms_db, $pager;
   $xcms_db->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 
@@ -1134,6 +1146,7 @@ function initialize_pager($query, $limit = 50) {
     'total' => $total,
     'offset' => ($current - 1) * $limit,
     'limit' => $limit,
+    'max' => $max,
   );
 
   return array(
