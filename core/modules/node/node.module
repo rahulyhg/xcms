@@ -153,6 +153,7 @@ function node_node_form_alter($args) {
     'type' => 'text',
     'title' => 'Path',
     'default_value' => $node->path,
+    'weight' => 10,
   );
 
   return $form;
