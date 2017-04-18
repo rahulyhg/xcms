@@ -148,6 +148,9 @@ function _admin_menu() {
     ),
   );
 
+  // Hook to load menu items from modules.
+  $links = array_merge_recursive($links, xcms_modules_invoke('admin_menu'));
+
   $admin_tab = l('Administration Panel', '', array('attributes' => array('id' => array('admin-menu-tab'))));
   return array('admin_menu' => '<div id="admin-menu">' . $admin_tab . theme('links', array('links' => $links)) . '</div>');
 }
