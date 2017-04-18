@@ -86,7 +86,6 @@ function node_form($form, &$form_state) {
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Save',
-    'weight' => 999,
   );
 
   return $form;

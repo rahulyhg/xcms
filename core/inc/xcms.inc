@@ -470,18 +470,24 @@ function xcms_build_form($form_id, &$form_state) {
 
   $elements = array();
 
-  // Render the form elements.
-  foreach ($form as $name => $element) {
-    $element += array(
+  // Clean up the form elements.
+  foreach ($form as $name => $form_item) {
+    $form_item += array(
+      'type' => 'markup',
       'name' => $name,
       'weight' => 0,
     );
-    $elements[] = $element;
+
+    if ($form_item['type'] == 'submit') {
+      $form_item['weight'] += 999;
+    }
+    $elements[] = $form_item;
   }
 
   // Sort form elements.
   uasort($elements, 'xcms_weight_sort');
 
+  // Render the form elements.
   foreach ($elements as $element) {
     $output .= theme('form_element', $element);
   }
