@@ -50,32 +50,105 @@ function admin_menu() {
  * Implements hook_footer().
  */
 function admin_footer() {
-  if (user_is_admin()) {
-    xcms_add_css('core/modules/admin/admin.toolbar.css');
-
-    // Load top level admin items for menu.
-    global $_menu;
-
-    // Add home link to menu
-    $admin_items = array(
-      'home' => array(
-        'title' => 'Home',
-        'href' => '<front>',
-      ),
-    );
-
-    foreach ($_menu as $path => $item) {
-      $arg_0 = arg(0, $path);
-      $arg_2 = arg(2, $path);
-      if ($arg_0 == 'admin' && empty($arg_2)) {
-        $admin_items[strip_class($path)] = array(
-          'title' => $item['title'],
-          'href' => $path,
-        );
-      }
-    }
-    $links = theme('links', array('links' => $admin_items, array('attributes' => array('class' => 'toolbar-menu'))));
-    return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
+  global $user;
+  $admin_footer = array();
+  if ($user->uid == 1) {
+    $admin_footer += _admin_toolbar();
   }
+  if (user_is_admin()) {
+    $admin_footer += _admin_menu();
+  }
+  return $admin_footer;
+}
+
+/**
+ * _admin_toolbar().
+ */
+function _admin_toolbar() {
+  $path = xcms_get_path('module', 'admin');
+  xcms_add_css($path . '/admin.toolbar.css');
+
+  // Load top level admin items for menu.
+  global $_menu;
+
+  // Add home link to menu
+  $admin_items = array(
+    'home' => array(
+      'title' => 'Home',
+      'href' => '<front>',
+    ),
+  );
+
+  foreach ($_menu as $path => $item) {
+    $arg_0 = arg(0, $path);
+    $arg_2 = arg(2, $path);
+    if ($arg_0 == 'admin' && empty($arg_2)) {
+      $admin_items[strip_class($path)] = array(
+        'title' => $item['title'],
+        'href' => $path,
+      );
+    }
+  }
+  $links = theme('links', array('links' => $admin_items, array('attributes' => array('class' => 'toolbar-menu'))));
+  return array('toolbar' => '<div id="toolbar">' . $links . l('Log out', 'user/logout', array('attributes' => array('class' => 'toolbar-logout'))) . '</div>');
+}
+
+/**
+ *  _admin_menu().
+ */
+function _admin_menu() {
+  global $user;
+  $path = xcms_get_path('module', 'admin');
+  xcms_add_js($path . '/admin.menu.js');
+  xcms_add_css($path . '/admin.menu.css');
+
+  $links = array();
+
+  // Content management
+  $links['content'] = array(
+    'title' => 'Content management',
+    'href' => 'admin/config',
+    'children' => array(
+      'content-manage' => array(
+        'title' => 'Manage content',
+        'href' => 'admin/node',
+      ),
+    ),
+  );
+
+  // Site administration
+  $links['site'] = array(
+    'title' => 'Site administration',
+    'href' => 'admin/config',
+    'children' => array(
+      'site-users' => array(
+        'title' => 'Manage users',
+        'href' => 'admin/user',
+      ),
+    ),
+  );
+
+  // Site administration
+  $links['conf'] = array(
+    'title' => 'Website configuration',
+    'href' => 'admin/config',
+    'children' => array(
+      'conf-user' => array(
+        'title' => 'My account',
+        'href' => 'user/' . $user->uid,
+      ),
+      'conf-status' => array(
+        'title' => 'Status report',
+        'href' => 'admin/status',
+      ),
+      'conf-logout' => array(
+        'title' => 'Log out ' . $user->name,
+        'href' => 'user/logout',
+      ),
+    ),
+  );
+
+  $admin_tab = l('Administration Panel', '', array('attributes' => array('id' => array('admin-menu-tab'))));
+  return array('admin_menu' => '<div id="admin-menu">' . $admin_tab . theme('links', array('links' => $links)) . '</div>');
 }
 

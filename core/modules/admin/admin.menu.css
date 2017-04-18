@@ -1,0 +1,89 @@
+/**
+ * @file
+ */
+
+#admin-menu * {
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+#admin-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: #fff;
+  overflow: hidden;
+  width: 220px;
+  height: 24px;
+  z-index: 9999;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+#admin-menu.open {
+  height: 100%;
+}
+
+#admin-menu ul,
+#admin-menu li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+}
+
+#admin-menu a {
+  display: block;
+  color: #444;
+}
+
+#admin-menu> ul.links> li.expanded> a {
+  padding: 16px 10px 4px;
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: default;
+}
+
+#admin-menu a#admin-menu-tab {
+  padding: 3px 10px;
+  background: #4a4a4c;
+  color: #fff;
+  height: 24px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#admin-menu> ul.links> li.expanded> ul.links a {
+  padding: 8px 2px 8px 38px;
+  background-image: url(images/manage.png);
+  background-repeat: no-repeat;
+  background-position: 6px 50%;
+  border-top: 1px solid #ddd;
+}
+
+#admin-menu> ul.links> li.expanded> ul.links a:hover {
+  background-color: #eee;
+}
+
+#admin-menu li.last a {
+  border-bottom: 1px solid #ddd;
+}
+
+#admin-menu li a.add {
+  background-image: url(images/add.png);
+}
+
+#admin-menu li a.logout {
+  background-image: url(images/logout.png);
+}
+
+#admin-menu li a.stats {
+  background-image: url(images/stats.png);
+}
+
+#admin-menu li a.view {
+  background-image: url(images/view.png);
+}
