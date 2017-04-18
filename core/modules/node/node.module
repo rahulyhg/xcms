@@ -136,6 +136,29 @@ function node_field_body($node) {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function node_node_form_alter($args) {
+  $form = array();
+  $node = $args['node'];
+
+  // Content fields.
+  $fields = node_get_type_fields($node->type);
+  foreach ($fields as $field => $settings) {
+    $form += xcms_modules_invoke($field, $node);
+  }
+
+  // Path alias form field.
+  $form['path'] = array(
+    'type' => 'text',
+    'title' => 'Path',
+    'default_value' => $node->path,
+  );
+
+  return $form;
+}
+
+/**
  * Loads a node object.
  */
 function node_load($nid) {

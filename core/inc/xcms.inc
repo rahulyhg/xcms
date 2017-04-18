@@ -391,6 +391,9 @@ function xcms_build_form($form_id, &$form_state) {
   // Get form array.
   $form = call_user_func_array($form_id, array(array(), &$form_state));
 
+  // Get form hook additions hook_form_alter().
+  $form = array_merge_recursive($form, xcms_modules_invoke($form_id . '_alter', $form_state));
+
   // Merge form default attributes.
   $form['attributes'] = issetor($form['attributes'], array());
   $form['attributes'] += array(
@@ -465,13 +468,26 @@ function xcms_build_form($form_id, &$form_state) {
   // Print form html.
   $output .= '<form' . attributes($form['attributes']) . '>';
 
+  $elements = array();
+
   // Render the form elements.
   foreach ($form as $name => $element) {
-    $element['name'] = $name;
-    $output .= theme_form_element($element);
+    $element += array(
+      'name' => $name,
+      'weight' => 0,
+    );
+    $elements[] = $element;
+  }
+
+  // Sort form elements.
+  uasort($elements, 'xcms_weight_sort');
+
+  foreach ($elements as $element) {
+    $output .= theme('form_element', $element);
   }
 
   $output .= '</form>';
+
   return $output;
 }
 
@@ -963,7 +979,6 @@ function theme_form_element($vars) {
   $output = '';
   $vars += form_element_defaults();
   // Element wrapper.
-  // $attributes['id'] = 'edit-' . strip_class($vars['name']);
   $attributes['class'][] = 'form-item';
   $attributes['class'][] = 'form-type-' . $vars['type'];
   if ($vars['required']) {

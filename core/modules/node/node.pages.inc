@@ -83,21 +83,10 @@ function node_form($form, &$form_state) {
     'required' => TRUE,
   );
 
-  // Load node hook fields from Field API.
-  $fields = node_get_type_fields($node->type);
-  foreach ($fields as $field => $settings) {
-    $form += xcms_modules_invoke($field, $node);
-  }
-
-  $form['path'] = array(
-    'type' => 'text',
-    'title' => 'Path',
-    'default_value' => $node->path,
-  );
-
   $form['submit'] = array(
     'type' => 'submit',
     'value' => 'Save',
+    'weight' => 999,
   );
 
   return $form;
