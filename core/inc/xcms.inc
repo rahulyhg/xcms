@@ -46,7 +46,7 @@ function xcms_init() {
   // Load site variables.
   $conf = db_query('SELECT * FROM variables')->fetchAll(PDO::FETCH_KEY_PAIR);
 
-  // Set default timezone
+  // Set default timezone.
   date_default_timezone_set(variable_get('timezone', 'Australia/Brisbane'));
 
   // Load all enabled modules.
@@ -941,6 +941,9 @@ function theme_links($vars) {
   return '<' . $vars['type'] . attributes($vars['attributes']) . '>' . _build_links($vars['links']) . '</' . $vars['type'] . '>';
 }
 
+/**
+ *
+ */
 function _build_links($links) {
   $output = '';
   foreach ($links as $key => $link) {
@@ -999,24 +1002,37 @@ function theme_form_element($vars) {
   $vars['attributes']['class'][] = 'form-' . $vars['type'];
   $vars['attributes']['value'] = empty($vars['value']) ? $vars['default_value'] : $vars['value'];
   // HTML5 "required" validation.
+  /*
   if ($vars['required']) {
-    // $vars['attributes']['required'] = TRUE;.
+  $vars['attributes']['required'] = TRUE;
   }
+   */
+
+  $form_item = array();
+
   if ($vars['title']) {
-    $output .= '<label>' . $vars['title'] . '</label>';
+    $form_item['label'] = '<label for="' . $vars['attributes']['id'] . '">' . $vars['title'] . '</label>';
   }
+
   // Check if there is a special function for the element.
   $function = 'theme_form_' . $vars['type'];
   if (function_exists($function)) {
-    $output .= call_user_func($function, $vars);
+    $form_item['element'] = call_user_func($function, $vars);
   }
   else {
-    // Default form element function.
-    $output .= theme_form_input($vars);
+    $form_item['element'] = theme_form_input($vars);
   }
+
   if ($vars['description']) {
-    $output .= '<div class="description">' . $vars['description'] . '</div>';
+    $form_item['description'] = '<div class="description">' . $vars['description'] . '</div>';
   }
+
+  // Move element to top for checkbox.
+  if ($vars['type'] == 'checkbox') {
+    $form_item = array('element' => $form_item['element']) + $form_item;
+  }
+
+  $output .= implode("\n", $form_item);
   $output .= '</div>';
   return $output;
 }
@@ -1257,7 +1273,7 @@ function xcms_get_js() {
     }
   }
   // Merge default javascript variables.
-  // TODO move from here to elsewhere. xcms_add_js($settings, array('type' => 'setting'));
+  // TODO move from here to elsewhere. xcms_add_js($settings, array('type' => 'setting'));.
   $settings += array(
     'basePath' => $base_path,
     'themeUrl' => url(variable_get('site_theme', 'core/themes/default')),

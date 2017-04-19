@@ -24,7 +24,6 @@ function user_page() {
  * User_login_page().
  */
 function user_login_page() {
-  // return 'test';
   return xcms_get_form('user_login_form');
 }
 
