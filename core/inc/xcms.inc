@@ -472,10 +472,11 @@ function xcms_build_form($form_id, &$form_state) {
 
   // Clean up the form elements.
   foreach ($form as $name => $form_item) {
+    isset($weight) ? $weight++ : $weight = 0;
     $form_item += array(
       'type' => 'markup',
       'name' => $name,
-      'weight' => 0,
+      'weight' => $weight / 100,
     );
 
     if ($form_item['type'] == 'submit') {
